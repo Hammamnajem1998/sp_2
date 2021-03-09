@@ -2,6 +2,7 @@ import 'package:temp1/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'hotel_booking/hotel_home_screen.dart';
 import 'model/homelist.dart';
+import 'navigation_hotel_profile.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key key}) : super(key: key);
@@ -246,7 +247,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => HotelHomeScreen()),
+                          MaterialPageRoute(builder: (context) => NavigationHotelProfile()),
                         );
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(24.0)),
