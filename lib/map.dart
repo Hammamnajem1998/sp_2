@@ -12,17 +12,20 @@ class _MyMapState extends State<MyMap> {
   LatLng _initialcameraposition = LatLng(20.5937, 78.9629);
   GoogleMapController _controller;
   Location _location = Location();
+  var _currentMapType;
+  final Set<Marker> _markers = {};
+  LatLng _lastMapPosition = LatLng(20.5937, 78.9629);
 
   void _onMapCreated(GoogleMapController _cntlr)
   {
     _controller = _cntlr;
-    _location.onLocationChanged.listen((l) {
-      _controller.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(l.latitude, l.longitude),zoom: 15),
-        ),
-      );
-    });
+    // _location.onLocationChanged.listen((l) {
+    //   _controller.animateCamera(
+    //     CameraUpdate.newCameraPosition(
+    //       CameraPosition(target: LatLng(l.latitude, l.longitude),zoom: 15),
+    //     ),
+    //   );
+    // });
   }
 
 
@@ -36,15 +39,54 @@ class _MyMapState extends State<MyMap> {
           children: [
             GoogleMap(
               initialCameraPosition: CameraPosition(target: _initialcameraposition),
-              mapType: MapType.normal,
+              mapType: _currentMapType,
               onMapCreated: _onMapCreated,
               myLocationEnabled: true,
               myLocationButtonEnabled: true,
-              // indoorViewEnabled: true,
+              indoorViewEnabled: true,
+              zoomControlsEnabled: true,
+              onCameraMove: _onCameraMove,
+              markers: _markers,
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10,60,5,0),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: FloatingActionButton(
+                  onPressed: _onMapTypeButtonPressed,
+                  materialTapTargetSize: MaterialTapTargetSize.padded,
+                  backgroundColor: Colors.green,
+                  child: const Icon(Icons.map, size: 36.0),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10,130,5,0),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: FloatingActionButton(
+                  onPressed: _onAddMarkerButtonPressed,
+                  materialTapTargetSize: MaterialTapTargetSize.padded,
+                  backgroundColor: Colors.green,
+                  child: const Icon(Icons.add_location, size: 36.0),
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+  void _onMapTypeButtonPressed() {
+    setState(() {
+      _currentMapType = _currentMapType == MapType.normal ? MapType.satellite : MapType.normal;
+    });
+  }
+  void  _onAddMarkerButtonPressed(){
+
+  }
+
+  void _onCameraMove(CameraPosition position) {
+    _lastMapPosition = position.target;
   }
 }
