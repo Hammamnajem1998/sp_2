@@ -170,7 +170,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         body: Stack(
           children: <Widget>[
             getMainListViewUI(),
-            getAppBarUI(),
+           // getAppBarUI(),
             SizedBox(
               height: MediaQuery.of(context).padding.bottom,
             )

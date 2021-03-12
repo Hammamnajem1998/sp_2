@@ -23,13 +23,13 @@ class _HomeDrawerHotelProfileState extends State<HomeDrawerHotelProfile> {
   void setDrawerListArray() {
     drawerList = <DrawerList>[
       DrawerList(
-        index: DrawerIndexHotelProfile.shops,
+        index: DrawerIndexHotelProfile.userProfile,
         labelName: 'Home',
         icon: Icon(Icons.home),
       ),
       DrawerList(
-        index: DrawerIndexHotelProfile.userProfile,
-        labelName: 'Help',
+        index: DrawerIndexHotelProfile.shops,
+        labelName: 'shops',
         isAssetsImage: true,
         imageName: 'assets/images/supportIcon.png',
       ),
@@ -91,7 +91,7 @@ class _HomeDrawerHotelProfileState extends State<HomeDrawerHotelProfile> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8, left: 4),
                     child: Text(
-                      'Hammam Naj',
+                      'Hammam Najem',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: AppTheme.grey,

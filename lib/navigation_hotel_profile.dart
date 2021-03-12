@@ -13,6 +13,8 @@ import 'custom_drawer/drawer_user_controller_hotel_profile.dart';
 
 import 'custom_drawer/home_drawer_hotel_profile.dart';
 
+import 'fitness_app/fitness_app_home_screen.dart';
+import 'hotel_booking/hotel_home_screen.dart';
 import 'hotel_booking/hotel_home_screen.dart';
 import 'hotel_booking/hotel_home_screen.dart';
 
@@ -27,8 +29,8 @@ class _NavigationHotelProfileState extends State<NavigationHotelProfile> {
 
   @override
   void initState() {
-    drawerIndex = DrawerIndexHotelProfile.shops;
-    screenView =  HotelHomeScreen();
+    drawerIndex = DrawerIndexHotelProfile.userProfile;
+    screenView =  FitnessAppHomeScreen();
     super.initState();
   }
 
@@ -59,13 +61,13 @@ class _NavigationHotelProfileState extends State<NavigationHotelProfile> {
   void changeIndex(DrawerIndexHotelProfile drawerIndexdata) {
     if (drawerIndex != drawerIndexdata) {
       drawerIndex = drawerIndexdata;
-      if (drawerIndex == DrawerIndexHotelProfile.shops) {
+      if (drawerIndex == DrawerIndexHotelProfile.userProfile) {
+        setState(() {
+          screenView = FitnessAppHomeScreen();
+        });
+      } else if (drawerIndex == DrawerIndexHotelProfile.shops) {
         setState(() {
           screenView = HotelHomeScreen();
-        });
-      } else if (drawerIndex == DrawerIndexHotelProfile.userProfile) {
-        setState(() {
-          screenView = SignUpPage();
         });
       } else if (drawerIndex == DrawerIndexHotelProfile.rate) {
         setState(() {
