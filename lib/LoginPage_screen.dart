@@ -1,8 +1,10 @@
+import 'package:http/http.dart';
 import 'package:temp1/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'hotel_booking/hotel_home_screen.dart';
-import 'model/homelist.dart';
+import 'package:temp1/backed_interface/user_interface.dart';
 import 'navigation_hotel_profile.dart';
+import 'dart:convert';
+import './backed_interface/user_interface.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key key}) : super(key: key);
@@ -13,6 +15,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   AnimationController animationController;
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -28,6 +32,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+
     animationController.dispose();
     super.dispose();
   }
@@ -113,6 +120,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   child: TextFormField(
                     keyboardType: TextInputType.visiblePassword,
                     validator: (val) => val.length < 6 ? 'Password too short.' : null,
+                    controller: passwordController,
                     obscureText: passwordV,
                     style: const TextStyle(
                       fontSize: 18,
@@ -182,7 +190,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   padding: const EdgeInsets.only(
                       left: 16, right: 16, top: 4, bottom: 4),
                   child: TextField(
-                    onSubmitted:(String txt) {print(txt);} ,
+                    controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     style: const TextStyle(
                       fontSize: 18,
@@ -245,10 +253,17 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => NavigationHotelProfile()),
-                        );
+                        loginToBackend(emailController.text,passwordController.text).then((authorized) => {
+                          if (authorized) {
+                            Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => NavigationHotelProfile()),
+                            )
+                          }
+                          else {
+                            print('try again noob')
+                          }
+                        });
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                       highlightColor: Colors.transparent,
@@ -285,4 +300,24 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       ),
     );
   }
+
+  Future <bool> loginToBackend(String email, String password) async {
+    Response response = await post("http://10.0.2.2:3000/login",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'email': email, 'password': password}));
+
+    var jsonResponse = jsonDecode(response.body);
+    if(jsonResponse['error'] != null){
+      // print(jsonResponse['error']);
+      return false;
+    }
+    else if (jsonResponse['message'] != null){
+      // print (jsonResponse['message']);
+      return true;
+    }
+    return false;
+  }
+
 }

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'navigation_home_screen.dart';
 import 'navigation_signIn_signUp.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])

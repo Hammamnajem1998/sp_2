@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:temp1/app_theme.dart';
 import 'package:temp1/main.dart';
+import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:temp1/map.dart';
 
@@ -13,6 +15,11 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
   AnimationController animationController;
+  final emailController = TextEditingController();
+  final nameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
   @override
   void initState() {
     animationController = AnimationController(
@@ -27,6 +34,11 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+
     animationController.dispose();
     super.dispose();
   }
@@ -48,7 +60,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                   appBar(),
                   getUserNameBarUI(),
                   getUserEmailBarUI(),
-                  getUserCreatePasswordBarUI(),
+                  getUserPasswordBarUI(),
                   getUserConfirmPasswordBarUI(),
                   //  getUserLocationBarUI(),
                   getLocationButtonBarUI(context),
@@ -90,7 +102,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget getUserCreatePasswordBarUI() {
+  Widget getUserPasswordBarUI() {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
       child: Row(
@@ -116,6 +128,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                       left: 16, right: 16, top: 4, bottom: 4),
                   child: TextFormField(
                     keyboardType: TextInputType.visiblePassword,
+                    controller: passwordController,
                     validator: (val) => val.length < 6 ? 'Password too short.' : null,
                     obscureText: true,
                     style: const TextStyle(
@@ -177,6 +190,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                       left: 16, right: 16, top: 4, bottom: 4),
                   child: TextFormField(
                     keyboardType: TextInputType.visiblePassword,
+                    controller: confirmPasswordController,
                     validator: (val) => val.length < 6 ? 'Password too short.' : null,
                     obscureText: true,
                     style: const TextStyle(
@@ -237,8 +251,8 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                   padding: const EdgeInsets.only(
                       left: 16, right: 16, top: 4, bottom: 4),
                   child: TextField(
-                    onSubmitted:(String txt) {print(txt);} ,
                     keyboardType: TextInputType.emailAddress,
+                    controller: emailController,
                     style: const TextStyle(
                       fontSize: 18,
                     ),
@@ -299,6 +313,52 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
+                      onTap: () {
+                        signupToBackend(nameController.text,emailController.text,passwordController.text).then((signed) => {
+                          if (signed) {
+                            showDialog(
+                            context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  // Retrieve the text the user has entered by using the
+                                  // TextEditingController.
+                                  content: Text("Thanks for sign up, hope you enjoy"),
+                                  actions: <Widget>[
+                                    // usually buttons at the bottom of the dialog
+                                    new TextButton(
+                                      child: new Text("Close"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            )
+                          }
+                          else {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  // Retrieve the text the user has entered by using the
+                                  // TextEditingController.
+                                  content: Text("This email already used"),
+                                  actions: <Widget>[
+                                    // usually buttons at the bottom of the dialog
+                                    new TextButton(
+                                      child: new Text("Close"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            )
+                          }
+                        });
+                      },
                       borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                       highlightColor: Colors.transparent,
                       child: Center(
@@ -360,9 +420,8 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                   padding: const EdgeInsets.only(
                       left: 16, right: 16, top: 4, bottom: 4),
                   child: TextField(
-                    onSubmitted:(String txt) {print(txt);} ,
                     keyboardType: TextInputType.emailAddress,
-
+                    controller: nameController,
                     style: const TextStyle(
                       fontSize: 18,
                     ),
@@ -396,51 +455,52 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
       ),
     );
   }
-}
-Widget getLocationButtonBarUI(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
-    child: Row(
-      children: <Widget>[
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(right: 16, top: 10, bottom: 8),
-            child: Container(
-              decoration:  BoxDecoration(
+
+  Widget getLocationButtonBarUI(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16, top: 10, bottom: 8),
+              child: Container(
+                decoration:  BoxDecoration(
 
 
-                //color: HotelAppTheme.buildLightTheme().backgroundColor,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(38.0),
+                  //color: HotelAppTheme.buildLightTheme().backgroundColor,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(38.0),
+                  ),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.8),
+                        offset: const Offset(0, 2),
+                        blurRadius: 8.0),
+                  ],
                 ),
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                      color: Colors.grey.withOpacity(0.8),
-                      offset: const Offset(0, 2),
-                      blurRadius: 8.0),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 16, right: 16, top: 15, bottom: 15),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyMap()),
-                      );
-                    },
-                    borderRadius: const BorderRadius.all(Radius.circular(24.0)),
-                    highlightColor: Colors.transparent,
-                    child: Center(
-                      child: Text(
-                        'Get Location',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 27,
-                            color: Colors.white),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 16, right: 16, top: 15, bottom: 15),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => MyMap()),
+                        );
+                      },
+                      borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                      highlightColor: Colors.transparent,
+                      child: Center(
+                        child: Text(
+                          'Get Location',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 27,
+                              color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -448,22 +508,41 @@ Widget getLocationButtonBarUI(BuildContext context) {
               ),
             ),
           ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            //color: HotelAppTheme.buildLightTheme().primaryColor,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(38.0),
+          Container(
+            decoration: BoxDecoration(
+              //color: HotelAppTheme.buildLightTheme().primaryColor,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(38.0),
+              ),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: Colors.grey.withOpacity(0.4),
+                    offset: const Offset(0, 2),
+                    blurRadius: 8.0),
+              ],
             ),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  offset: const Offset(0, 2),
-                  blurRadius: 8.0),
-            ],
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
+
+  Future <bool> signupToBackend(String name, String email, String password) async {
+    Response response = await post("http://10.0.2.2:3000/signup",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'username': name ,'email': email, 'password': password}));
+
+    var jsonResponse = jsonDecode(response.body);
+    if(jsonResponse['error'] != null){
+      // print(jsonResponse['error']);
+      return false;
+    }
+    else if (jsonResponse['message'] != null){
+      // print (jsonResponse['message']);
+      return true;
+    }
+    return false;
+  }
 }
