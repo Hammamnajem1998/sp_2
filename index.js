@@ -47,13 +47,13 @@ passport.use(new LocalStrategy(
         passwordField : 'password',
     },
     (email, password, done)=>{
-        const sql1 = `select * from users WHERE email= '${email}'; `;
-        con.query(sql1, (err, user) =>{
-            if (err) return done(err);
-            if(!user[0]) return done(null, false, 'Email not found');
-            if(password != user[0].password) return done(null, false, 'Incorrect password.');
-            return done(null, user[0]);
-    }); 
+      const sql1 = `select * from users WHERE email= '${email}'; `;
+      con.query(sql1, (err, user) =>{
+          if (err) return done(err);
+          if(!user[0]) return done(null, false, 'Email not found');
+          if(password != user[0].password) return done(null, false, 'Incorrect password.');
+          return done(null, user[0]);
+      });   
 }));
 
 app.post('/signup', (req, res) =>{
@@ -84,6 +84,15 @@ app.post('/login', (req, res, next)=> {
 
 app.get('/', (req, res) =>{
     res.json({message: "Hellow world !!"});
+});
+
+app.get('/user/:email', (req, res) =>{
+
+  const sql1 = `select * from users WHERE email= '${req.params.email}'; `;
+  con.query(sql1, (err, user) =>{
+      return res.send(user[0]);
+  });
+
 });
 
 app.post('/users', (req, res, next) =>{
