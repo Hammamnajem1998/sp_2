@@ -528,7 +528,8 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
   }
 
   Future <bool> signupToBackend(String name, String email, String password) async {
-    Response response = await post("http://10.0.2.2:3000/signup",
+    Response response = await post("https://dont-wait.herokuapp.com/signup",
+    // Response response = await post("http://10.0.2.2:5000/signup",
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

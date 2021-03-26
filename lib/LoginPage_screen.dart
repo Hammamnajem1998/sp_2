@@ -2,7 +2,7 @@ import 'package:http/http.dart';
 import 'package:temp1/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:temp1/backed_interface/user_interface.dart';
-import 'navigation_hotel_profile.dart';
+import 'navigation_Shops_profile.dart';
 import 'dart:convert';
 import './backed_interface/user_interface.dart';
 
@@ -257,11 +257,29 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           if (authorized) {
                             Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => NavigationHotelProfile()),
+                            MaterialPageRoute(builder: (context) => NavigationShopsProfile()),
                             )
                           }
                           else {
-                            print('try again noob')
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  // Retrieve the text the user has entered by using the
+                                  // TextEditingController.
+                                  content: Text("Login failed, try again"),
+                                  actions: <Widget>[
+                                    // usually buttons at the bottom of the dialog
+                                    new TextButton(
+                                      child: new Text("Close"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            )
                           }
                         });
                       },
@@ -302,7 +320,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 
   Future <bool> loginToBackend(String email, String password) async {
-    Response response = await post("http://10.0.2.2:3000/login",
+    Response response = await post("https://dont-wait.herokuapp.com/login",
+    // Response response = await post("http://10.0.2.2:5000/login",
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
