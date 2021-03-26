@@ -257,7 +257,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           if (authorized) {
                             Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => NavigationShopsProfile()),
+                            MaterialPageRoute(builder: (context) => NavigationShopsProfile(email: emailController.text)),
                             )
                           }
                           else {
@@ -267,7 +267,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                 return AlertDialog(
                                   // Retrieve the text the user has entered by using the
                                   // TextEditingController.
-                                  content: Text("Login failed, try again"),
+                                  content: Text("Invalid user name or password"),
                                   actions: <Widget>[
                                     // usually buttons at the bottom of the dialog
                                     new TextButton(

@@ -65,18 +65,6 @@ class _MyMapState extends State<MyMap> {
                   ),
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.fromLTRB(10,130,5,0),
-              //   child: Align(
-              //     alignment: Alignment.topRight,
-              //     child: FloatingActionButton(
-              //       //onPressed: _onAddMarkerButtonPressed(),
-              //       materialTapTargetSize: MaterialTapTargetSize.padded,
-              //       backgroundColor: Colors.green,
-              //       child: const Icon(Icons.add_location, size: 36.0),
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -95,10 +83,9 @@ class _MyMapState extends State<MyMap> {
         markerId: MarkerId(position.toString()),
         position: position,
         infoWindow: InfoWindow(
-          title: "Really coolER place",
-          snippet: "5 Star Rating",
+          title: "Set as your location",
           onTap: () => {
-            print("hi")
+            Navigator.pop(context, position)
           },
         ),
         icon: BitmapDescriptor.defaultMarker,

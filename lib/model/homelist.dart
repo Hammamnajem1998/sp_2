@@ -1,5 +1,5 @@
 import 'package:temp1/design_course/home_design_course.dart';
-import 'package:temp1/main_page_app/main_page_app_home_screen.dart';
+import 'package:temp1/fitness_app/fitness_app_home_screen.dart';
 import 'package:temp1/hotel_booking/hotel_home_screen.dart';
 import 'package:flutter/widgets.dart';
 

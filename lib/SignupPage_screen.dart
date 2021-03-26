@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:temp1/app_theme.dart';
 import 'package:temp1/main.dart';
 import 'package:http/http.dart';
@@ -16,9 +17,11 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
   AnimationController animationController;
   final emailController = TextEditingController();
-  final nameController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  LatLng userLocation = LatLng(0, 0);
 
   @override
   void initState() {
@@ -34,7 +37,8 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    nameController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
@@ -314,7 +318,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        signupToBackend(nameController.text,emailController.text,passwordController.text).then((signed) => {
+                        signupToBackend(firstNameController.text, lastNameController.text, emailController.text,passwordController.text, confirmPasswordController.text).then((signed) => {
                           if (signed) {
                             showDialog(
                             context: context,
@@ -343,7 +347,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                                 return AlertDialog(
                                   // Retrieve the text the user has entered by using the
                                   // TextEditingController.
-                                  content: Text("This email already used"),
+                                  content: Text("Login Failed"),
                                   actions: <Widget>[
                                     // usually buttons at the bottom of the dialog
                                     new TextButton(
@@ -402,7 +406,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
         children: <Widget>[
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(right: 16, top: 8, bottom: 8),
+              padding: const EdgeInsets.only(right: 10, top: 8, bottom: 8),
               child: Container(
                 decoration: BoxDecoration(
                   //color: HotelAppTheme.buildLightTheme().backgroundColor,
@@ -418,18 +422,17 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(
-                      left: 16, right: 16, top: 4, bottom: 4),
+                      left: 10, right: 16, top: 4, bottom: 4),
                   child: TextField(
                     keyboardType: TextInputType.emailAddress,
-                    controller: nameController,
+                    controller: firstNameController,
                     style: const TextStyle(
                       fontSize: 18,
                     ),
                     //cursorColor: HotelAppTheme.buildLightTheme().primaryColor,
                     decoration: InputDecoration(
-
                       border: InputBorder.none,
-                      hintText: 'User Name...',
+                      hintText: 'First Name...',
                       prefixIcon:Icon(Icons.supervised_user_circle_rounded,size: 30,),
                     ),
                   ),
@@ -437,18 +440,40 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              //color: HotelAppTheme.buildLightTheme().primaryColor,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(38.0),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10, top: 8, bottom: 8),
+              child: Container(
+                decoration: BoxDecoration(
+                  //color: HotelAppTheme.buildLightTheme().backgroundColor,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(38.0),
+                  ),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        offset: const Offset(0, 2),
+                        blurRadius: 8.0),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 10, right: 16, top: 4, bottom: 4),
+                  child: TextField(
+                    keyboardType: TextInputType.emailAddress,
+                    controller: lastNameController,
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                    //cursorColor: HotelAppTheme.buildLightTheme().primaryColor,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Last Name...',
+                      prefixIcon:Icon(Icons.supervised_user_circle_rounded,size: 30,),
+                    ),
+                  ),
+                ),
               ),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Colors.grey.withOpacity(0.4),
-                    offset: const Offset(0, 2),
-                    blurRadius: 8.0),
-              ],
             ),
           ),
         ],
@@ -458,12 +483,12 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
 
   Widget getLocationButtonBarUI(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
       child: Row(
         children: <Widget>[
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(right: 16, top: 10, bottom: 8),
+              padding: const EdgeInsets.only(right: 10, top: 10, bottom: 8),
               child: Container(
                 decoration:  BoxDecoration(
 
@@ -481,15 +506,16 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(
-                      left: 16, right: 16, top: 15, bottom: 15),
+                      left: 16, right: 10, top: 15, bottom: 15),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: (){
-                        Navigator.push(
+                      onTap: () async {
+                        final location = await Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => MyMap()),
                         );
+                        setUserLocation(location);
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                       highlightColor: Colors.transparent,
@@ -527,13 +553,15 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
     );
   }
 
-  Future <bool> signupToBackend(String name, String email, String password) async {
+  Future <bool> signupToBackend(String firstName,String lastName, String email, String password, String confirmPassword) async {
+    if( password != confirmPassword) return false ;
     Response response = await post("https://dont-wait.herokuapp.com/signup",
     // Response response = await post("http://10.0.2.2:5000/signup",
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'username': name ,'email': email, 'password': password}));
+        body: jsonEncode({'first_name': firstName ,'last_name': lastName, 'email': email, 'password': password,
+          "location":{"latitude": this.userLocation.latitude, "longitude":this.userLocation.longitude} }));
 
     var jsonResponse = jsonDecode(response.body);
     if(jsonResponse['error'] != null){
@@ -545,5 +573,8 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
       return true;
     }
     return false;
+  }
+  void setUserLocation(LatLng location) {
+    setState(() => this.userLocation = location);
   }
 }
