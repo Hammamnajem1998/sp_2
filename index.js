@@ -57,10 +57,13 @@ passport.use(new LocalStrategy(
 }));
 
 app.post('/signup', (req, res) =>{
-    const {error, value} = signupSchema.validate({username: req.body.username, email: req.body.email, password: req.body.password});
+    const {error, value} = signupSchema.validate({username: req.body.first_name, email: req.body.email, password: req.body.password});
     if (error) return res.status(400).json({error: error.message});
 
-    const sql1 = `INSERT INTO users (name, email, password, location) VALUES ('${req.body.username}', '${req.body.email}','${req.body.password}', ST_GeomFromText('POINT(${req.body.location.latitude} ${req.body.location.longitude})') );`;
+    const sql1 = `INSERT INTO users (first_name, last_name, email, password, location) 
+    VALUES ('${req.body.first_name}', '${req.body.first_name}', '${req.body.email}','${req.body.password}', 
+    ST_GeomFromText('POINT(${req.body.location.latitude} ${req.body.location.longitude})') );`;
+    
     con.query(sql1, (err, result) =>{
         if (err) return res.status(400).json({error: err.sqlMessage});
         return res.status(200).json({message: "added", id: result.insertId});
