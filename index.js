@@ -61,7 +61,7 @@ app.post('/signup', (req, res) =>{
     if (error) return res.status(400).json({error: error.message});
 
     const sql1 = `INSERT INTO users (first_name, last_name, email, password, location) 
-    VALUES ('${req.body.first_name}', '${req.body.first_name}', '${req.body.email}','${req.body.password}', 
+    VALUES ('${req.body.first_name}', '${req.body.last_name}', '${req.body.email}','${req.body.password}', 
     ST_GeomFromText('POINT(${req.body.location.latitude} ${req.body.location.longitude})') );`;
     
     con.query(sql1, (err, result) =>{
