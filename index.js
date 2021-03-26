@@ -22,22 +22,23 @@ const signinSchema = Joi.object({
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required()
 })
 
-// for mysql local
+// for mySQL
 const mysql = require('mysql');
-var con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "temp_schema"
-});
+// for mysql local
+// var con = mysql.createConnection({
+//     host: "localhost",
+//     user: "root",
+//     password: "root",
+//     database: "temp_schema"
+// });
 
 // for mysql heroku database (cloud)
-// var con = mysql.createConnection({
-//     host: "us-cdbr-east-03.cleardb.com",
-//     user: "bca894223fa92f",
-//     password: "bd33beab",
-//     database: "heroku_5dbb5278d6f4a3f"
-// });
+var con = mysql.createConnection({
+    host: "us-cdbr-east-03.cleardb.com",
+    user: "bca894223fa92f",
+    password: "bd33beab",
+    database: "heroku_5dbb5278d6f4a3f"
+});
 
 
 passport.use(new LocalStrategy(
