@@ -45,8 +45,6 @@ con.on('error', err =>{
     if(err.code === 'PROTOCOL_CONNECTION_LOST'){
         console.log("errrorryyyyyy");
         
-        con.destroy();
-        con.connect();
     }
     else {
         throw err;
@@ -59,7 +57,9 @@ passport.use(new LocalStrategy(
     },
     (email, password, done)=>{
       const sql1 = `select * from users WHERE email= '${email}'; `;
+      con.connect();
       con.query(sql1, (err, user) =>{
+          con.end();
           if (err) return done(err);
           if(!user[0]) return done(null, false, 'Email not found');
           if(password != user[0].password) return done(null, false, 'Incorrect password.');
@@ -76,10 +76,13 @@ app.post('/signup', (req, res) =>{
     VALUES ('${req.body.first_name}', '${req.body.last_name}', '${req.body.email}','${req.body.password}', 
     ST_GeomFromText('POINT(${req.body.location.latitude} ${req.body.location.longitude})') );`;
     
+    con.connect();
     con.query(sql1, (err, result) =>{
+        con.end();
         if (err) return res.status(400).json({error: err.sqlMessage});
         return res.status(200).json({message: "added", id: result.insertId});
     });
+
 });
 //
 app.post('/login', (req, res, next)=> {
@@ -101,7 +104,9 @@ app.get('/', (req, res) =>{
 app.get('/user/:email', (req, res) =>{
 
   const sql1 = `select * from users WHERE email= '${req.params.email}'; `;
+  con.connect();
   con.query(sql1, (err, user) =>{
+      con.end();
       return res.send(user[0]);
   });
 
@@ -115,7 +120,9 @@ app.post('/users', (req, res, next) =>{
     })(req, res, next);
 
     const sql1 = `select * from users WHERE name= '${req.body.name}';`;
+    con.connect();
     con.query(sql1, (err, user) =>{
+        con.end();
         if (err) return res.status(404).send("error");
         if(!user[0]) return res.status(404).send("error");
         return res.send(user[0]);
