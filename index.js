@@ -52,12 +52,12 @@ function handleDisconnect(con) {
 
       console.log('Re-connecting lost connection: ' + err.stack);
   
-      con = mysql.createConnection(mysql.createConnection({
+      con = mysql.createConnection({
         host: "us-cdbr-east-03.cleardb.com",
         user: "bca894223fa92f",
         password: "bd33beab",
         database: "heroku_5dbb5278d6f4a3f"
-        }));
+       });
 
       handleDisconnect(con);
     });
