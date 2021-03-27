@@ -40,7 +40,6 @@ var con = mysql.createConnection({
     database: "heroku_5dbb5278d6f4a3f"
 });
 
-
 function handleDisconnect(con) {
     con.on('error', (err) => {
       if (!err.fatal) {
@@ -58,6 +57,8 @@ function handleDisconnect(con) {
         password: "bd33beab",
         database: "heroku_5dbb5278d6f4a3f"
        });
+    
+       con.connect();
 
       handleDisconnect(con);
     });
