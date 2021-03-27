@@ -49,7 +49,7 @@ passport.use(new LocalStrategy(
     (email, password, done)=>{
       const sql1 = `select * from users WHERE email= '${email}'; `;
       con.connect()
-      con.query(sql1, (err, user) =>{
+      .query(sql1, (err, user) =>{
           if (err) return done(err);
           if(!user[0]) return done(null, false, 'Email not found');
           if(password != user[0].password) return done(null, false, 'Incorrect password.');
@@ -65,11 +65,12 @@ app.post('/signup', (req, res) =>{
     const sql1 = `INSERT INTO users (first_name, last_name, email, password, location) 
     VALUES ('${req.body.first_name}', '${req.body.last_name}', '${req.body.email}','${req.body.password}', 
     ST_GeomFromText('POINT(${req.body.location.latitude} ${req.body.location.longitude})') );`;
-    
-    con.query(sql1, (err, result) =>{
+    con.connect()
+    .query(sql1, (err, result) =>{
         if (err) return res.status(400).json({error: err.sqlMessage});
         return res.status(200).json({message: "added", id: result.insertId});
     });
+    con.end();
 });
 //
 app.post('/login', (req, res, next)=> {
@@ -91,9 +92,11 @@ app.get('/', (req, res) =>{
 app.get('/user/:email', (req, res) =>{
 
   const sql1 = `select * from users WHERE email= '${req.params.email}'; `;
-  con.query(sql1, (err, user) =>{
+  con.connect()
+  .query(sql1, (err, user) =>{
       return res.send(user[0]);
   });
+  con.end();
 
 });
 
@@ -105,12 +108,13 @@ app.post('/users', (req, res, next) =>{
     })(req, res, next);
 
     const sql1 = `select * from users WHERE name= '${req.body.name}';`;
-    con.query(sql1, (err, user) =>{
+    con.connect()
+    .query(sql1, (err, user) =>{
         if (err) return res.status(404).send("error");
         if(!user[0]) return res.status(404).send("error");
         return res.send(user[0]);
     });   
-
+    con.end();
 });
 
 
