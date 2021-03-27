@@ -41,29 +41,27 @@ var con = mysql.createConnection({
 });
 
 function handleDisconnect(con) {
-    con.on('error', (err) => {
-      if (!err.fatal) {
-        return;
-      }
-      if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
-        throw err;
-      }
-
-      console.log('Re-connecting lost connection: ' + err.stack);
-  
-      con = mysql.createConnection({
-        host: "us-cdbr-east-03.cleardb.com",
-        user: "bca894223fa92f",
-        password: "bd33beab",
-        database: "heroku_5dbb5278d6f4a3f"
-       });
-    
-       con.connect();
-
-      handleDisconnect(con);
+    con.on('error', err =>{
+        if(err.code === 'PROTOCOL_CONNECTION_LOST'){
+            console.log("errrorryyyyyy");
+            con = mysql.createConnection({
+                host: "us-cdbr-east-03.cleardb.com",
+                user: "bca894223fa92f",
+                password: "bd33beab",
+                database: "heroku_5dbb5278d6f4a3f"
+            });
+            
+        }
+        else {
+            throw err;
+        }
     });
 }
+
 handleDisconnect(con);
+
+
+
 
 passport.use(new LocalStrategy(
     {   // by default, local strategy uses username and password, we will override with email
@@ -115,10 +113,8 @@ app.get('/user/:email', (req, res) =>{
 
   const sql1 = `select * from users WHERE email= '${req.params.email}'; `;
   con.query(sql1, (err, user) =>{
-        if (err) return res.status(404).send("error");
-        if(!user[0]) return res.status(404).send("error");  
-        return res.send(user[0]);
-    });
+      return res.send(user[0]);
+  });
 
 });
 
