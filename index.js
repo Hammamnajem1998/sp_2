@@ -114,8 +114,10 @@ app.get('/user/:email', (req, res) =>{
 
   const sql1 = `select * from users WHERE email= '${req.params.email}'; `;
   con.query(sql1, (err, user) =>{
-      return res.send(user[0]);
-  });
+        if (err) return res.status(404).send("error");
+        if(!user[0]) return res.status(404).send("error");  
+        return res.send(user[0]);
+    });
 
 });
 
