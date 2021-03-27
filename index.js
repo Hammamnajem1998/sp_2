@@ -79,22 +79,6 @@ function handleError(con) {
 
 handleError(con);
 
-con.on('error', err =>{
-    if(err.code === 'PROTOCOL_CONNECTION_LOST'){
-        console.log("errrorryyyyyy");
-        con = mysql.createConnection({
-            host: "us-cdbr-east-03.cleardb.com",
-            user: "bca894223fa92f",
-            password: "bd33beab",
-            database: "heroku_5dbb5278d6f4a3f"
-        });
-        
-    }
-    else {
-        throw err;
-    }
-});
-
 passport.use(new LocalStrategy(
     {   // by default, local strategy uses username and password, we will override with email
         usernameField : 'email',
