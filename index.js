@@ -48,12 +48,14 @@ passport.use(new LocalStrategy(
     },
     (email, password, done)=>{
       const sql1 = `select * from users WHERE email= '${email}'; `;
+      con.connect()
       con.query(sql1, (err, user) =>{
           if (err) return done(err);
           if(!user[0]) return done(null, false, 'Email not found');
           if(password != user[0].password) return done(null, false, 'Incorrect password.');
           return done(null, user[0]);
-      });   
+      });
+      con.end();   
 }));
 
 app.post('/signup', (req, res) =>{
