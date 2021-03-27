@@ -60,7 +60,6 @@ function handleDisconnect(con) {
         }));
 
       handleDisconnect(con);
-      con.connect();
     });
 }
 handleDisconnect(con);
