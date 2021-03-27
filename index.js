@@ -41,15 +41,30 @@ var con = mysql.createConnection({
 });
 
 
-con.on('error', err =>{
-    if(err.code === 'PROTOCOL_CONNECTION_LOST'){
-        console.log("errrorryyyyyy");
-        
-    }
-    else {
+function handleDisconnect(con) {
+    con.on('error', (err) => {
+      if (!err.fatal) {
+        return;
+      }
+      if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
         throw err;
-    }
-})
+      }
+
+      console.log('Re-connecting lost connection: ' + err.stack);
+  
+      con = mysql.createConnection(mysql.createConnection({
+        host: "us-cdbr-east-03.cleardb.com",
+        user: "bca894223fa92f",
+        password: "bd33beab",
+        database: "heroku_5dbb5278d6f4a3f"
+        }));
+
+      handleDisconnect(con);
+      con.connect();
+    });
+}
+handleDisconnect(con);
+
 passport.use(new LocalStrategy(
     {   // by default, local strategy uses username and password, we will override with email
         usernameField : 'email',
@@ -57,9 +72,7 @@ passport.use(new LocalStrategy(
     },
     (email, password, done)=>{
       const sql1 = `select * from users WHERE email= '${email}'; `;
-      con.connect();
       con.query(sql1, (err, user) =>{
-          con.end();
           if (err) return done(err);
           if(!user[0]) return done(null, false, 'Email not found');
           if(password != user[0].password) return done(null, false, 'Incorrect password.');
@@ -76,13 +89,10 @@ app.post('/signup', (req, res) =>{
     VALUES ('${req.body.first_name}', '${req.body.last_name}', '${req.body.email}','${req.body.password}', 
     ST_GeomFromText('POINT(${req.body.location.latitude} ${req.body.location.longitude})') );`;
     
-    con.connect();
     con.query(sql1, (err, result) =>{
-        con.end();
         if (err) return res.status(400).json({error: err.sqlMessage});
         return res.status(200).json({message: "added", id: result.insertId});
     });
-
 });
 //
 app.post('/login', (req, res, next)=> {
@@ -104,9 +114,7 @@ app.get('/', (req, res) =>{
 app.get('/user/:email', (req, res) =>{
 
   const sql1 = `select * from users WHERE email= '${req.params.email}'; `;
-  con.connect();
   con.query(sql1, (err, user) =>{
-      con.end();
       return res.send(user[0]);
   });
 
@@ -120,9 +128,7 @@ app.post('/users', (req, res, next) =>{
     })(req, res, next);
 
     const sql1 = `select * from users WHERE name= '${req.body.name}';`;
-    con.connect();
     con.query(sql1, (err, user) =>{
-        con.end();
         if (err) return res.status(404).send("error");
         if(!user[0]) return res.status(404).send("error");
         return res.send(user[0]);
