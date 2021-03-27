@@ -43,13 +43,7 @@ var con = mysql.createConnection({
 
 con.on('error', err =>{
     if(err.code === 'PROTOCOL_CONNECTION_LOST'){
-        console.log("erroryyyyyyyyyyyyyyyyyyyy");
-        con = mysql.createConnection({
-            host: "us-cdbr-east-03.cleardb.com",
-            user: "bca894223fa92f",
-            password: "bd33beab",
-            database: "heroku_5dbb5278d6f4a3f"
-        });
+        con.connect();
     }
     else {
         throw err;
