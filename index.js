@@ -166,10 +166,10 @@ app.post('/update', (req, res) =>{
     else if(req.body.password != null){
         sql1 = `UPDATE users SET password = '${req.body.password}' WHERE email = '${req.body.email}'`;
     }
-    
+
     con.query(sql1, (err, result) =>{
         if (err) return res.status(400).json({error: err.sqlMessage});
-        return res.status(200).json({message: "updated", id: result.insertId});
+        return res.status(200).json({message: "updated", id: result.id});
     });
 });
 
