@@ -155,21 +155,18 @@ app.post('/update', (req, res) =>{
 
     var sql1 = ``;
     if(req.body.firstName != null){
-        sql1 = `UPDATE users SET first_name = '${req.body.firstName}' WHERE email = '${req.body.email}'`;
+        sql1 = `UPDATE users SET first_name = '${req.body.firstName}' WHERE email = '${req.body.email}';`;
     }
     else if(req.body.lastName != null){
-        sql1 = `UPDATE users SET last_name = '${req.body.lastName}' WHERE email = '${req.body.email}'`;
-    }
-    else if(req.body.email != null){
-        sql1 = `UPDATE users SET email = '${req.body.email}' WHERE email = '${req.body.email}'`;
+        sql1 = `UPDATE users SET last_name = '${req.body.lastName}' WHERE email = '${req.body.email}';`;
     }
     else if(req.body.password != null){
-        sql1 = `UPDATE users SET password = '${req.body.password}' WHERE email = '${req.body.email}'`;
+        sql1 = `UPDATE users SET password = '${req.body.password}' WHERE email = '${req.body.email}';`;
     }
 
     con.query(sql1, (err, result) =>{
         if (err) return res.status(400).json({error: err.sqlMessage});
-        return res.status(200).json({message: "updated", id: result.id});
+        return res.status(200).json({message: "updated", result: result});
     });
 });
 
