@@ -321,7 +321,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   Future <bool> loginToBackend(String email, String password) async {
     Response response = await post("https://dont-wait.herokuapp.com/login",
-    // Response response = await post("http://10.0.2.2:5000/login",
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

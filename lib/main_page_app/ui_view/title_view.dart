@@ -1,5 +1,9 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart';
 import 'package:temp1/main_page_app/main_page_app_theme.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 class TitleView extends StatelessWidget {
   final String titleTxt;
@@ -7,13 +11,16 @@ class TitleView extends StatelessWidget {
   final AnimationController animationController;
   final Animation animation;
 
-   const TitleView(
+  final fieldController = TextEditingController();
+
+   TitleView(
       {Key key,
       this.titleTxt: "",
       this.subTxt: "",
       this.animationController,
-      this.animation})
+      this.animation,})
       : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +50,34 @@ class TitleView extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Expanded(
+                      child: TextField(
+                        controller: this.fieldController,
+                        keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          //fontStyle: FontStyle.italic,
+                        ),
+                        //cursorColor: HotelAppTheme.buildLightTheme().primaryColor,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: subTxt,
+                        ),
+                      ),
+                    ),
+
                     InkWell(
                       highlightColor: Colors.transparent,
                       borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                      onTap: () {},
+                      onTap: () {
+                        changeFieldState(this.titleTxt);
+                      },
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: Row(
                           children: <Widget>[
                             Text(
-                              subTxt,
+                              'Change',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontFamily: MainPageAppTheme.fontName,
@@ -74,5 +99,42 @@ class TitleView extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future <bool> changeFieldState(String condition) async {
+    String condition_str = condition;
+
+    if (condition == 'First Name:'){
+    }
+    else if(condition == 'Last Name:'){
+    }
+    else if (condition == 'Location:'){
+    }
+    else if (condition == 'Email:'){
+
+    }
+    else if (condition == 'Password:'){
+    }
+    else {
+      print('nothing');
+    }
+
+    return true;
+    // Response response = await post("https://dont-wait.herokuapp.com/login",
+    //     headers: <String, String>{
+    //       'Content-Type': 'application/json; charset=UTF-8',
+    //     },
+    //     body: jsonEncode({'email': email, 'password': password}));
+    //
+    // var jsonResponse = jsonDecode(response.body);
+    // if(jsonResponse['error'] != null){
+    //   // print(jsonResponse['error']);
+    //   return false;
+    // }
+    // else if (jsonResponse['message'] != null){
+    //   // print (jsonResponse['message']);
+    //   return true;
+    // }
+    // return false;
   }
 }
