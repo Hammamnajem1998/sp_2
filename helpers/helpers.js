@@ -1,5 +1,5 @@
 const util = require('util')
-const gc = require('./config/')
+const gc = require('../config')
 const bucket = gc.bucket('don-t-wait-project.appspot.com') // should be your bucket name
 
 /**
@@ -11,7 +11,7 @@ const bucket = gc.bucket('don-t-wait-project.appspot.com') // should be your buc
  *   "originalname" and "buffer" as keys
  */
 
-export const uploadImage = (file) => new Promise((resolve, reject) => {
+module.exports=   uploadImage = (file) => new Promise((resolve, reject) => {
   const { originalname, buffer } = file
 
   const blob = bucket.file(originalname.replace(/ /g, "_"))
