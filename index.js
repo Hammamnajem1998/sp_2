@@ -39,6 +39,23 @@ var con = mysql.createConnection({
     password: "bd33beab",
     database: "heroku_5dbb5278d6f4a3f"
 });
+// for cloud storage 
+const uploadImage = require('./helpers/helpers')
+const bodyParser = require('body-parser')
+const multer = require('multer')
+
+const multerMid = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+      fileSize: 5 * 1024 * 1024,
+    },
+})
+
+app.disable('x-powered-by')
+app.use(multerMid.single('file'))
+app.use(express.json())
+app.use(express.urlencoded({extended: false}))
+
 
 // function handleDisconnect(con) {
 //     con.on('error', err =>{
@@ -170,6 +187,29 @@ app.post('/update', (req, res) =>{
     });
 });
 
+app.post('/uploads', async (req, res, next) => {
+    try {
+      const myFile = req.file
+      const imageUrl = await uploadImage(myFile)
+      res
+        .status(200)
+        .json({
+          message: "Upload was successful",
+          data: imageUrl
+        })
+    } catch (error) {
+      next(error)
+    }
+})
+
+app.use((err, req, res, next) => {
+  res.status(500).json({
+    error: err,
+    message: 'Internal server error!',
+  })
+  next()
+})
+  
 
 const port = process.env.PORT || 3000 ;
 app.listen(port,() => console.log(`listing on port ${port}...`));
