@@ -40,9 +40,10 @@ var con = mysql.createConnection({
     database: "heroku_5dbb5278d6f4a3f"
 });
 // for cloud storage 
-const uploadImage = require('./helpers/helpers')
+
 const bodyParser = require('body-parser')
 const multer = require('multer')
+const uploadImage = require('./helpers/helpers')
 
 const multerMid = multer({
     storage: multer.memoryStorage(),
@@ -200,14 +201,14 @@ app.post('/uploads', async (req, res, next) => {
     } catch (error) {
       next(error)
     }
-})
-
+  })
+  
 app.use((err, req, res, next) => {
   res.status(500).json({
-    error: err,
-    message: 'Internal server error!',
-  })
-  next()
+  error: err,
+  message: 'Internal server error!',
+})
+next()
 })
   
 
