@@ -189,27 +189,26 @@ app.post('/update', (req, res) =>{
 });
 
 app.post('/uploads', async (req, res, next) => {
+    
     try {
-      const myFile = req.file
-      const imageUrl = await uploadImage(myFile)
-      res
-        .status(200)
-        .json({
-          message: "Upload was successful",
-          data: imageUrl
-        })
+      const myFile = req.file;
+      const imageUrl = await uploadImage(myFile);
+      const sql1 = `UPDATE users SET photo = '${imageUrl}' WHERE email = '${req.body.email}';`;
+      con.query(sql1);
+
+      res.status(200).json({message: "Upload was successful",data: imageUrl});
     } catch (error) {
-      next(error)
+      next(error);
     }
-  })
+});
   
 app.use((err, req, res, next) => {
   res.status(500).json({
   error: err,
   message: 'Internal server error!',
 })
-next()
-})
+  next()
+});
   
 
 const port = process.env.PORT || 3000 ;
