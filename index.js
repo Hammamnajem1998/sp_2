@@ -193,7 +193,7 @@ app.post('/uploads', async (req, res, next) => {
     try {
       const myFile = req.file;
       const imageUrl = await uploadImage(myFile);
-      const sql1 = `UPDATE users SET photo = '${imageUrl}' WHERE email = '${req.body.email}';`;
+      const sql1 = `UPDATE users SET photo = '${imageUrl}' WHERE email = '${req.email}';`;
       con.query(sql1);
 
       res.status(200).json({message: "Upload was successful",data: imageUrl});
