@@ -21,7 +21,6 @@ const bucket = gc.bucket('don-t-wait-project.appspot.com') // should be your buc
     blobStream.on('finish', () => {
         console.log();
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
-      console.log(publicUrl);
       resolve(publicUrl)
     })
     .on('error', () => {
