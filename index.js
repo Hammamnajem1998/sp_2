@@ -189,14 +189,16 @@ app.post('/update', (req, res) =>{
 });
 
 app.post('/uploads', async (req, res, next) => {
-    
-    try {
-      const myFile = req.file;
-      const email = JSON.parse(JSON.stringify(req.body)).email; 
-      const imageUrl = await uploadImage(myFile);
-      const sql1 = `UPDATE users SET photo = '${imageUrl}' WHERE email = '${email}';`;
-      con.query(sql1);
 
+    console.log(req.body);
+    try {
+      const myFile = req.body.file;
+      console.log(req.body.file);
+    //   const email = JSON.parse(JSON.stringify(req.body)).email; 
+    //   const imageUrl = await uploadImage(myFile);
+    //   const sql1 = `UPDATE users SET photo = '${imageUrl}' WHERE email = '${email}';`;
+    //   con.query(sql1);
+    
       res.status(200).json({message: "Upload was successful",data: imageUrl});
     } catch (error) {
       next(error);
