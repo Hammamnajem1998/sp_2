@@ -4,7 +4,6 @@ import 'package:http/http.dart';
 import 'package:temp1/main_page_app/main_page_app_theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:temp1/choose_image.dart';
 
 class TitleView extends StatelessWidget {
   final String titleTxt;
@@ -74,9 +73,6 @@ class TitleView extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(4.0)),
                       onTap: () {
                         changeFieldState(this.titleTxt);
-                        if(this.titleTxt == 'photo:'){
-                          goToChangeImage(context);
-                        }
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8),
@@ -122,10 +118,6 @@ class TitleView extends StatelessWidget {
     else if (condition == 'Password:'){
       toUpdate = 'password';
     }
-    else if (condition == 'photo:'){
-
-      return true;
-    }
     else {
       print('nothing');
     }
@@ -147,12 +139,5 @@ class TitleView extends StatelessWidget {
     }
     return false;
 
-  }
-
-  void goToChangeImage(BuildContext context) async {
-    final image = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UploadImageDemo()),
-    );
   }
 }

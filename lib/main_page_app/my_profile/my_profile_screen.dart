@@ -100,24 +100,12 @@ class _MyProfileScreenState extends State<MyProfileScreen>
         MediterranesnDietView(
           animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
               parent: widget.animationController,
-              curve:
-                  Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
+              curve: Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
           animationController: widget.animationController,
+          imageURL: this.photoURL,
+          email: widget.email,
         ),
       );
-
-    listViews.add(
-      TitleView(
-        titleTxt: 'photo:',
-        email: widget.email,
-        subTxt: '',
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-            Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
 
       listViews.add(
         MealsListView(
@@ -239,7 +227,6 @@ class _MyProfileScreenState extends State<MyProfileScreen>
     this.password = jsonResponse['password'];
     this.location = LatLng(jsonResponse['location']['x'], jsonResponse['location']['y']);
     this.photoURL = jsonResponse['photo'];
-
     addAllListData();
     return true;
   }

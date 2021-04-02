@@ -1,9 +1,12 @@
+import 'dart:convert';
+
+import 'package:http/http.dart';
 import 'package:temp1/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class HomeDrawerShopsProfile extends StatefulWidget {
-  const HomeDrawerShopsProfile({Key key, this.screenIndex, this.iconAnimationController, this.callBackIndex}) : super(key: key);
-
+  const HomeDrawerShopsProfile({Key key, this.screenIndex, this.iconAnimationController, this.callBackIndex, this.email}) : super(key: key);
+  final String email;
   final AnimationController iconAnimationController;
   final DrawerIndexShopsProfile screenIndex;
   final Function(DrawerIndexShopsProfile) callBackIndex;
@@ -14,9 +17,13 @@ class HomeDrawerShopsProfile extends StatefulWidget {
 
 class _HomeDrawerShopsProfileState extends State<HomeDrawerShopsProfile> {
   List<DrawerList> drawerList;
+  String userImageURL;
+  String firstName = '';
+  String lastName = '';
   @override
   void initState() {
     setDrawerListArray();
+    getImageURL(widget.email);
     super.initState();
   }
 
@@ -38,8 +45,6 @@ class _HomeDrawerShopsProfileState extends State<HomeDrawerShopsProfile> {
         labelName: 'FeedBack',
         icon: Icon(Icons.help),
       ),
-
-
     ];
   }
 
@@ -81,7 +86,7 @@ class _HomeDrawerShopsProfileState extends State<HomeDrawerShopsProfile> {
                             ),
                             child: ClipRRect(
                               borderRadius: const BorderRadius.all(Radius.circular(60.0)),
-                              child: Image.asset('assets/images/userImage.png'),
+                              child: this.userImageURL == null ? Image.asset('assets/images/userImage.png'): Image.network(this.userImageURL) ,
                             ),
                           ),
                         ),
@@ -91,7 +96,7 @@ class _HomeDrawerShopsProfileState extends State<HomeDrawerShopsProfile> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8, left: 4),
                     child: Text(
-                      'Hammam Najem',
+                      '$firstName $lastName',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: AppTheme.grey,
@@ -141,7 +146,9 @@ class _HomeDrawerShopsProfileState extends State<HomeDrawerShopsProfile> {
                   Icons.power_settings_new,
                   color: Colors.red,
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context, );
+                },
               ),
               SizedBox(
                 height: MediaQuery.of(context).padding.bottom,
@@ -243,6 +250,19 @@ class _HomeDrawerShopsProfileState extends State<HomeDrawerShopsProfile> {
 
   Future<void> navigationtoScreen(DrawerIndexShopsProfile indexScreen) async {
     widget.callBackIndex(indexScreen);
+  }
+
+  void getImageURL (String email) async{
+    String userEmail = email;
+    Response response = await get("https://dont-wait.herokuapp.com/user/$userEmail",
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    var jsonResponse = jsonDecode(response.body);
+    this.firstName = jsonResponse['first_name'];
+    this.lastName = jsonResponse['last_name'];
+    this.userImageURL = jsonResponse['photo'];
   }
 }
 

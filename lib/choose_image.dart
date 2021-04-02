@@ -1,17 +1,20 @@
 import 'dart:typed_data';
+import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'dart:convert';
+import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:temp1/api.dart';
 
+import 'app_theme.dart';
+
 class UploadImageDemo extends StatefulWidget {
-  UploadImageDemo() : super();
+  final String email;
 
-  final String title = "Upload Image Demo";
-
+  UploadImageDemo({Key key, @required this.email,}) : super(key: key);
   @override
   UploadImageDemoState createState() => UploadImageDemoState();
 }
@@ -38,8 +41,8 @@ class UploadImageDemoState extends State<UploadImageDemo> {
     setState(() {
       if(file != null){
         file.then((image) => {
-          print(image.path),
-          print(image.path.split('/').last),
+          // print(image.path),
+          // print(image.path.split('/').last),
           _image = File(image.path),
           _imageBytes = _image.readAsBytesSync(),
         });
@@ -62,10 +65,13 @@ class UploadImageDemoState extends State<UploadImageDemo> {
       setStatus(errMessage);
       return;
     }
-    String fileName = tmpFile.path.split('/').last;
+    String fileType = tmpFile.path.split('.').last;
+    var uuid = Uuid();
+    String fileName =  uuid.v1().toString() + '.' + fileType ;
     final response = await api.save(fileName, _imageBytes);
-    print(response.downloadLink);
+    updateImageToBackend(widget.email, response.downloadLink.toString());
     setStatus('Done...');
+    Navigator.pop(context, );
   }
 
 
@@ -102,7 +108,14 @@ class UploadImageDemoState extends State<UploadImageDemo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Upload Image Demo"),
+        title: Text("Set New Image",
+          style: TextStyle(
+            fontSize: 22,
+            color: AppTheme.darkText,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        backgroundColor: AppTheme.white,
       ),
       body: Container(
         padding: EdgeInsets.all(30.0),
@@ -141,6 +154,50 @@ class UploadImageDemoState extends State<UploadImageDemo> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Future <bool> updateImageToBackend(String email, String imageURL) async {
+    Response response = await post("https://dont-wait.herokuapp.com/image",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'email': email, 'url': imageURL}));
+
+    var jsonResponse = jsonDecode(response.body);
+    if(jsonResponse['error'] != null){
+      // print(jsonResponse['error']);
+      return false;
+    }
+    else if (jsonResponse['message'] != null){
+      // print (jsonResponse['message']);
+      return true;
+    }
+    return false;
+  }
+  Widget appBar() {
+    return SizedBox(
+      height: AppBar().preferredSize.height,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  'Sign UP Page',
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: AppTheme.darkText,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

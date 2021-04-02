@@ -1,14 +1,23 @@
 import 'package:temp1/main_page_app/main_page_app_theme.dart';
 import 'package:temp1/main.dart';
 import 'package:flutter/material.dart';
+import 'package:temp1/choose_image.dart';
+
 import 'dart:math' as math;
 
 class MediterranesnDietView extends StatelessWidget {
   final AnimationController animationController;
   final Animation animation;
+  final String imageURL;
+  final String email;
 
-  const MediterranesnDietView(
-      {Key key, this.animationController, this.animation})
+  MediterranesnDietView(
+      {
+        Key key,
+        this.animationController,
+        this.animation,
+        this.imageURL:'',
+        this.email: ''})
       : super(key: key);
 
   @override
@@ -24,26 +33,37 @@ class MediterranesnDietView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(
                   left: 24, right: 24, top: 16, bottom: 18),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: MainPageAppTheme.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(60.0)),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                        color: MainPageAppTheme.grey.withOpacity(0.2),
-                        offset: Offset(1.1, 1.1),
-                        blurRadius: 10.0),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(60.0)),
-                  child: Image.asset('assets/images/userImage.png'),
+              child: InkWell(
+                onTap: (){
+                  goToChangeImage(context);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: MainPageAppTheme.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(60.0)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: MainPageAppTheme.grey.withOpacity(0.2),
+                          offset: Offset(1.1, 1.1),
+                          blurRadius: 10.0),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(60.0)),
+                    child: (this.imageURL != null) ? Image.network(this.imageURL) : Image.asset('assets/images/userImage.png'),
+                  ),
                 ),
               ),
             ),
           ),
         );
       },
+    );
+  }
+  void goToChangeImage(BuildContext context) async {
+    final image = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UploadImageDemo(email: this.email )),
     );
   }
 }

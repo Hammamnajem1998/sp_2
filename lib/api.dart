@@ -33,7 +33,14 @@ class CloudApi {
           'timestamp': '$timeStamp',
         },
     ));
+  }
 
+  Future<ObjectInfo> delete(String name) async{
+    if(_client == null) _client = await auth.clientViaServiceAccount(_credentials, Storage.SCOPES);
+
+    var storage = Storage(_client, 'don-t-wait-project');
+    var bucket = storage.bucket('don-t-wait-project.appspot.com');
+    return await bucket.delete(name);
   }
 
 }

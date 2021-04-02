@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:http/http.dart';
 import 'package:temp1/app_theme.dart';
 import 'package:temp1/custom_drawer/drawer_user_controller_signUp.dart';
 // import 'package:temp1/custom_drawer/home_drawer.dart';
@@ -29,7 +32,6 @@ class NavigationShopsProfile extends StatefulWidget {
 class _NavigationShopsProfileState extends State<NavigationShopsProfile> {
   Widget screenView;
   DrawerIndexShopsProfile drawerIndex;
-
   @override
   void initState() {
     drawerIndex = DrawerIndexShopsProfile.userProfile;
@@ -49,6 +51,7 @@ class _NavigationShopsProfileState extends State<NavigationShopsProfile> {
           body: DrawerUserControllerShopslProfile(
             screenIndex: drawerIndex,
             drawerWidth: MediaQuery.of(context).size.width * 0.75,
+            email: widget.email,
             onDrawerCall: (DrawerIndexShopsProfile drawerIndexdata) {
               changeIndex(drawerIndexdata);
               //callback from drawer for replace screen as user need with passing DrawerIndex(Enum index)
