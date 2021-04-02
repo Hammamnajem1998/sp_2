@@ -188,6 +188,17 @@ app.post('/update', (req, res) =>{
     });
 });
 
+// update image
+app.post('/image', (req, res) =>{
+    if(req.body.url == null || req.body.email == null ) return res.status(400).json({error: 'bad request'});
+
+    var sql1 = `UPDATE users SET photo = '${req.body.url}' WHERE email = '${req.body.email}';`;
+    con.query(sql1, (err, result) =>{
+        if (err) return res.status(400).json({error: err.sqlMessage});
+        return res.status(200).json({message: "updated", result: result});
+    });
+});
+
 app.post('/uploads', async (req, res, next) => {
 
     console.log(req);
@@ -203,7 +214,6 @@ app.post('/uploads', async (req, res, next) => {
       next(error);
     }
 });
-  
 app.use((err, req, res, next) => {
   res.status(500).json({
   error: err,
