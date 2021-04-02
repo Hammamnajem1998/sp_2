@@ -28,5 +28,4 @@ const bucket = gc.bucket('don-t-wait-project.appspot.com') // should be your buc
     })
     .end(buffer)
   })
-
   module.exports = uploadImage;
