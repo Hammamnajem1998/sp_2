@@ -4,9 +4,11 @@ import 'package:http/http.dart';
 import 'package:temp1/main_page_app/main_page_app_theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:temp1/choose_image.dart';
 
 class TitleView extends StatelessWidget {
   final String titleTxt;
+  final String email;
   final String subTxt;
   final AnimationController animationController;
   final Animation animation;
@@ -16,6 +18,7 @@ class TitleView extends StatelessWidget {
    TitleView(
       {Key key,
       this.titleTxt: "",
+      this.email:"",
       this.subTxt: "",
       this.animationController,
       this.animation,})
@@ -71,6 +74,9 @@ class TitleView extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(4.0)),
                       onTap: () {
                         changeFieldState(this.titleTxt);
+                        if(this.titleTxt == 'photo:'){
+                          goToChangeImage(context);
+                        }
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8),
@@ -102,39 +108,51 @@ class TitleView extends StatelessWidget {
   }
 
   Future <bool> changeFieldState(String condition) async {
-    String condition_str = condition;
+    String toUpdate;
 
     if (condition == 'First Name:'){
+      toUpdate = 'firstName';
     }
     else if(condition == 'Last Name:'){
+      toUpdate = 'lastName';
     }
     else if (condition == 'Location:'){
-    }
-    else if (condition == 'Email:'){
-
+      toUpdate = 'location';
     }
     else if (condition == 'Password:'){
+      toUpdate = 'password';
+    }
+    else if (condition == 'photo:'){
+
+      return true;
     }
     else {
       print('nothing');
     }
 
-    return true;
-    // Response response = await post("https://dont-wait.herokuapp.com/login",
-    //     headers: <String, String>{
-    //       'Content-Type': 'application/json; charset=UTF-8',
-    //     },
-    //     body: jsonEncode({'email': email, 'password': password}));
-    //
-    // var jsonResponse = jsonDecode(response.body);
-    // if(jsonResponse['error'] != null){
-    //   // print(jsonResponse['error']);
-    //   return false;
-    // }
-    // else if (jsonResponse['message'] != null){
-    //   // print (jsonResponse['message']);
-    //   return true;
-    // }
-    // return false;
+    Response response = await post("https://dont-wait.herokuapp.com/update",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'email': email, toUpdate: fieldController.text}));
+
+    var jsonResponse = jsonDecode(response.body);
+    if(jsonResponse['error'] != null){
+      // print(jsonResponse['error']);
+      return false;
+    }
+    else if (jsonResponse['message'] != null){
+      // print (jsonResponse['message']);
+      return true;
+    }
+    return false;
+
+  }
+
+  void goToChangeImage(BuildContext context) async {
+    final image = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UploadImageDemo()),
+    );
   }
 }

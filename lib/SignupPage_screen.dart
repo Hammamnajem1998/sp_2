@@ -491,8 +491,6 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
               padding: const EdgeInsets.only(right: 10, top: 10, bottom: 8),
               child: Container(
                 decoration:  BoxDecoration(
-
-
                   //color: HotelAppTheme.buildLightTheme().backgroundColor,
                   borderRadius: const BorderRadius.all(
                     Radius.circular(38.0),

@@ -253,7 +253,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        loginToBackend(emailController.text,passwordController.text).then((authorized) => {
+                        loginToBackend(emailController.text, passwordController.text).then((authorized) => {
                           if (authorized) {
                             Navigator.push(
                             context,

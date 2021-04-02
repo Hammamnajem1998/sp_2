@@ -25,7 +25,7 @@ class MyProfileScreen extends StatefulWidget {
 class _MyProfileScreenState extends State<MyProfileScreen>
     with TickerProviderStateMixin {
 
-  String firstName = '', lastName = '', password = '';
+  String firstName = '', lastName = '', password = '', photoURL = '';
   LatLng location = LatLng(0, 0);
 
   Animation<double> topBarAnimation;
@@ -86,6 +86,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       listViews.add(
         TitleView(
           titleTxt: 'Last Name:',
+          email: widget.email,
           subTxt: lastName,
           animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
               parent: widget.animationController,
@@ -105,6 +106,19 @@ class _MyProfileScreenState extends State<MyProfileScreen>
         ),
       );
 
+    listViews.add(
+      TitleView(
+        titleTxt: 'photo:',
+        email: widget.email,
+        subTxt: '',
+        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: widget.animationController,
+            curve:
+            Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
+        animationController: widget.animationController,
+      ),
+    );
+
       listViews.add(
         MealsListView(
           mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -119,6 +133,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       listViews.add(
         TitleView(
           titleTxt: 'Email:',
+          email: widget.email,
           subTxt: widget.email,
           animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
               parent: widget.animationController,
@@ -131,6 +146,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       listViews.add(
         TitleView(
           titleTxt: 'Password:',
+          email: widget.email,
           subTxt: password,
           animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
               parent: widget.animationController,
@@ -143,6 +159,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       listViews.add(
         TitleView(
           titleTxt: 'Location:',
+          email: widget.email,
           subTxt: 'Change',
           animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
               parent: widget.animationController,
@@ -208,7 +225,6 @@ class _MyProfileScreenState extends State<MyProfileScreen>
   }
 
   Future<bool> getData() async {
-    //await Future<dynamic>.delayed(const Duration(milliseconds: 50));
 
     String userEmail = widget.email;
     Response response = await get("https://dont-wait.herokuapp.com/user/$userEmail",
@@ -222,6 +238,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
     this.lastName = jsonResponse['last_name'];
     this.password = jsonResponse['password'];
     this.location = LatLng(jsonResponse['location']['x'], jsonResponse['location']['y']);
+    this.photoURL = jsonResponse['photo'];
 
     addAllListData();
     return true;
@@ -256,9 +273,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
           return ListView.builder(
             controller: scrollController,
             padding: EdgeInsets.only(
-              top: AppBar().preferredSize.height +
-                  MediaQuery.of(context).padding.top +
-                  24,
+              top: AppBar().preferredSize.height + MediaQuery.of(context).padding.top + 24,
               bottom: 62 + MediaQuery.of(context).padding.bottom,
             ),
             itemCount: listViews.length,
