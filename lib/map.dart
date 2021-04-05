@@ -43,11 +43,6 @@ class _MyMapState extends State<MyMap> {
                 onMapCreated: _onMapCreated,
                 myLocationEnabled: true,
                 myLocationButtonEnabled: true,
-                indoorViewEnabled: true,
-                zoomControlsEnabled: true,
-                compassEnabled: true,
-                mapToolbarEnabled: true,
-                scrollGesturesEnabled: true,
                 onLongPress:(positionPresses) => {
                   _onAddMarkerButtonPressed(positionPresses)
                 },

@@ -1,5 +1,4 @@
 import 'package:temp1/main_page_app/main_page_app_theme.dart';
-import 'package:temp1/main.dart';
 import 'package:flutter/material.dart';
 import 'package:temp1/choose_image.dart';
 
@@ -63,7 +62,7 @@ class MediterranesnDietView extends StatelessWidget {
   void goToChangeImage(BuildContext context) async {
     final image = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => UploadImageDemo(email: this.email )),
+      MaterialPageRoute(builder: (context) => UploadImageDemo(email: this.email, isForShop: false )),
     );
   }
 }

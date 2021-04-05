@@ -13,8 +13,10 @@ import 'app_theme.dart';
 
 class UploadImageDemo extends StatefulWidget {
   final String email;
+  final String shopNAme;
+  final bool isForShop ;
 
-  UploadImageDemo({Key key, @required this.email,}) : super(key: key);
+  UploadImageDemo({Key key, @required this.email, this.isForShop, this.shopNAme}) : super(key: key);
   @override
   UploadImageDemoState createState() => UploadImageDemoState();
 }
@@ -69,11 +71,11 @@ class UploadImageDemoState extends State<UploadImageDemo> {
     var uuid = Uuid();
     String fileName =  uuid.v1().toString() + '.' + fileType ;
     final response = await api.save(fileName, _imageBytes);
-    updateImageToBackend(widget.email, response.downloadLink.toString());
+    if (widget.isForShop) updateShopsImageToBackend(widget.email, widget.shopNAme, response.downloadLink.toString());
+    else updateImageToBackend(widget.email, response.downloadLink.toString());
     setStatus('Done...');
-    Navigator.pop(context, );
+    Navigator.pop(context,);
   }
-
 
   Widget showImage() {
     return FutureBuilder<File>(
@@ -176,6 +178,26 @@ class UploadImageDemoState extends State<UploadImageDemo> {
     }
     return false;
   }
+  Future <bool> updateShopsImageToBackend(String email,String shopName, String imageURL) async {
+    Response response = await post("https://dont-wait.herokuapp.com/image",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'email': email,'shopName': shopName, 'url': imageURL}));
+
+    var jsonResponse = jsonDecode(response.body);
+    if(jsonResponse['error'] != null){
+      // print(jsonResponse['error']);
+      return false;
+    }
+    else if (jsonResponse['message'] != null){
+      // print (jsonResponse['message']);
+      return true;
+    }
+    return false;
+  }
+
+
   Widget appBar() {
     return SizedBox(
       height: AppBar().preferredSize.height,

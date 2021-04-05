@@ -5,6 +5,7 @@ import 'package:temp1/backed_interface/user_interface.dart';
 import 'navigation_Shops_profile.dart';
 import 'dart:convert';
 import './backed_interface/user_interface.dart';
+import 'package:temp1/slider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key key}) : super(key: key);
@@ -17,6 +18,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   AnimationController animationController;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  double _value =10 ;
 
   @override
   void initState() {
@@ -339,3 +341,4 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 
 }
+

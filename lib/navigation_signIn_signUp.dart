@@ -9,6 +9,7 @@ import 'package:temp1/SignupPage_screen.dart';
 import 'package:temp1/invite_friend_screen.dart';
 import 'package:flutter/material.dart';
 
+
 class NavigationSignInSignUp extends StatefulWidget {
   @override
   _NavigationSignInSignUp createState() => _NavigationSignInSignUp();
@@ -21,7 +22,7 @@ class _NavigationSignInSignUp extends State<NavigationSignInSignUp> {
   @override
   void initState() {
     drawerIndex = DrawerIndexSignUp.SignIn;
-    screenView = const LoginPage();
+    screenView =  LoginPage();
     super.initState();
   }
 
@@ -54,7 +55,7 @@ class _NavigationSignInSignUp extends State<NavigationSignInSignUp> {
       drawerIndex = drawerIndexdata;
       if (drawerIndex == DrawerIndexSignUp.SignIn) {
         setState(() {
-          screenView = const LoginPage();
+          screenView =  LoginPage();
         });
       } else if (drawerIndex == DrawerIndexSignUp.SignUp) {
         setState(() {

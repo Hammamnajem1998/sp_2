@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'navigation_home_screen.dart';
 import 'navigation_signIn_signUp.dart';
+import 'package:temp1/login_Page.dart';
+
 
 
 void main() async {
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
         textTheme: AppTheme.textTheme,
         platform: TargetPlatform.iOS,
       ),
-      home: NavigationSignInSignUp(),
+      home: LoginPage(),
     );
   }
 }
