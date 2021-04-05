@@ -4,11 +4,13 @@ import 'package:temp1/choose_image.dart';
 
 import 'dart:math' as math;
 
+import '../../customer.dart';
+
 class MediterranesnDietView extends StatelessWidget {
   final AnimationController animationController;
   final Animation animation;
   final String imageURL;
-  final String email;
+  final Customer customer ;
 
   MediterranesnDietView(
       {
@@ -16,7 +18,7 @@ class MediterranesnDietView extends StatelessWidget {
         this.animationController,
         this.animation,
         this.imageURL:'',
-        this.email: ''})
+        this.customer})
       : super(key: key);
 
   @override
@@ -62,7 +64,7 @@ class MediterranesnDietView extends StatelessWidget {
   void goToChangeImage(BuildContext context) async {
     final image = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => UploadImageDemo(email: this.email, isForShop: false )),
+      MaterialPageRoute(builder: (context) => UploadImageDemo(customer: this.customer, isForShop: false )),
     );
   }
 }

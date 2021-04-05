@@ -350,7 +350,7 @@ class _LoginPageState extends State<LoginPage>
                       if (authorized) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => NavigationShopsProfile(email: loginEmailController.text)),
+                        MaterialPageRoute(builder: (context) => NavigationShopsProfile(customer: this.signInCustomer)),
                         )
                       }
                       else {

@@ -5,12 +5,13 @@ import 'package:temp1/shops_app/model/shops_list_data.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import '../customer.dart';
 import 'filters_screen.dart';
 import 'shops_app_theme.dart';
 
 class ShopsScreen extends StatefulWidget {
-  final String email;
-  ShopsScreen({Key key, @required this.email}) : super(key: key);
+  final Customer customer;
+  ShopsScreen({Key key, @required this.customer}) : super(key: key);
 
   @override
   _ShopsScreenState createState() => _ShopsScreenState();

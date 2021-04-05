@@ -8,11 +8,13 @@ import 'package:temp1/map.dart';
 
 import 'package:temp1/choose_image.dart';
 
+import '../../customer.dart';
+
 RangeValues _rangeSliderDiscreteValues = const RangeValues(8, 14);
 
 class AddCareer extends StatefulWidget {
-  const AddCareer({Key key, @required this.email}) : super(key: key);
-  final String email;
+  const AddCareer({Key key, @required this.customer}) : super(key: key);
+  final Customer customer ;
   @override
   _AddCareerState createState() => _AddCareerState();
 }
@@ -221,7 +223,7 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => UploadImageDemo(email:widget.email, isForShop: true, /* put shop name here */ )),
+                          MaterialPageRoute(builder: (context) => UploadImageDemo(customer:widget.customer, isForShop: true, /* put shop name here */ )),
                         );
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(24.0)),

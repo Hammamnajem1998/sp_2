@@ -5,6 +5,7 @@ import 'package:temp1/app_theme.dart';
 import 'package:temp1/custom_drawer/drawer_user_controller_signUp.dart';
 // import 'package:temp1/custom_drawer/home_drawer.dart';
 import 'package:temp1/custom_drawer/home_drawer_signUp.dart';
+import 'package:temp1/customer.dart';
 import 'package:temp1/feedback_screen.dart';
 import 'package:temp1/help_screen.dart';
 import 'package:temp1/LoginPage_screen.dart';
@@ -22,8 +23,8 @@ import 'shops_app/shops_home_screen.dart';
 
 class NavigationShopsProfile extends StatefulWidget {
 
-  final String email;
-  NavigationShopsProfile({Key key, @required this.email}) : super(key: key);
+  final Customer customer;
+  NavigationShopsProfile({Key key, @required this.customer}) : super(key: key);
 
   @override
   _NavigationShopsProfileState createState() => _NavigationShopsProfileState();
@@ -35,7 +36,7 @@ class _NavigationShopsProfileState extends State<NavigationShopsProfile> {
   @override
   void initState() {
     drawerIndex = DrawerIndexShopsProfile.userProfile;
-    screenView =  MainPageAppHomeScreen(email: widget.email);
+    screenView =  MainPageAppHomeScreen(customer: widget.customer);
     super.initState();
   }
 
@@ -51,7 +52,7 @@ class _NavigationShopsProfileState extends State<NavigationShopsProfile> {
           body: DrawerUserControllerShopslProfile(
             screenIndex: drawerIndex,
             drawerWidth: MediaQuery.of(context).size.width * 0.75,
-            email: widget.email,
+            email: widget.customer.email,
             onDrawerCall: (DrawerIndexShopsProfile drawerIndexdata) {
               changeIndex(drawerIndexdata);
               //callback from drawer for replace screen as user need with passing DrawerIndex(Enum index)
@@ -69,11 +70,11 @@ class _NavigationShopsProfileState extends State<NavigationShopsProfile> {
       drawerIndex = drawerIndexdata;
       if (drawerIndex == DrawerIndexShopsProfile.userProfile) {
         setState(() {
-          screenView = MainPageAppHomeScreen(email: widget.email);
+          screenView = MainPageAppHomeScreen(customer: widget.customer);
         });
       } else if (drawerIndex == DrawerIndexShopsProfile.shops) {
         setState(() {
-          screenView = ShopsScreen(email: widget.email);
+          screenView = ShopsScreen(customer: widget.customer);
         });
       } else if (drawerIndex == DrawerIndexShopsProfile.rate) {
         setState(() {

@@ -11,12 +11,14 @@ import 'package:temp1/main_page_app/my_profile//water_view.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
+import '../../customer.dart';
+
 
 class MyProfileScreen extends StatefulWidget {
 
   final AnimationController animationController;
-  final String email;
-  MyProfileScreen({Key key, @required this.email, this.animationController}) : super(key: key);
+  final Customer  customer;
+  MyProfileScreen({Key key, @required this.customer, this.animationController}) : super(key: key);
 
   @override
   _MyProfileScreenState createState() => _MyProfileScreenState();
@@ -73,7 +75,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       listViews.add(
         TitleView(
           titleTxt: 'First Name:',
-          email: widget.email,
+          email: widget.customer.email,
           subTxt: firstName,
           animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
               parent: widget.animationController,
@@ -86,7 +88,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       listViews.add(
         TitleView(
           titleTxt: 'Last Name:',
-          email: widget.email,
+          email: widget.customer.email,
           subTxt: lastName,
           animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
               parent: widget.animationController,
@@ -103,7 +105,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
               curve: Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
           animationController: widget.animationController,
           imageURL: this.photoURL,
-          email: widget.email,
+          customer: widget.customer,
         ),
       );
 
@@ -121,8 +123,8 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       listViews.add(
         TitleView(
           titleTxt: 'Email:',
-          email: widget.email,
-          subTxt: widget.email,
+          email: widget.customer.email,
+          subTxt: widget.customer.email,
           animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
               parent: widget.animationController,
               curve:
@@ -134,7 +136,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       listViews.add(
         TitleView(
           titleTxt: 'Password:',
-          email: widget.email,
+          email: widget.customer.email,
           subTxt: password,
           animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
               parent: widget.animationController,
@@ -147,7 +149,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       listViews.add(
         TitleView(
           titleTxt: 'Location:',
-          email: widget.email,
+          email: widget.customer.email,
           subTxt: 'Change',
           animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
               parent: widget.animationController,
@@ -214,7 +216,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
 
   Future<bool> getData() async {
 
-    String userEmail = widget.email;
+    String userEmail = widget.customer.email;
     Response response = await get("https://dont-wait.herokuapp.com/user/$userEmail",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',

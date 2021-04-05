@@ -2,6 +2,7 @@ import 'package:http/http.dart';
 import 'package:temp1/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:temp1/backed_interface/user_interface.dart';
+import 'customer.dart';
 import 'navigation_Shops_profile.dart';
 import 'dart:convert';
 import './backed_interface/user_interface.dart';
@@ -16,6 +17,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   AnimationController animationController;
+  Customer customer = Customer();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   double _value =10 ;
@@ -257,9 +259,11 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                       onTap: () {
                         loginToBackend(emailController.text, passwordController.text).then((authorized) => {
                           if (authorized) {
+                            customer.email= emailController.text,
+                            customer.password = passwordController.text,
                             Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => NavigationShopsProfile(email: emailController.text)),
+                            MaterialPageRoute(builder: (context) => NavigationShopsProfile(customer: this.customer)),
                             )
                           }
                           else {

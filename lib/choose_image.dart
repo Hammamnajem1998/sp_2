@@ -10,13 +10,14 @@ import 'package:flutter/services.dart';
 import 'package:temp1/api.dart';
 
 import 'app_theme.dart';
+import 'customer.dart';
 
 class UploadImageDemo extends StatefulWidget {
-  final String email;
+  final Customer customer;
   final String shopNAme;
   final bool isForShop ;
 
-  UploadImageDemo({Key key, @required this.email, this.isForShop, this.shopNAme}) : super(key: key);
+  UploadImageDemo({Key key, @required this.customer, this.isForShop, this.shopNAme}) : super(key: key);
   @override
   UploadImageDemoState createState() => UploadImageDemoState();
 }
@@ -71,8 +72,8 @@ class UploadImageDemoState extends State<UploadImageDemo> {
     var uuid = Uuid();
     String fileName =  uuid.v1().toString() + '.' + fileType ;
     final response = await api.save(fileName, _imageBytes);
-    if (widget.isForShop) updateShopsImageToBackend(widget.email, widget.shopNAme, response.downloadLink.toString());
-    else updateImageToBackend(widget.email, response.downloadLink.toString());
+    if (widget.isForShop) updateShopsImageToBackend(widget.customer.email, widget.shopNAme, response.downloadLink.toString());
+    else updateImageToBackend(widget.customer.email, response.downloadLink.toString());
     setStatus('Done...');
     Navigator.pop(context,);
   }

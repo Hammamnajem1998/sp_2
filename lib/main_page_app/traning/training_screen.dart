@@ -1,14 +1,20 @@
+import 'dart:convert';
+
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart';
 import 'package:temp1/main_page_app/ui_view/area_list_view.dart';
 import 'package:temp1/main_page_app/ui_view/running_view.dart';
 import 'package:temp1/main_page_app/ui_view/title_view.dart';
 import 'package:temp1/main_page_app/ui_view/workout_view.dart';
 import 'package:flutter/material.dart';
+import 'package:temp1/main_page_app/ui_view/mediterranesn_diet_view.dart';
 
+import '../../customer.dart';
 import '../main_page_app_theme.dart';
 
 class TrainingScreen extends StatefulWidget {
-  const TrainingScreen({Key key, this.animationController}) : super(key: key);
-
+  const TrainingScreen({Key key, this.customer, this.animationController}) : super(key: key);
+  final Customer customer;
   final AnimationController animationController;
   @override
   _TrainingScreenState createState() => _TrainingScreenState();
@@ -17,7 +23,7 @@ class TrainingScreen extends StatefulWidget {
 class _TrainingScreenState extends State<TrainingScreen>
     with TickerProviderStateMixin {
   Animation<double> topBarAnimation;
-
+  String photoURL = '';
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
@@ -58,64 +64,39 @@ class _TrainingScreenState extends State<TrainingScreen>
   void addAllListData() {
     const int count = 5;
 
+    listViews.clear();
     listViews.add(
-      TitleView(
-        titleTxt: 'Your program',
-        subTxt: 'Details',
+      MediterranesnDietView(
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
+            curve: Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
         animationController: widget.animationController,
+        imageURL: this.photoURL,
+        customer: widget.customer,
       ),
     );
 
-    listViews.add(
-      WorkoutView(
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 2, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-    listViews.add(
-      RunningView(
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 3, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-
-    listViews.add(
-      TitleView(
-        titleTxt: 'Area of focus',
-        subTxt: 'more',
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 4, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-
-    listViews.add(
-      AreaListView(
-        mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
-            CurvedAnimation(
-                parent: widget.animationController,
-                curve: Interval((1 / count) * 5, 1.0,
-                    curve: Curves.fastOutSlowIn))),
-        mainScreenAnimationController: widget.animationController,
-      ),
-    );
   }
 
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 50));
+
+    String userEmail = widget.customer.email;
+    Response response = await get("https://dont-wait.herokuapp.com/user/$userEmail",
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    var jsonResponse = jsonDecode(response.body);
+    print(jsonResponse);
+    widget.customer.firstName = jsonResponse['first_name'];
+    widget.customer.lastName = jsonResponse['last_name'];
+    widget.customer.password = jsonResponse['password'];
+    widget.customer.location = LatLng(jsonResponse['location']['x'], jsonResponse['location']['y']);
+    this.photoURL = jsonResponse['photo'];
+    addAllListData();
     return true;
+
   }
 
   @override
@@ -293,4 +274,5 @@ class _TrainingScreenState extends State<TrainingScreen>
       ],
     );
   }
+
 }
