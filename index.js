@@ -220,8 +220,8 @@ app.post('/uploads', async (req, res, next) => {
 // add Shop 
 app.post('/addShop', (req, res) =>{
 
-    const sql1 = `INSERT INTO shops (name, type, open_at, close_at, user_id, location) 
-    VALUES ('${req.body.name}', '${req.body.type}', '${req.body.open_at}','${req.body.close_at}','${req.body.user_id}', 
+    const sql1 = `INSERT INTO shops (name, type, time_unit, open_at, close_at, user_id, location) 
+    VALUES ('${req.body.name}', '${req.body.type}', '${req.body.time_unit}', '${req.body.open_at}', '${req.body.close_at}', '${req.body.user_id}', 
     ST_GeomFromText('POINT(${req.body.location.latitude} ${req.body.location.longitude})') );`;
     
     con.query(sql1, (err, shop) =>{
