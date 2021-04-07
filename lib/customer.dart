@@ -82,5 +82,26 @@ class Customer  {
   }
 
 
+  Future <bool> addShop(String name, String type,int timeUnit ,int openAt, int closeAt, LatLng location) async {
+    Response response = await post("https://dont-wait.herokuapp.com/addShop",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'name': name, 'type': type,'time_unit': timeUnit, 'open_at': openAt, 'close_at': closeAt, 'user_id': id,
+          "location":{"latitude": location.latitude, "longitude":location.longitude}}));
+
+    var jsonResponse = jsonDecode(response.body);
+    if(jsonResponse['error'] != null){
+      // print(jsonResponse['error']);
+      return false;
+    }
+    else if (jsonResponse['message'] != null){
+      print (jsonResponse['message']);
+      return true;
+    }
+    return false;
+  }
+
+
 
 }

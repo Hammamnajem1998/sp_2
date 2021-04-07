@@ -1,18 +1,13 @@
 import 'dart:convert';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:temp1/app_theme.dart';
-import 'package:temp1/main.dart';
-import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:temp1/map.dart';
 import 'package:temp1/main_page_app/ui_view/range_slider_view.dart';
 import 'package:temp1/main_page_app/traning/popular_shop_types.dart';
-import 'package:temp1/choose_image.dart';
 import 'package:temp1/shops_app/shops_app_theme.dart';
 
 import '../../customer.dart';
-
-RangeValues _rangeSliderDiscreteValues = const RangeValues(8, 14);
 
 class AddCareer extends StatefulWidget {
   const AddCareer({Key key, @required this.customer}) : super(key: key);
@@ -23,16 +18,13 @@ class AddCareer extends StatefulWidget {
 
 class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
   AnimationController animationController;
-  final emailController = TextEditingController();
-  final firstNameController = TextEditingController();
-  final lastNameController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  final shopNameController = TextEditingController();
+  final timeUnitController = TextEditingController();
   List<PopularShopTypesList> popularShopsList = PopularShopTypesList.popularFList;
 
   RangeValues _values = const RangeValues(9, 17);
   LatLng userLocation = LatLng(0, 0);
-
+  String userShopType;
   @override
   void initState() {
     animationController = AnimationController(
@@ -47,11 +39,8 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    firstNameController.dispose();
-    lastNameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
+    shopNameController.dispose();
+    timeUnitController.dispose();
 
     animationController.dispose();
     super.dispose();
@@ -118,6 +107,13 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
                     borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                     highlightColor: Colors.transparent,
                     onTap: () {
+                      widget.customer.addShop(
+                          this.shopNameController.text,
+                          this.userShopType,
+                          int.parse(this.timeUnitController.text),
+                          this._values.start.toInt(),
+                          this._values.end.toInt(),
+                          this.userLocation);
                       Navigator.pop(context);
                     },
                     child: Center(
@@ -318,7 +314,7 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
                       left: 10, right: 16, top: 4, bottom: 4),
                   child: TextField(
                     keyboardType: TextInputType.emailAddress,
-                    controller: firstNameController,
+                    controller: shopNameController,
                     style: const TextStyle(
                       fontSize: 18,
                     ),
@@ -365,7 +361,7 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
                       left: 10, right: 16, top: 4, bottom: 4),
                   child: TextField(
                     keyboardType: TextInputType.number,
-                    controller: firstNameController,
+                    controller: timeUnitController,
                     style: const TextStyle(
                       fontSize: 18,
                     ),
@@ -438,6 +434,7 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
                       }
                       setState(() {
                         type.isSelected = !type.isSelected;
+                        this.userShopType = type.titleTxt;
                       });
                     },
                     child: Padding(

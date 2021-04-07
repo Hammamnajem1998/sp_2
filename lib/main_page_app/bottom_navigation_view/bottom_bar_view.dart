@@ -5,17 +5,20 @@ import 'package:temp1/main_page_app/models/tabIcon_data.dart';
 import 'package:temp1/main.dart';
 import 'package:flutter/material.dart';
 
+import '../../customer.dart';
 import '../../main.dart';
 import '../models/tabIcon_data.dart';
 
 class BottomBarView extends StatefulWidget {
   const BottomBarView(
-      {Key key, this.tabIconsList, this.changeIndex, this.addClick})
+      {Key key, this.tabIconsList, this.changeIndex, this.addClick, this.customer})
       : super(key: key);
 
   final Function(int index) changeIndex;
   final Function addClick;
   final List<TabIconData> tabIconsList;
+  final Customer customer ;
+
   @override
   _BottomBarViewState createState() => _BottomBarViewState();
 }
@@ -153,7 +156,7 @@ class _BottomBarViewState extends State<BottomBarView>
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => AddCareer()),
+                                  MaterialPageRoute(builder: (context) => AddCareer(customer: widget.customer)),
                                 );
 
                                 widget.addClick();

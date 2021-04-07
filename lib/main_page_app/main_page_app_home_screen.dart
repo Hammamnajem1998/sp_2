@@ -81,6 +81,7 @@ class _MainPageAppHomeScreenState extends State<MainPageAppHomeScreen>
           child: SizedBox(),
         ),
         BottomBarView(
+          customer: widget.customer,
           tabIconsList: tabIconsList,
           addClick: () {},
           changeIndex: (int index) {
