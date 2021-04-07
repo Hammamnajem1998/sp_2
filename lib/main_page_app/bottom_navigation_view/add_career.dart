@@ -5,8 +5,10 @@ import 'package:temp1/main.dart';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:temp1/map.dart';
-
+import 'package:temp1/main_page_app/ui_view/range_slider_view.dart';
+import 'package:temp1/main_page_app/traning/popular_shop_types.dart';
 import 'package:temp1/choose_image.dart';
+import 'package:temp1/shops_app/shops_app_theme.dart';
 
 import '../../customer.dart';
 
@@ -26,6 +28,9 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
   final lastNameController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  List<PopularShopTypesList> popularShopsList = PopularShopTypesList.popularFList;
+
+  RangeValues _values = const RangeValues(9, 17);
   LatLng userLocation = LatLng(0, 0);
 
   @override
@@ -52,80 +57,174 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
     super.dispose();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-      backgroundColor: AppTheme.white,
-      body: FutureBuilder<bool>(
-        future: getData(),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          if (!snapshot.hasData) {
-            return const SizedBox();
-          } else {
-            return Padding(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-              child: ListView(
-                children: <Widget>[
-                  appBar(),
-                  getShopName(),
-                  getTimeunit(),
-                  Text(
-                      'select working time in slider 00-24'),
-                  RangeSlider(
-                    values: _rangeSliderDiscreteValues,
-                    min: 0,
-                    max: 24,
-                    divisions: 24,
-                    labels: RangeLabels(
-                      _rangeSliderDiscreteValues.start.round().toString(),
-                      _rangeSliderDiscreteValues.end.round().toString(),
+    return Container(
+      color: ShopAppTheme.buildLightTheme().backgroundColor,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Column(
+          children: <Widget>[
+            getAppBarUI(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    getShopName(),
+                    const Divider(
+                      height: 1,
                     ),
-                    onChanged: (values) {
-                      setState(() {
-                        _rangeSliderDiscreteValues = values;
-                      });
-                    },
-                  ),
-                  getShopImage(),
-                  getAddShop(),
-                ],
+                    timeIntervalBarFilter(),
+                    const Divider(
+                      height: 1,
+                    ),
+                    getTimeUnit(),
+                    const Divider(
+                      height: 1,
+                    ),
+                    shopType(),
+                    const Divider(
+                      height: 1,
+                    ),
+                    getLocationButtonBarUI(context),
+                  ],
+                ),
               ),
-            );
-          }
-        },
+            ),
+            const Divider(
+              height: 1,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 16, right: 16, bottom: 16, top: 8),
+              child: Container(
+                height: 48,
+                decoration: BoxDecoration(
+                  color: ShopAppTheme.buildLightTheme().primaryColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.6),
+                      blurRadius: 8,
+                      offset: const Offset(4, 4),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Center(
+                      child: Text(
+                        'Add',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
 
-  Widget appBar() {
-    return SizedBox(
-      height: AppBar().preferredSize.height,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  'Add shop page',
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: AppTheme.darkText,
-                    fontWeight: FontWeight.w700,
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     backgroundColor: AppTheme.white,
+  //     body: FutureBuilder<bool>(
+  //       future: getData(),
+  //       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+  //         if (!snapshot.hasData) {
+  //           return const SizedBox();
+  //         } else {
+  //           return Padding(
+  //             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+  //             child: ListView(
+  //               children: <Widget>[
+  //                 appBar(),
+  //                 getShopName(),
+  //                 timeIntervalBarFilter(),
+  //                 getTimeUnit(),
+  //                 shopType(),
+  //                 getLocationButtonBarUI(context),
+  //                 getAddShop(),
+  //               ],
+  //             ),
+  //           );
+  //         }
+  //       },
+  //     ),
+  //   );
+  // }
+
+  Widget getAppBarUI() {
+    return Container(
+      decoration: BoxDecoration(
+        color: ShopAppTheme.buildLightTheme().backgroundColor,
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              offset: const Offset(0, 2),
+              blurRadius: 4.0),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top, left: 8, right: 8),
+        child: Row(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.centerLeft,
+              width: AppBar().preferredSize.height + 40,
+              height: AppBar().preferredSize.height,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(32.0),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.close),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+            Expanded(
+              child: Center(
+                child: Text(
+                  'New Shop',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 22,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              width: AppBar().preferredSize.height + 40,
+              height: AppBar().preferredSize.height,
+            )
+          ],
+        ),
       ),
     );
   }
-
-
-
 
   Widget getAddShop() {
     return Padding(
@@ -193,76 +292,6 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
     );
   }
 
-  Widget getShopImage() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16, top: 50, bottom: 8),
-              child: Container(
-                decoration: BoxDecoration(
-                  //color: HotelAppTheme.buildLightTheme().backgroundColor,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(38.0),
-                  ),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                        color: Colors.blueAccent.withOpacity(0.8),
-                        offset: const Offset(0, 2),
-                        blurRadius: 8.0),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 16, right: 16, top: 15, bottom: 15),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => UploadImageDemo(customer:widget.customer, isForShop: true, /* put shop name here */ )),
-                        );
-                      },
-                      borderRadius: const BorderRadius.all(Radius.circular(24.0)),
-                      highlightColor: Colors.transparent,
-                      child: Center(
-                        child: Text(
-                          'Add Shop Image',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 27,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              //color: HotelAppTheme.buildLightTheme().primaryColor,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(38.0),
-              ),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Colors.grey.withOpacity(0.4),
-                    offset: const Offset(0, 2),
-                    blurRadius: 8.0),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-
   Widget getShopName() {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
@@ -309,7 +338,8 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
       ),
     );
   }
-  Widget getTimeunit() {
+
+  Widget getTimeUnit() {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
       child: Row(
@@ -356,9 +386,137 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
     );
   }
 
+  Widget shopType() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding:
+          const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
+          child: Text(
+            'Shop Type',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+                color: Colors.grey,
+                fontSize: MediaQuery.of(context).size.width > 360 ? 18 : 16,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 16, left: 16),
+          child: Column(
+            children: getShopTypeList(),
+          ),
+        ),
+        const SizedBox(
+          height: 8,
+        )
+      ],
+    );
+  }
+
+  List<Widget> getShopTypeList() {
+    final List<Widget> noList = <Widget>[];
+    int count = 0;
+    const int columnCount = 2;
+    for (int i = 0; i < popularShopsList.length / columnCount; i++) {
+      final List<Widget> listUI = <Widget>[];
+      for (int i = 0; i < columnCount; i++) {
+        try {
+          final PopularShopTypesList type = popularShopsList[count];
+          listUI.add(Expanded(
+            child: Row(
+              children: <Widget>[
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+                    onTap: () {
+                      for(int i=0; i<popularShopsList.length ; i++ ){
+                        popularShopsList[i].isSelected = false;
+                      }
+                      setState(() {
+                        type.isSelected = !type.isSelected;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(
+                            type.isSelected
+                                ? Icons.check_box
+                                : Icons.check_box_outline_blank,
+                            color: type.isSelected
+                                ? ShopAppTheme.buildLightTheme().primaryColor
+                                : Colors.grey.withOpacity(0.6),
+                          ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            type.titleTxt,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ));
+          if (count < popularShopsList.length - 1) {
+            count += 1;
+          } else {
+            break;
+          }
+        } catch (e) {
+          print(e);
+        }
+      }
+      noList.add(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: listUI,
+      ));
+    }
+    return noList;
+  }
+
+  Widget timeIntervalBarFilter() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            'Daily Working hours',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+                color: Colors.grey,
+                fontSize: MediaQuery.of(context).size.width > 360 ? 18 : 16,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+        RangeSliderView(
+          values: _values,
+          onChangeRangeValues: (RangeValues values) {
+            _values = values;
+          },
+        ),
+        const SizedBox(
+          height: 8,
+        )
+      ],
+    );
+  }
+
   Widget getLocationButtonBarUI(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -407,20 +565,6 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
               ),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              //color: HotelAppTheme.buildLightTheme().primaryColor,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(38.0),
-              ),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Colors.grey.withOpacity(0.4),
-                    offset: const Offset(0, 2),
-                    blurRadius: 8.0),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -428,27 +572,6 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
 
 
 
-  Future <bool> signupToBackend(String firstName,String lastName, String email, String password, String confirmPassword) async {
-    if( password != confirmPassword) return false ;
-    Response response = await post("https://dont-wait.herokuapp.com/signup",
-        // Response response = await post("http://10.0.2.2:5000/signup",
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode({'first_name': firstName ,'last_name': lastName, 'email': email, 'password': password,
-          "location":{"latitude": this.userLocation.latitude, "longitude":this.userLocation.longitude} }));
-
-    var jsonResponse = jsonDecode(response.body);
-    if(jsonResponse['error'] != null){
-      // print(jsonResponse['error']);
-      return false;
-    }
-    else if (jsonResponse['message'] != null){
-      // print (jsonResponse['message']);
-      return true;
-    }
-    return false;
-  }
   void setUserLocation(LatLng location) {
     setState(() => this.userLocation = location);
   }

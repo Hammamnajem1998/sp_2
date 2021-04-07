@@ -88,7 +88,6 @@ class _TrainingScreenState extends State<TrainingScreen>
       },
     );
     var jsonResponse = jsonDecode(response.body);
-    print(jsonResponse);
     widget.customer.firstName = jsonResponse['first_name'];
     widget.customer.lastName = jsonResponse['last_name'];
     widget.customer.password = jsonResponse['password'];

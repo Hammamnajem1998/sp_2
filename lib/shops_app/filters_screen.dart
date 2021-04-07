@@ -11,8 +11,7 @@ class FiltersScreen extends StatefulWidget {
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  List<PopularFilterListData> popularFilterListData =
-      PopularFilterListData.popularFList;
+  List<PopularFilterListData> popularFilterListData = PopularFilterListData.popularFList;
   List<PopularFilterListData> accomodationListData =
       PopularFilterListData.accomodationList;
 

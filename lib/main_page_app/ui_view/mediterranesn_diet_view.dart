@@ -51,7 +51,7 @@ class MediterranesnDietView extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(60.0)),
-                    child: (this.imageURL != null) ? Image.network(this.imageURL) : Image.asset('assets/images/userImage.png'),
+                    child: (this.imageURL != null) ? Image.network(this.imageURL) : Image.asset('assets/images/userImage.png'), 
                   ),
                 ),
               ),

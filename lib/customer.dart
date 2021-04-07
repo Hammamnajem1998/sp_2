@@ -10,6 +10,7 @@ class Customer  {
   String email;
   String password;
   String confirmPassword;
+  String photoURL;
   LatLng location;
 
   Customer({
@@ -19,6 +20,7 @@ class Customer  {
         this.email: "",
         this.password: "",
         this.confirmPassword: "",
+        this.photoURL:'',
         this.location,
   });
 
@@ -37,6 +39,13 @@ class Customer  {
     }
     else if (jsonResponse['message'] != null){
       print (jsonResponse['message']);
+      this.id = jsonResponse['message']['id'].toString();
+      this.firstName = jsonResponse['message']['first_name'];
+      this.lastName = jsonResponse['message']['last_name'];
+      this.email = jsonResponse['message']['email'];
+      this.password = jsonResponse['message']['password'];
+      this.photoURL = jsonResponse['message']['photo'];
+      this.location = LatLng(jsonResponse['message']['location']['x'], jsonResponse['message']['location']['y']);
       return true;
     }
     return false;
