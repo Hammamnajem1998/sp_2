@@ -169,6 +169,7 @@ app.post('/users', (req, res, next) =>{
 
 });
 
+// update user information
 app.post('/update', (req, res) =>{
 
     var sql1 = ``;
@@ -199,6 +200,7 @@ app.post('/image', (req, res) =>{
     });
 });
 
+// upload image to Google Cloud 
 app.post('/uploads', async (req, res, next) => {
 
     console.log(req);
@@ -214,6 +216,21 @@ app.post('/uploads', async (req, res, next) => {
       next(error);
     }
 });
+
+// add Shop 
+app.post('/addShop', (req, res) =>{
+
+    const sql1 = `INSERT INTO shops (name, type, open_at, close_at, user_id, location) 
+    VALUES ('${req.body.name}', '${req.body.type}', '${req.body.open_at}','${req.body.close_at}','${req.body.user_id}', 
+    ST_GeomFromText('POINT(${req.body.location.latitude} ${req.body.location.longitude})') );`;
+    
+    con.query(sql1, (err, shop) =>{
+        if (err) return res.status(400).json({error: err.sqlMessage});
+        return res.status(200).json({message: shop});
+    });
+});
+
+
 app.use((err, req, res, next) => {
   res.status(500).json({
   error: err,
