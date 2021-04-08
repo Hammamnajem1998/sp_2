@@ -147,7 +147,7 @@ app.get('/', (req, res) =>{
 // get user information
 app.get('/user/:email', (req, res) =>{
 
-  const sql1 = `select * from users WHERE email= '${req.params.email}'; `;
+  const sql1 = `select * from users WHERE email = '${req.params.email}'; `;
   con.query(sql1, (err, user) =>{
       return res.send(user[0]);
   });
@@ -158,7 +158,7 @@ app.get('/user/:email', (req, res) =>{
 // get shop information
 app.get('/shop/:id', (req, res) =>{
 
-    const sql1 = `select * from shops WHERE user_id is= '${req.params.id}'; `;
+    const sql1 = `select * from shops WHERE user_id = '${req.params.id}'; `;
     con.query(sql1, (err, shop) =>{
         return res.send(shop[0]);
     });
