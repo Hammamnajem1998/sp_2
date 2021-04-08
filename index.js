@@ -201,11 +201,22 @@ app.post('/update', (req, res) =>{
     });
 });
 
-// update image
+// update  user image
 app.post('/image', (req, res) =>{
     if(req.body.url == null || req.body.email == null ) return res.status(400).json({error: 'bad request'});
 
     var sql1 = `UPDATE users SET photo = '${req.body.url}' WHERE email = '${req.body.email}';`;
+    con.query(sql1, (err, result) =>{
+        if (err) return res.status(400).json({error: err.sqlMessage});
+        return res.status(200).json({message: "updated", result: result});
+    });
+});
+
+// update shop image
+app.post('/shopImage', (req, res) =>{
+    if(req.body.url == null || req.body.id == null ) return res.status(400).json({error: 'bad request'});
+
+    var sql1 = `UPDATE shops SET photo = '${req.body.url}' WHERE user_id = '${req.body.id}';`;
     con.query(sql1, (err, result) =>{
         if (err) return res.status(400).json({error: err.sqlMessage});
         return res.status(200).json({message: "updated", result: result});
