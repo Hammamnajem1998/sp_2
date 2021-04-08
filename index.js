@@ -144,6 +144,7 @@ app.get('/', (req, res) =>{
     res.json({message: "Hellow world !!"});
 });
 
+// get user information
 app.get('/user/:email', (req, res) =>{
 
   const sql1 = `select * from users WHERE email= '${req.params.email}'; `;
@@ -151,6 +152,17 @@ app.get('/user/:email', (req, res) =>{
       return res.send(user[0]);
   });
 
+});
+
+
+// get shop information
+app.get('/shop/:id', (req, res) =>{
+
+    const sql1 = `select * from shops WHERE is= '${req.params.id}'; `;
+    con.query(sql1, (err, shop) =>{
+        return res.send(shop[0]);
+    });
+  
 });
 
 app.post('/users', (req, res, next) =>{
