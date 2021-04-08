@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 import 'package:temp1/map.dart';
+import 'package:temp1/shop.dart';
 
 import 'customer.dart';
 import 'navigation_Shops_profile.dart';
@@ -46,6 +47,7 @@ class _LoginPageState extends State<LoginPage>
   TextEditingController signupLocationController = new TextEditingController();
 
   Customer signInCustomer = Customer();
+  Shop shop = Shop();
   Customer signUpCustomer = Customer();
   PageController _pageController;
 
@@ -348,9 +350,10 @@ class _LoginPageState extends State<LoginPage>
                       this.signInCustomer.password = loginPasswordController.text,
                       this.signInCustomer.loginToBackend().then((authorized) => {
                       if (authorized) {
+                        this.shop.userID = this.signInCustomer.id,
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => NavigationShopsProfile(customer: this.signInCustomer)),
+                        MaterialPageRoute(builder: (context) => NavigationShopsProfile(customer: this.signInCustomer, shop: this.shop)),
                         )
                       }
                       else {

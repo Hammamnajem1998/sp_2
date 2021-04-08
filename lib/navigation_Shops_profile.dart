@@ -12,6 +12,7 @@ import 'package:temp1/LoginPage_screen.dart';
 import 'package:temp1/SignupPage_screen.dart';
 import 'package:temp1/invite_friend_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:temp1/shop.dart';
 
 import 'custom_drawer/drawer_user_controller_Shops_profile.dart';
 
@@ -24,7 +25,8 @@ import 'shops_app/shops_home_screen.dart';
 class NavigationShopsProfile extends StatefulWidget {
 
   final Customer customer;
-  NavigationShopsProfile({Key key, @required this.customer}) : super(key: key);
+  final Shop shop;
+  NavigationShopsProfile({Key key, @required this.customer, this.shop}) : super(key: key);
 
   @override
   _NavigationShopsProfileState createState() => _NavigationShopsProfileState();
@@ -36,7 +38,7 @@ class _NavigationShopsProfileState extends State<NavigationShopsProfile> {
   @override
   void initState() {
     drawerIndex = DrawerIndexShopsProfile.userProfile;
-    screenView =  MainPageAppHomeScreen(customer: widget.customer);
+    screenView =  MainPageAppHomeScreen(customer: widget.customer, shop: widget.shop);
     super.initState();
   }
 
@@ -70,15 +72,15 @@ class _NavigationShopsProfileState extends State<NavigationShopsProfile> {
       drawerIndex = drawerIndexdata;
       if (drawerIndex == DrawerIndexShopsProfile.userProfile) {
         setState(() {
-          screenView = MainPageAppHomeScreen(customer: widget.customer);
+          screenView = MainPageAppHomeScreen(customer: widget.customer, shop: widget.shop);
         });
       } else if (drawerIndex == DrawerIndexShopsProfile.shops) {
         setState(() {
-          screenView = ShopsScreen(customer: widget.customer);
+          screenView = ShopsScreen(customer: widget.customer, shop: widget.shop);
         });
       } else if (drawerIndex == DrawerIndexShopsProfile.rate) {
         setState(() {
-          screenView = InviteFriend();
+          screenView = FeedbackScreen( customer: widget.customer,);
         });
       } else {
         //do in your way......

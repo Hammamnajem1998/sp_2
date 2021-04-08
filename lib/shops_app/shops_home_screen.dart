@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import '../customer.dart';
+import '../shop.dart';
 import 'filters_screen.dart';
 import 'shops_app_theme.dart';
 
 class ShopsScreen extends StatefulWidget {
   final Customer customer;
-  ShopsScreen({Key key, @required this.customer}) : super(key: key);
+  final Shop shop;
+  ShopsScreen({Key key, @required this.customer, this.shop}) : super(key: key);
 
   @override
   _ShopsScreenState createState() => _ShopsScreenState();

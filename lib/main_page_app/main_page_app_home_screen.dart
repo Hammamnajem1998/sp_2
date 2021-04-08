@@ -2,13 +2,15 @@ import 'package:temp1/main_page_app/models/tabIcon_data.dart';
 import 'package:temp1/main_page_app/traning/training_screen.dart';
 import 'package:flutter/material.dart';
 import '../customer.dart';
+import '../shop.dart';
 import 'bottom_navigation_view/bottom_bar_view.dart';
 import 'main_page_app_theme.dart';
 import 'my_profile/my_profile_screen.dart';
 
 class MainPageAppHomeScreen extends StatefulWidget {
   final Customer customer;
-  MainPageAppHomeScreen({Key key, @required this.customer}) : super(key: key);
+  final Shop shop;
+  MainPageAppHomeScreen({Key key, @required this.customer, this.shop}) : super(key: key);
 
   @override
   _MainPageAppHomeScreenState createState() => _MainPageAppHomeScreenState();
@@ -102,7 +104,7 @@ class _MainPageAppHomeScreenState extends State<MainPageAppHomeScreen>
                 }
                 setState(() {
                   tabBody =
-                      TrainingScreen(customer: widget.customer, animationController: animationController);
+                      TrainingScreen(customer: widget.customer, animationController: animationController, shop: widget.shop);
                  });
               });
             }

@@ -76,8 +76,6 @@ class Customer  {
 
   Future <bool> isContainShops() async {
 
-
-
     return true;
   }
 

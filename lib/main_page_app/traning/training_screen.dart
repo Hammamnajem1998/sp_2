@@ -10,11 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:temp1/main_page_app/ui_view/mediterranesn_diet_view.dart';
 
 import '../../customer.dart';
+import '../../shop.dart';
 import '../main_page_app_theme.dart';
 
 class TrainingScreen extends StatefulWidget {
-  const TrainingScreen({Key key, this.customer, this.animationController}) : super(key: key);
+  const TrainingScreen({Key key, this.customer, this.shop, this.animationController}) : super(key: key);
   final Customer customer;
+  final Shop shop;
   final AnimationController animationController;
   @override
   _TrainingScreenState createState() => _TrainingScreenState();
@@ -64,7 +66,34 @@ class _TrainingScreenState extends State<TrainingScreen>
   void addAllListData() {
     const int count = 5;
 
+    widget.shop.getShopInformation();
     listViews.clear();
+    listViews.add(
+      TitleView(
+        titleTxt: 'Name:',
+        email: widget.customer.email,
+        subTxt: widget.shop.name,
+        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: widget.animationController,
+            curve:
+            Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
+        animationController: widget.animationController,
+      ),
+    );
+
+    listViews.add(
+      TitleView(
+        titleTxt: 'type:',
+        email: widget.customer.email,
+        subTxt: widget.shop.type,
+        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: widget.animationController,
+            curve:
+            Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
+        animationController: widget.animationController,
+      ),
+    );
+
     listViews.add(
       MediterranesnDietView(
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
@@ -73,16 +102,70 @@ class _TrainingScreenState extends State<TrainingScreen>
         animationController: widget.animationController,
         imageURL: this.photoURL,
         customer: widget.customer,
+        isForShop: true,
       ),
     );
+
+    listViews.add(
+      TitleView(
+        titleTxt: 'Time Unit:',
+        email: widget.customer.email,
+        subTxt: widget.shop.timeUnit,
+        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: widget.animationController,
+            curve:
+            Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
+        animationController: widget.animationController,
+      ),
+    );
+
+    listViews.add(
+      TitleView(
+        titleTxt: 'Open At:',
+        email: widget.customer.email,
+        subTxt: widget.shop.openAt,
+        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: widget.animationController,
+            curve:
+            Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
+        animationController: widget.animationController,
+      ),
+    );
+
+    listViews.add(
+      TitleView(
+        titleTxt: 'Close At:',
+        email: widget.customer.email,
+        subTxt: widget.shop.closeAt,
+        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: widget.animationController,
+            curve:
+            Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
+        animationController: widget.animationController,
+      ),
+    );
+
+    listViews.add(
+      TitleView(
+        titleTxt: 'Location:',
+        email: widget.customer.email,
+        subTxt: 'Change',
+        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: widget.animationController,
+            curve:
+            Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
+        animationController: widget.animationController,
+      ),
+    );
+
 
   }
 
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 50));
 
-    String userEmail = widget.customer.email;
-    Response response = await get("https://dont-wait.herokuapp.com/user/$userEmail",
+    String userID = widget.customer.id;
+    Response response = await get("https://dont-wait.herokuapp.com/shop/$userID",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

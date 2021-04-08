@@ -37,7 +37,7 @@ class _RangeSliderViewState extends State<RangeSliderView> {
                   Container(
                     width: 54,
                     child: Text(
-                      '\$${_values.start.round()}',
+                      '${_values.start.round()}',
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -56,7 +56,7 @@ class _RangeSliderViewState extends State<RangeSliderView> {
                   Container(
                     width: 54,
                     child: Text(
-                      '\$${_values.end.round()}',
+                      '${_values.end.round()}',
                       textAlign: TextAlign.center,
                     ),
                   ),

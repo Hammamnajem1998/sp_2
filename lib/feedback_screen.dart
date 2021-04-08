@@ -1,12 +1,24 @@
 import 'package:temp1/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
+
+import 'customer.dart';
 
 class FeedbackScreen extends StatefulWidget {
+  final Customer customer;
+  FeedbackScreen({Key key, @required this.customer}) : super(key: key);
+
   @override
   _FeedbackScreenState createState() => _FeedbackScreenState();
 }
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
+
+  String username = '';
+  String password = '';
+  TextEditingController feedBackController = new TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -75,6 +87,28 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           child: InkWell(
                             onTap: () {
                               FocusScope.of(context).requestFocus(FocusNode());
+                              this.username = widget.customer.email;
+                              this.password = widget.customer.password;
+                              // this.username = 'hhammamnajemm@gmail.com';
+                              // this.password = 'hammamnajem123321';
+                              final smtpServer = gmail(username, password);
+
+                              final message = Message()
+                                ..from = Address(username, (widget.customer.firstName + widget.customer.lastName) )
+                                ..recipients.add('moghaiarafeef@gmail.com')
+                                ..recipients.add('hhammamnajemm@gmail.com')
+                                ..subject = 'Feed Back ${DateTime.now()}'
+                                ..text = this.feedBackController.text;
+
+                              try {
+                                final sendReport = send(message, smtpServer);
+                                print('Message sent: ' + sendReport.toString());
+                              } on MailerException catch (e) {
+                                print('Message not sent.');
+                                for (var p in e.problems) {
+                                  print('Problem: ${p.code}: ${p.msg}');
+                                }
+                              }
                             },
                             child: Center(
                               child: Padding(
@@ -127,6 +161,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
               child: TextField(
                 maxLines: null,
+                controller: feedBackController,
                 onChanged: (String txt) {},
                 style: TextStyle(
                   fontFamily: AppTheme.fontName,

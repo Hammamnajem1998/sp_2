@@ -72,7 +72,7 @@ class UploadImageDemoState extends State<UploadImageDemo> {
     var uuid = Uuid();
     String fileName =  uuid.v1().toString() + '.' + fileType ;
     final response = await api.save(fileName, _imageBytes);
-    if (widget.isForShop) updateShopsImageToBackend(widget.customer.email, widget.shopNAme, response.downloadLink.toString());
+    if (widget.isForShop) updateShopsImageToBackend(widget.customer.id, widget.shopNAme, response.downloadLink.toString());
     else updateImageToBackend(widget.customer.email, response.downloadLink.toString());
     setStatus('Done...');
     Navigator.pop(context,);
@@ -179,12 +179,13 @@ class UploadImageDemoState extends State<UploadImageDemo> {
     }
     return false;
   }
-  Future <bool> updateShopsImageToBackend(String email,String shopName, String imageURL) async {
-    Response response = await post("https://dont-wait.herokuapp.com/image",
+
+  Future <bool> updateShopsImageToBackend(String id,String shopName, String imageURL) async {
+    Response response = await post("https://dont-wait.herokuapp.com/shopImage",
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'email': email,'shopName': shopName, 'url': imageURL}));
+        body: jsonEncode({'id': id, /*'shopName': shopName,*/ 'url': imageURL}));
 
     var jsonResponse = jsonDecode(response.body);
     if(jsonResponse['error'] != null){

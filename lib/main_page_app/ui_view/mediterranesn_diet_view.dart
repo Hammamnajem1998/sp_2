@@ -11,6 +11,7 @@ class MediterranesnDietView extends StatelessWidget {
   final Animation animation;
   final String imageURL;
   final Customer customer ;
+  final bool isForShop ;
 
   MediterranesnDietView(
       {
@@ -18,6 +19,7 @@ class MediterranesnDietView extends StatelessWidget {
         this.animationController,
         this.animation,
         this.imageURL:'',
+        this.isForShop,
         this.customer})
       : super(key: key);
 
@@ -64,7 +66,7 @@ class MediterranesnDietView extends StatelessWidget {
   void goToChangeImage(BuildContext context) async {
     final image = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => UploadImageDemo(customer: this.customer, isForShop: false )),
+      MaterialPageRoute(builder: (context) => UploadImageDemo(customer: this.customer, isForShop: this.isForShop )),
     );
   }
 }

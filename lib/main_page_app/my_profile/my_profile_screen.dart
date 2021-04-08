@@ -106,6 +106,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
           animationController: widget.animationController,
           imageURL: this.photoURL,
           customer: widget.customer,
+          isForShop: false,
         ),
       );
 
