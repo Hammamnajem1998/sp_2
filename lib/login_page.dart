@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -140,9 +141,31 @@ class _LoginPageState extends State<LoginPage>
     super.dispose();
   }
 
+  String messageTitle = "Empty";
+  String notificationAlert = "alert";
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
   @override
   void initState() {
     super.initState();
+
+    _firebaseMessaging.configure(
+      onMessage: (message) async{
+        setState(() {
+          messageTitle = message["notification"]["title"];
+          notificationAlert = "1 ";
+        });
+
+      },
+      onResume: (message) async{
+        setState(() {
+          messageTitle = message["data"]["title"];
+          notificationAlert = "2 ";
+        });
+
+      },
+    );
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -419,7 +442,7 @@ class _LoginPageState extends State<LoginPage>
                 Padding(
                   padding: EdgeInsets.only(left: 15.0, right: 15.0),
                   child: Text(
-                    "Or",
+                    "Or"+  '${this.notificationAlert} ${this.messageTitle}' ,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,

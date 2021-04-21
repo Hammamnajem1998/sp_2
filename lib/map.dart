@@ -78,7 +78,7 @@ class _MyMapState extends State<MyMap> {
         markerId: MarkerId(position.toString()),
         position: position,
         infoWindow: InfoWindow(
-          title: "Set as your location",
+          title: "Set Location",
           onTap: () => {
             Navigator.pop(context, position)
           },

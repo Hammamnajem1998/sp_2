@@ -74,7 +74,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                         decoration: BoxDecoration(
                           color: Colors.blue,
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(4.0)),
+                          const BorderRadius.all(Radius.circular(4.0)),
                           boxShadow: <BoxShadow>[
                             BoxShadow(
                                 color: Colors.grey.withOpacity(0.6),
@@ -87,18 +87,18 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           child: InkWell(
                             onTap: () {
                               FocusScope.of(context).requestFocus(FocusNode());
-                              this.username = widget.customer.email;
-                              this.password = widget.customer.password;
-                              // this.username = 'hhammamnajemm@gmail.com';
-                              // this.password = 'hammamnajem123321';
+                              // this.username = widget.customer.email;
+                              // this.password = widget.customer.password;
+                              this.username = 'hhammamnajemm@gmail.com';
+                              this.password = 'hammamnajem123321';
                               final smtpServer = gmail(username, password);
 
                               final message = Message()
-                                ..from = Address(username, (widget.customer.firstName + widget.customer.lastName) )
+                                ..from = Address(username, (widget.customer.firstName +' '+ widget.customer.lastName) )
                                 ..recipients.add('moghaiarafeef@gmail.com')
-                                ..recipients.add('hhammamnajemm@gmail.com')
+                                ..recipients.add('hhammamnajem98@gmail.com')
                                 ..subject = 'Feed Back ${DateTime.now()}'
-                                ..text = this.feedBackController.text;
+                                ..text = widget.customer.email+'\n\n'+ this.feedBackController.text;
 
                               try {
                                 final sendReport = send(message, smtpServer);
@@ -158,7 +158,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             color: AppTheme.white,
             child: SingleChildScrollView(
               padding:
-                  const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
+              const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
               child: TextField(
                 maxLines: null,
                 controller: feedBackController,
