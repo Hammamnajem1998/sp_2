@@ -57,26 +57,6 @@ app.use(multerMid.single('file'))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
-
-// function handleDisconnect(con) {
-//     con.on('error', err =>{
-//         if(err.code === 'PROTOCOL_CONNECTION_LOST'){
-//             console.log("errrorryyyyyy");
-//             con = mysql.createConnection({
-//                 host: "us-cdbr-east-03.cleardb.com",
-//                 user: "bca894223fa92f",
-//                 password: "bd33beab",
-//                 database: "heroku_5dbb5278d6f4a3f"
-//             });
-            
-//         }
-//         else {
-//             throw err;
-//         }
-//     });
-// }
-// handleDisconnect(con);
-
 function handleError() {
     con.on('error', err =>{
         if(err.code === 'PROTOCOL_CONNECTION_LOST'){
@@ -94,10 +74,12 @@ function handleError() {
         }
     });
 };
-
 handleError();
 
+// implement array of queues
+var queues_array =[];
 
+// authentication
 passport.use(new LocalStrategy(
     {   // by default, local strategy uses username and password, we will override with email
         usernameField : 'email',
@@ -113,7 +95,7 @@ passport.use(new LocalStrategy(
       });   
 }));
 
-
+// sign up
 app.post('/signup', (req, res) =>{
     const {error, value} = signupSchema.validate({username: req.body.first_name, email: req.body.email, password: req.body.password});
     if (error) return res.status(400).json({error: error.message});
@@ -127,7 +109,7 @@ app.post('/signup', (req, res) =>{
         return res.status(200).json({message: "added", id: result.insertId});
     });
 });
-//
+// login
 app.post('/login', (req, res, next)=> {
     const {error, value} = signinSchema.validate({email: req.body.email, password: req.body.password});
     if (error) return res.status(400).json({error: error.message});
@@ -160,11 +142,26 @@ app.get('/shop/:id', (req, res) =>{
 
     const sql1 = `select * from shops WHERE user_id = '${req.params.id}'; `;
     con.query(sql1, (err, shop) =>{
+        if (err) return res.status(400).json({error: err.sqlMessage});
+        if (!shop[0]) return res.status(200).json({error: 'No shop'});
         return res.send(shop[0]);
     });
   
 });
 
+// get all shops
+app.get('/shops', (req, res) =>{
+
+    const sql1 = `select * from shops ;`;
+    con.query(sql1, (err, shops) =>{
+        if (err) return res.status(400).json({error: err.sqlMessage});
+        if (!shops[0]) return res.status(200).json({error: 'No shops'});
+        return res.send(shops);
+    });
+  
+});
+
+// get all users
 app.post('/users', (req, res, next) =>{
     
     passport.authenticate('local', (err, user, info) => {
@@ -249,10 +246,24 @@ app.post('/addShop', (req, res) =>{
     
     con.query(sql1, (err, shop) =>{
         if (err) return res.status(400).json({error: err.sqlMessage});
+        // create this shop queue
+        var queue = new Array();
+        queues_array[shop.insertId] = queue;
         return res.status(200).json({message: shop});
     });
 });
 
+// add customer to the shop's queue
+app.post('/addToQueue', (req, res) =>{
+
+    if (req.body.isFromOwner == 'true'){
+        queues_array[req.body.shop_id].push({isFromOwner: 'true'});    
+    }else {
+        queues_array[req.body.shop_id].push({isFromOwner: 'false', customerID: req.body.customer_id});
+    }
+
+    return res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
+}); 
 
 app.use((err, req, res, next) => {
   res.status(500).json({
