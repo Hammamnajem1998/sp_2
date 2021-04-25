@@ -257,13 +257,39 @@ app.post('/addShop', (req, res) =>{
 app.post('/addToQueue', (req, res) =>{
 
     if (req.body.isFromOwner == 'true'){
-        queues_array[req.body.shop_id].push({isFromOwner: 'true'});    
-    }else {
-        queues_array[req.body.shop_id].push({isFromOwner: 'false', customerID: req.body.customer_id});
+        queues_array[req.body.shop_id].push({customerID: 'none'});    
+    } else{
+        queues_array[req.body.shop_id].push({customerID: req.body.customer_id});
     }
 
     return res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
 }); 
+
+// delete customer from queue
+app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
+
+    if(queues_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
+        var customerIndex = queues_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
+        queues_array[req.params.shop_id].splice(customerIndex,1);
+        return res.json({message: 'deleted'});
+    }
+    else if (queues_array[req.params.shop_id].length == 0){
+        return res.json({error: 'Empty Queue'});
+    }
+    else {
+        queues_array[req.params.shop_id].shift();
+        return res.json({message: 'shifted'});
+    }
+});
+
+// get shop's queue information
+app.get('/queue/:id', (req, res) =>{
+
+    if(queues_array[req.params.id == null]) return res.status(404).json({error : 'Empty queue'});
+
+    return res.json({message : queues_array[req.params.id], length : queues_array[req.params.id].length });
+});
+
 
 app.use((err, req, res, next) => {
   res.status(500).json({
