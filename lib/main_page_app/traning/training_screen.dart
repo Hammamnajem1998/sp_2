@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
+import 'package:temp1/feedback_screen.dart';
 import 'package:temp1/main_page_app/ui_view/area_list_view.dart';
 import 'package:temp1/main_page_app/ui_view/running_view.dart';
 import 'package:temp1/main_page_app/ui_view/title_view.dart';
@@ -12,6 +13,7 @@ import 'package:temp1/main_page_app/ui_view/mediterranesn_diet_view.dart';
 import '../../customer.dart';
 import '../../shop.dart';
 import '../main_page_app_theme.dart';
+import 'career_queue.dart';
 
 class TrainingScreen extends StatefulWidget {
   const TrainingScreen({Key key, this.customer, this.shop, this.animationController}) : super(key: key);
@@ -158,6 +160,9 @@ class _TrainingScreenState extends State<TrainingScreen>
       ),
     );
 
+    listViews.add(
+        getLocationButtonBarUI(),
+    );
 
   }
 
@@ -270,75 +275,14 @@ class _TrainingScreenState extends State<TrainingScreen>
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Training',
-                                  textAlign: TextAlign.left,
+                                  'Your Service',
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: MainPageAppTheme.fontName,
                                     fontWeight: FontWeight.w700,
                                     fontSize: 22 + 6 - 6 * topBarOpacity,
                                     letterSpacing: 1.2,
                                     color: MainPageAppTheme.darkerText,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 38,
-                              width: 38,
-                              child: InkWell(
-                                highlightColor: Colors.transparent,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(32.0)),
-                                onTap: () {},
-                                child: Center(
-                                  child: Icon(
-                                    Icons.keyboard_arrow_left,
-                                    color: MainPageAppTheme.grey,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8,
-                                right: 8,
-                              ),
-                              child: Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: Icon(
-                                      Icons.calendar_today,
-                                      color: MainPageAppTheme.grey,
-                                      size: 18,
-                                    ),
-                                  ),
-                                  Text(
-                                    '15 May',
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      fontFamily: MainPageAppTheme.fontName,
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 18,
-                                      letterSpacing: -0.2,
-                                      color: MainPageAppTheme.darkerText,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 38,
-                              width: 38,
-                              child: InkWell(
-                                highlightColor: Colors.transparent,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(32.0)),
-                                onTap: () {},
-                                child: Center(
-                                  child: Icon(
-                                    Icons.keyboard_arrow_right,
-                                    color: MainPageAppTheme.grey,
                                   ),
                                 ),
                               ),
@@ -357,4 +301,59 @@ class _TrainingScreenState extends State<TrainingScreen>
     );
   }
 
+  Widget getLocationButtonBarUI() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10, top: 10, bottom: 8),
+              child: Container(
+                decoration:  BoxDecoration(
+                  //color: HotelAppTheme.buildLightTheme().backgroundColor,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(38.0),
+                  ),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.8),
+                        offset: const Offset(0, 2),
+                        blurRadius: 8.0),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 16, right: 10, top: 15, bottom: 15),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: ()  {
+                         Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CareerQueue(title: "Real Time Queue",)),
+                        );
+
+                      },
+                      borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                      highlightColor: Colors.transparent,
+                      child: Center(
+                        child: Text(
+                          'Shop Queue',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 27,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

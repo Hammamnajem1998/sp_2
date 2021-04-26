@@ -27,6 +27,7 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
   String userShopType;
   @override
   void initState() {
+    userShopType= 'Bank';
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
     super.initState();
@@ -134,36 +135,6 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
       ),
     );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     backgroundColor: AppTheme.white,
-  //     body: FutureBuilder<bool>(
-  //       future: getData(),
-  //       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-  //         if (!snapshot.hasData) {
-  //           return const SizedBox();
-  //         } else {
-  //           return Padding(
-  //             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-  //             child: ListView(
-  //               children: <Widget>[
-  //                 appBar(),
-  //                 getShopName(),
-  //                 timeIntervalBarFilter(),
-  //                 getTimeUnit(),
-  //                 shopType(),
-  //                 getLocationButtonBarUI(context),
-  //                 getAddShop(),
-  //               ],
-  //             ),
-  //           );
-  //         }
-  //       },
-  //     ),
-  //   );
-  // }
 
   Widget getAppBarUI() {
     return Container(

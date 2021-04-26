@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'package:temp1/main_page_app/bottom_navigation_view/add_career.dart';
+import 'package:temp1/main_page_app/traning/add_career.dart';
 import 'package:temp1/main_page_app/main_page_app_theme.dart';
 import 'package:temp1/main_page_app/models/tabIcon_data.dart';
 import 'package:temp1/main.dart';
