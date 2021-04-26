@@ -4,8 +4,8 @@ const app = express();
 app.use(express.json());
 
 // for firebase
-import { admin } from './firebase/firebase-config/admin.js';
-import bodyparser from 'body-parser';
+const { admin } = require('./firebase/firebase-config/admin');
+const bodyparser = require('body-parser');
 app.use(bodyparser.json());
 
 // for passport 
@@ -129,7 +129,12 @@ app.post('/login', (req, res, next)=> {
 
 app.get('/', (req, res) =>{
 
-    admin.messaging().send({topic : 'temp', data : 'queue_update'})
+    var message = {
+        data : { temp :'queue_update'},
+        topic : 'temp',
+    };
+
+    admin.messaging().send(message)
     .then( response => {
         res.status(200).json({message :'Notification sent successfully'});
     })
