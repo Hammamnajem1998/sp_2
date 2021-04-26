@@ -3,6 +3,11 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 
+// for firebase
+import { admin } from './firebase/firebase-config/admin.js';
+import bodyparser from 'body-parser';
+app.use(bodyparser.json());
+
 // for passport 
 const passport = require('passport');
 app.use(passport.initialize());
@@ -123,7 +128,16 @@ app.post('/login', (req, res, next)=> {
 
 
 app.get('/', (req, res) =>{
-    res.json({message: "Hellow world !!"});
+
+    admin.messaging().send({topic : 'temp', data : 'queue_update'})
+    .then( response => {
+        res.status(200).json({message :'Notification sent successfully'});
+    })
+    .catch( error => {
+        console.log(error);
+        res.json({error: "Notification wasn't sended"});
+    });
+    // res.json({message: "Hellow world !!"});
 });
 
 // get user information
@@ -162,18 +176,13 @@ app.get('/shops', (req, res) =>{
 });
 
 // get all users
-app.post('/users', (req, res, next) =>{
+app.get('/users', (req, res) =>{
     
-    passport.authenticate('local', (err, user, info) => {
-        if (err) return next(err); 
-        if (!user) return res.send('not authorized')
-    })(req, res, next);
-
-    const sql1 = `select * from users WHERE name= '${req.body.name}';`;
-    con.query(sql1, (err, user) =>{
-        if (err) return res.status(404).send("error");
-        if(!user[0]) return res.status(404).send("error");
-        return res.send(user[0]);
+    const sql1 = `select * from users;`;
+    con.query(sql1, (err, users) =>{
+        if (err) return res.status(404).json({error : err});
+        if(!users[0]) return res.status(404).send("error");
+        return res.send(users);
     });   
 
 });
