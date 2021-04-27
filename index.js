@@ -131,6 +131,7 @@ app.get('/', (req, res) =>{
 
     var message = {
         data : { temp :'queue_update'},
+        notification : { title: 'title', body : 'body'},
         topic : 'temp',
     };
 
@@ -146,10 +147,11 @@ app.get('/', (req, res) =>{
 });
 
 // get user information
-app.get('/user/:email', (req, res) =>{
+app.get('/user/:id', (req, res) =>{
 
-  const sql1 = `select * from users WHERE email = '${req.params.email}'; `;
+  const sql1 = `select * from users WHERE id = '${req.params.id}'; `;
   con.query(sql1, (err, user) =>{
+      if(err) return res.status(404).json({error : err});
       return res.send(user[0]);
   });
 
