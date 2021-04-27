@@ -134,7 +134,7 @@ app.get('/', (req, res) =>{
         notification : { title: 'title', body : 'body'},
         topic : 'temp',
     };
-
+ 
     admin.messaging().send(message)
     .then( response => {
         res.status(200).json({message :'Notification sent successfully'});
