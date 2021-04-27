@@ -27,7 +27,6 @@ class TrainingScreen extends StatefulWidget {
 class _TrainingScreenState extends State<TrainingScreen>
     with TickerProviderStateMixin {
   Animation<double> topBarAnimation;
-  String photoURL = '';
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
@@ -68,7 +67,7 @@ class _TrainingScreenState extends State<TrainingScreen>
   void addAllListData() {
     const int count = 5;
 
-    widget.shop.getShopInformation();
+
     listViews.clear();
     listViews.add(
       TitleView(
@@ -102,7 +101,7 @@ class _TrainingScreenState extends State<TrainingScreen>
             parent: widget.animationController,
             curve: Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
         animationController: widget.animationController,
-        imageURL: this.photoURL,
+        imageURL: widget.shop.photoURL,
         customer: widget.customer,
         isForShop: true,
       ),
@@ -161,7 +160,7 @@ class _TrainingScreenState extends State<TrainingScreen>
     );
 
     listViews.add(
-        getLocationButtonBarUI(),
+        getQueueButtonBarUI(),
     );
 
   }
@@ -169,21 +168,9 @@ class _TrainingScreenState extends State<TrainingScreen>
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 50));
 
-    String userID = widget.customer.id;
-    Response response = await get("https://dont-wait.herokuapp.com/shop/$userID",
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-    var jsonResponse = jsonDecode(response.body);
-    widget.customer.firstName = jsonResponse['first_name'];
-    widget.customer.lastName = jsonResponse['last_name'];
-    widget.customer.password = jsonResponse['password'];
-    widget.customer.location = LatLng(jsonResponse['location']['x'], jsonResponse['location']['y']);
-    this.photoURL = jsonResponse['photo'];
+    widget.shop.getShopInformation();
     addAllListData();
     return true;
-
   }
 
   @override
@@ -301,7 +288,7 @@ class _TrainingScreenState extends State<TrainingScreen>
     );
   }
 
-  Widget getLocationButtonBarUI() {
+  Widget getQueueButtonBarUI() {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),
       child: Row(
@@ -331,7 +318,7 @@ class _TrainingScreenState extends State<TrainingScreen>
                       onTap: ()  {
                          Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => CareerQueue(title: "Real Time Queue",)),
+                          MaterialPageRoute(builder: (context) => CareerQueue(title: "Real Time Queue", shop: widget.shop)),
                         );
 
                       },

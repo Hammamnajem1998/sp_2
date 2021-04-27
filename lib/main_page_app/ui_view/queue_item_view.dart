@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import '../../customer.dart';
 import '../main_page_app_theme.dart';
 
-class QueueItem extends StatelessWidget {
+class QueueItemView extends StatelessWidget {
 
-  final Customer customer;
-
-  QueueItem(
+  final String photoURL ;
+  final String title;
+  final String subTitle;
+  QueueItemView(
       {Key key,
-        this.customer: null,})
+        this.photoURL : '',
+        this.title : '',
+        this.subTitle : '',
+      })
       : super(key: key);
 
   @override
@@ -48,8 +52,7 @@ class QueueItem extends StatelessWidget {
                           height: 74,
                           child: AspectRatio(
                             aspectRatio: 1.714,
-                            child: Image.asset(
-                                "assets/fitness_app/back.png"),
+                            child: Image.asset("assets/fitness_app/back.png"),
                           ),
                         ),
                       ),
@@ -65,7 +68,7 @@ class QueueItem extends StatelessWidget {
                                   top: 16,
                                 ),
                                 child: Text(
-                                  "You're doing great!",
+                                  this.title == '' ? 'Customer' : this.title,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontFamily:
@@ -88,7 +91,7 @@ class QueueItem extends StatelessWidget {
                               right: 16,
                             ),
                             child: Text(
-                              "Keep it up\nand stick to your plan!",
+                              this.subTitle == '' ? 'Waiting' : this.subTitle,
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontFamily: MainPageAppTheme.fontName,
@@ -107,12 +110,12 @@ class QueueItem extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: -10,
+                top: 0,
                 left: 0,
                 child: SizedBox(
-                  width: 110,
-                  height: 110,
-                  child: Image.asset("assets/fitness_app/runner.png"),
+                  width: 100,
+                  height: 100,
+                  child: this.photoURL ==''? Image.asset("assets/fitness_app/runner.png") : Image.network(this.photoURL),
                 ),
               ),
               Positioned(

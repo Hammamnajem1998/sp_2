@@ -1,17 +1,57 @@
+import 'dart:collection';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:temp1/main_page_app/ui_view/queue_item_view.dart';
 import 'package:temp1/shops_app/shops_app_theme.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:temp1/queue.dart';
+import 'package:temp1/shop.dart';
 
 class CareerQueue extends StatefulWidget {
-  CareerQueue({Key key, this.title}) : super(key: key);
+  CareerQueue({Key key, this.title, this.shop}) : super(key: key);
   final String title;
+  final Shop shop;
   @override
   _CareerQueueState createState() => _CareerQueueState();
 }
 
 class _CareerQueueState extends State<CareerQueue> {
 
+  String messageTitle = '';
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  List<QueueItemView> listViews = <QueueItemView>[];
+  Queue realTimeQueue = Queue();
+
+  @override
+  void initState() {
+    super.initState();
+    realTimeQueue.shop = widget.shop;
+    _firebaseMessaging.subscribeToTopic('temp');
+
+    _firebaseMessaging.configure(
+      onMessage: (message) async{
+        setState(() {
+          print(message);
+          messageTitle = message["notification"]["title"];
+          getData();
+        });
+      },
+    );
+
+  }
+
+  @override
+  void dispose() {
+    _firebaseMessaging.unsubscribeFromTopic('temp');
+    super.dispose();
+  }
+
+
+  Future<bool> getData() async {
+    realTimeQueue.fillQueueInformation();
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +65,7 @@ class _CareerQueueState extends State<CareerQueue> {
           backgroundColor: Colors.transparent,
           body: Stack(
             children: [
-              getQueueItems(),
+              getQueueItemViews(),
             ]
           ),
           floatingActionButton: FloatingActionButton(
@@ -41,16 +81,27 @@ class _CareerQueueState extends State<CareerQueue> {
     );
   }
 
-  Widget getQueueItems(){
-    return Container (
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: 20,
-        itemBuilder: (BuildContext context, int index) {
-          return QueueItem();
-        },
-      ),
+  Widget getQueueItemViews(){
+    return FutureBuilder<bool>(
+      future: getData(),
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (!snapshot.hasData) {
+          return const SizedBox();
+        } else {
+          return ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: realTimeQueue.queueItemsList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return QueueItemView(
+                title: realTimeQueue.queueItemsList[index].customerName,
+                subTitle: realTimeQueue.queueItemsList[index].customerEmail,
+                photoURL: realTimeQueue.queueItemsList[index].photoURL,
+              );
+            },
+          );
+        }
+      },
     );
   }
 

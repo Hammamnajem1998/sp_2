@@ -7,7 +7,7 @@ class Shop  {
   String id;
   String name;
   String type;
-  LatLng location;
+  LatLng location = LatLng(0,0);
   String photoURL;
   String timeUnit;
   String openAt;
@@ -36,6 +36,7 @@ class Shop  {
     );
     var jsonResponse = jsonDecode(response.body);
 
+    print(jsonResponse);
     this.id = jsonResponse['id'].toString();
     this.name = jsonResponse['name'];
     this.type = jsonResponse['type'];
@@ -45,6 +46,7 @@ class Shop  {
     this.openAt = jsonResponse['open_at'].toString();
     this.closeAt = jsonResponse['close_at'].toString();
 
+    print(photoURL);
     return true;
   }
 

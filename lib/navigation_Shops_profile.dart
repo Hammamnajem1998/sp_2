@@ -54,7 +54,7 @@ class _NavigationShopsProfileState extends State<NavigationShopsProfile> {
           body: DrawerUserControllerShopslProfile(
             screenIndex: drawerIndex,
             drawerWidth: MediaQuery.of(context).size.width * 0.75,
-            email: widget.customer.email,
+            id: widget.customer.id,
             onDrawerCall: (DrawerIndexShopsProfile drawerIndexdata) {
               changeIndex(drawerIndexdata);
               //callback from drawer for replace screen as user need with passing DrawerIndex(Enum index)

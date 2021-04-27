@@ -217,8 +217,8 @@ class _MyProfileScreenState extends State<MyProfileScreen>
 
   Future<bool> getData() async {
 
-    String userEmail = widget.customer.email;
-    Response response = await get("https://dont-wait.herokuapp.com/user/$userEmail",
+    String userId = widget.customer.id;
+    Response response = await get("https://dont-wait.herokuapp.com/user/$userId",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

@@ -12,7 +12,7 @@ class DrawerUserControllerShopslProfile extends StatefulWidget {
     this.menuView,
     this.drawerIsOpen,
     this.screenIndex,
-    this.email,
+    this.id,
   }) : super(key: key);
 
   final double drawerWidth;
@@ -22,7 +22,7 @@ class DrawerUserControllerShopslProfile extends StatefulWidget {
   final AnimatedIconData animatedIconData;
   final Widget menuView;
   final DrawerIndexShopsProfile screenIndex;
-  final String email;
+  final String id;
 
   @override
   _DrawerUserControllerShopslProfileState createState() => _DrawerUserControllerShopslProfileState();
@@ -106,7 +106,7 @@ class _DrawerUserControllerShopslProfileState extends State<DrawerUserController
                       child: HomeDrawerShopsProfile(
                         screenIndex: widget.screenIndex == null ? DrawerIndexShopsProfile.shops : widget.screenIndex,
                         iconAnimationController: iconAnimationController,
-                        email: widget.email,
+                        id: widget.id,
                         callBackIndex: (DrawerIndexShopsProfile indexType) {
                           onDrawerClick();
                           try {

@@ -149,7 +149,6 @@ class _LoginPageState extends State<LoginPage>
   @override
   void initState() {
     super.initState();
-
     _firebaseMessaging.configure(
       onMessage: (message) async{
         setState(() {
@@ -775,7 +774,7 @@ class _LoginPageState extends State<LoginPage>
                           return AlertDialog(
                             // Retrieve the text the user has entered by using the
                             // TextEditingController.
-                            content: Text("Login Failed"),
+                            content: Text("Sign Up Failed"),
                             actions: <Widget>[
                             // usually buttons at the bottom of the dialog
                             new TextButton(

@@ -5,8 +5,8 @@ import 'package:temp1/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class HomeDrawerShopsProfile extends StatefulWidget {
-  const HomeDrawerShopsProfile({Key key, this.screenIndex, this.iconAnimationController, this.callBackIndex, this.email}) : super(key: key);
-  final String email;
+  const HomeDrawerShopsProfile({Key key, this.screenIndex, this.iconAnimationController, this.callBackIndex, this.id}) : super(key: key);
+  final String id;
   final AnimationController iconAnimationController;
   final DrawerIndexShopsProfile screenIndex;
   final Function(DrawerIndexShopsProfile) callBackIndex;
@@ -23,7 +23,7 @@ class _HomeDrawerShopsProfileState extends State<HomeDrawerShopsProfile> {
   @override
   void initState() {
     setDrawerListArray();
-    getImageURL(widget.email);
+    getImageURL(widget.id);
     super.initState();
   }
 
@@ -252,8 +252,8 @@ class _HomeDrawerShopsProfileState extends State<HomeDrawerShopsProfile> {
     widget.callBackIndex(indexScreen);
   }
 
-  void getImageURL (String email) async{
-    String userEmail = email;
+  void getImageURL (String id) async{
+    String userEmail = id;
     Response response = await get("https://dont-wait.herokuapp.com/user/$userEmail",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',

@@ -85,7 +85,8 @@ class Customer  {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'name': name, 'type': type,'time_unit': timeUnit, 'open_at': openAt, 'close_at': closeAt, 'user_id': id,
+        body: jsonEncode({'name': name, 'type': type,'time_unit':
+          timeUnit.toString(), 'open_at': openAt.toString(), 'close_at': closeAt.toString(), 'user_id': id,
           "location":{"latitude": location.latitude, "longitude":location.longitude}}));
 
     var jsonResponse = jsonDecode(response.body);
