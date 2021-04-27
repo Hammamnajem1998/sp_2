@@ -301,7 +301,7 @@ app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
 // get shop's queue information
 app.get('/queue/:id', (req, res) =>{
 
-    if(queues_array[req.params.id == null]) return res.status(404).json({error : 'Empty queue'});
+    if(queues_array[req.params.id == null]) return res.status(404).json({error : 'Empty queue', length : '0'});
 
     return res.json({message : queues_array[req.params.id], length : queues_array[req.params.id].length });
 });
