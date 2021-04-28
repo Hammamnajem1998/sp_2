@@ -128,22 +128,7 @@ app.post('/login', (req, res, next)=> {
 
 
 app.get('/', (req, res) =>{
-
-    var message = {
-        data : { temp :'queue_update'},
-        notification : { title: 'title', body : 'body'},
-        topic : 'temp',
-    };
- 
-    admin.messaging().send(message)
-    .then( response => {
-        res.status(200).json({message :'Notification sent successfully'});
-    })
-    .catch( error => {
-        console.log(error);
-        res.json({error: "Notification wasn't sended"});
-    });
-    // res.json({message: "Hellow world !!"});
+    res.json({message: "Hellow world !!"});
 });
 
 // get user information
@@ -262,9 +247,6 @@ app.post('/addShop', (req, res) =>{
     
     con.query(sql1, (err, shop) =>{
         if (err) return res.status(400).json({error: err.sqlMessage});
-        // create this shop queue
-        var queue = new Array();
-        queues_array[shop.insertId] = queue;
         return res.status(200).json({message: shop});
     });
 });
@@ -273,11 +255,13 @@ app.post('/addShop', (req, res) =>{
 app.post('/addToQueue', (req, res) =>{
 
     if (req.body.isFromOwner == 'true'){
-        queues_array[req.body.shop_id].push({customerID: 'none'});    
+        (queues_array[req.body.shop_id] == null) ? queues_array[req.body.shop_id] = new Array() 
+        : queues_array[req.body.shop_id].push({customerID: 'none'});    
     } else{
-        queues_array[req.body.shop_id].push({customerID: req.body.customer_id});
+        (queues_array[req.body.shop_id] == null) ? queues_array[req.body.shop_id] = new Array() 
+        : queues_array[req.body.shop_id].push({customerID: req.body.customer_id});
     }
-
+    sendNotification();
     return res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
 }); 
 
@@ -287,6 +271,7 @@ app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
     if(queues_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
         var customerIndex = queues_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         queues_array[req.params.shop_id].splice(customerIndex,1);
+        sendNotification();
         return res.json({message: 'deleted'});
     }
     else if (queues_array[req.params.shop_id].length == 0){
@@ -294,6 +279,7 @@ app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
     }
     else {
         queues_array[req.params.shop_id].shift();
+        sendNotification();
         return res.json({message: 'shifted'});
     }
 });
@@ -306,6 +292,22 @@ app.get('/queue/:id', (req, res) =>{
     return res.json({message : queues_array[req.params.id], length : queues_array[req.params.id].length });
 });
 
+function sendNotification(){
+    var message = {
+        data : { temp :'queue_update'},
+        notification : { title: 'title', body : 'body'},
+        topic : 'temp',
+    };
+ 
+    admin.messaging().send(message)
+    .then( response => {
+        console.log({message :'Notification sent successfully'});
+    })
+    .catch( error => {
+        console.log(error);
+        console.log({error: "Notification wasn't sended"});
+    });
+}
 
 app.use((err, req, res, next) => {
   res.status(500).json({
