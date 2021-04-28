@@ -112,10 +112,9 @@ class QueueItemView extends StatelessWidget {
               Positioned(
                 top: 0,
                 left: 0,
-                child: SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: this.photoURL ==''? Image.asset("assets/fitness_app/runner.png") : Image.network(this.photoURL),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(55.0)),
+                  child: this.photoURL == null ? Image.asset("assets/fitness_app/runner.png"): Image.network(this.photoURL) ,
                 ),
               ),
               Positioned(
