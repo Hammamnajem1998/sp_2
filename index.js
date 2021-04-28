@@ -261,7 +261,7 @@ app.post('/addToQueue', (req, res) =>{
         if (queues_array[req.body.shop_id] == null) queues_array[req.body.shop_id] = new Array();  
         queues_array[req.body.shop_id].push({customerID: req.body.customer_id});
     }
-    sendNotification();
+    sendNotification(req.body.shop_id);
     return res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
 }); 
 
@@ -283,7 +283,7 @@ app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
         return res.json({message: 'shifted'});
     }
 });
-
+  
 // get shop's queue information
 app.get('/queue/:id', (req, res) =>{
 
@@ -292,9 +292,9 @@ app.get('/queue/:id', (req, res) =>{
     return res.json({message : queues_array[req.params.id], length : queues_array[req.params.id].length });
 });
 
-function sendNotification(){
+function sendNotification(shopID){
     var message = {
-        data : { temp :'queue_update'},
+        data : { shop_id :shopID, queue: queues_array[shopID]},
         notification : { title: 'title', body : 'body'},
         topic : 'temp',
     };
