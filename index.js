@@ -255,11 +255,11 @@ app.post('/addShop', (req, res) =>{
 app.post('/addToQueue', (req, res) =>{
 
     if (req.body.isFromOwner == 'true'){
-        (queues_array[req.body.shop_id] == null) ? queues_array[req.body.shop_id] = new Array() 
-        : queues_array[req.body.shop_id].push({customerID: 'none'});    
+        if (queues_array[req.body.shop_id] == null) queues_array[req.body.shop_id] = new Array();  
+        queues_array[req.body.shop_id].push({customerID: 'none'});    
     } else{
-        (queues_array[req.body.shop_id] == null) ? queues_array[req.body.shop_id] = new Array() 
-        : queues_array[req.body.shop_id].push({customerID: req.body.customer_id});
+        if (queues_array[req.body.shop_id] == null) queues_array[req.body.shop_id] = new Array();  
+        queues_array[req.body.shop_id].push({customerID: req.body.customer_id});
     }
     sendNotification();
     return res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
