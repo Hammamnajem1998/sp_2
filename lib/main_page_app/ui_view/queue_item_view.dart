@@ -45,16 +45,8 @@ class QueueItemView extends StatelessWidget {
                   child: Stack(
                     alignment: Alignment.topLeft,
                     children: <Widget>[
-                      ClipRRect(
-                        borderRadius:
-                        BorderRadius.all(Radius.circular(8.0)),
-                        child: SizedBox(
+                      SizedBox(
                           height: 74,
-                          child: AspectRatio(
-                            aspectRatio: 1.714,
-                            child: Image.asset("assets/fitness_app/back.png"),
-                          ),
-                        ),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,7 +55,7 @@ class QueueItemView extends StatelessWidget {
                             children: <Widget>[
                               Padding(
                                 padding: const EdgeInsets.only(
-                                  left: 100,
+                                  left: 110,
                                   right: 16,
                                   top: 16,
                                 ),
@@ -85,7 +77,7 @@ class QueueItemView extends StatelessWidget {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
-                              left: 100,
+                              left: 110,
                               bottom: 12,
                               top: 4,
                               right: 16,
@@ -110,11 +102,12 @@ class QueueItemView extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: 0,
+                top: 3,
                 left: 0,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(55.0)),
-                  child: this.photoURL == null ? Image.asset("assets/fitness_app/runner.png"): Image.network(this.photoURL) ,
+                child:SizedBox(
+                  width: 100,
+                  height: 100,
+                    child: (this.photoURL == null || this.photoURL == '') ? Image.asset("assets/images/userAvatar.png"): Image.network(this.photoURL) ,
                 ),
               ),
               Positioned(

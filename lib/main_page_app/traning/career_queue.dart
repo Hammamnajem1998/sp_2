@@ -1,7 +1,9 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:temp1/main_page_app/ui_view/queue_item_view.dart';
 import 'package:temp1/shops_app/shops_app_theme.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -18,22 +20,22 @@ class CareerQueue extends StatefulWidget {
 
 class _CareerQueueState extends State<CareerQueue> {
 
-  String messageTitle = '';
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  List<QueueItemView> listViews = <QueueItemView>[];
-  Queue realTimeQueue = Queue();
-
+  // Queue realTimeQueue = Queue();
+  List<QueueItemView> queueItemsListUI = <QueueItemView>[];
+  List<QueueItem> queueItemsList = <QueueItem>[];
+  int queueLength;
   @override
   void initState() {
     super.initState();
-    realTimeQueue.shop = widget.shop;
+    // realTimeQueue.shop = widget.shop;
+    getData();
     _firebaseMessaging.subscribeToTopic('temp');
 
     _firebaseMessaging.configure(
       onMessage: (message) async{
         setState(() {
           print(message);
-          messageTitle = message["notification"]["title"];
           getData();
         });
       },
@@ -49,7 +51,8 @@ class _CareerQueueState extends State<CareerQueue> {
 
 
   Future<bool> getData() async {
-    realTimeQueue.fillQueueInformation();
+    getQueueInformation();
+    fillQueueItemsListUI();
     return true;
   }
 
@@ -65,12 +68,16 @@ class _CareerQueueState extends State<CareerQueue> {
           backgroundColor: Colors.transparent,
           body: Stack(
             children: [
-              getQueueItemViews(),
+              Column(
+               children: [
+                 getQueueItemViews(),
+               ],
+              )
             ]
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              // Add your onPressed code here!
+              addToQueueDataBase();
             },
             child: const Icon(Icons.add, size: 30),
             backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
@@ -88,23 +95,82 @@ class _CareerQueueState extends State<CareerQueue> {
         if (!snapshot.hasData) {
           return const SizedBox();
         } else {
-          return ListView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemCount: realTimeQueue.queueItemsList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return QueueItemView(
-                title: realTimeQueue.queueItemsList[index].customerName,
-                subTitle: realTimeQueue.queueItemsList[index].customerEmail,
-                photoURL: realTimeQueue.queueItemsList[index].photoURL,
-              );
-            },
+          return Expanded(
+              child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: queueLength,
+                itemBuilder: (BuildContext context, int index) {
+                  return queueItemsListUI[index];
+                },
+              ),
           );
         }
       },
     );
   }
 
+  Future<bool> getQueueInformation() async{
+    var shopID = widget.shop.id;
+    Response response = await get("https://dont-wait.herokuapp.com/queue/$shopID",
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    var jsonResponse = await jsonDecode(response.body);
+    print(jsonResponse);
+
+    this.queueItemsList.clear();
+    if(jsonResponse['error'] != null) return false;
+
+    addQueueItem( jsonResponse );
+    return true;
+  }
+
+  void addQueueItem (queueResponse) {
+
+    int length = queueResponse['length'];
+    var queue = queueResponse['message'];
+    for (int i=0 ; i< length ; i++){
+
+      queueItemsList.add(
+          QueueItem(
+              photoURL: queue[i]['photo'],
+              customerName: queue[i]['first_name'] + queue['message'][i]['last_name'],
+              customerEmail: queue[i]['email'],
+              shopID: widget.shop.id
+          )
+      );
+    }
+  }
+
+  void addToQueueDataBase() async{
+    Response response = await post("https://dont-wait.herokuapp.com/addToQueue",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'isFromOwner': 'true' ,'shop_id': widget.shop.id, }));
+
+    var jsonResponse = jsonDecode(response.body);
+    print('jsonResponse: '+ jsonResponse);
+  }
+
+  void fillQueueItemsListUI(){
+
+    setState(() {
+      this.queueItemsListUI.clear();
+      for(int i =0 ; i< this.queueItemsList.length ; i++){
+        this.queueItemsListUI.add(
+          QueueItemView(
+            photoURL: this.queueItemsList[i].photoURL,
+            title: this.queueItemsList[i].customerName,
+            subTitle: this.queueItemsList[i].customerEmail,
+          ),
+        );
+      }
+      queueLength = this.queueItemsListUI.length;
+    });
+  }
 
   Widget getAppBarUI() {
     return PreferredSize(

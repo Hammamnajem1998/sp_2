@@ -37,6 +37,7 @@ class Shop  {
     var jsonResponse = jsonDecode(response.body);
 
     print(jsonResponse);
+    if (jsonResponse['error'] != null) return false;
     this.id = jsonResponse['id'].toString();
     this.name = jsonResponse['name'];
     this.type = jsonResponse['type'];

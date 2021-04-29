@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 import 'package:temp1/shop.dart';
 
@@ -10,8 +8,6 @@ class Queue  {
   List<QueueItem> queueItemsList = <QueueItem>[];
 
   Future <bool> fillQueueInformation() async {
-
-
     Response response = await get("https://dont-wait.herokuapp.com/queue/${shop.id}",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -19,11 +15,18 @@ class Queue  {
     );
     var jsonResponse = jsonDecode(response.body);
 
+    print(jsonResponse);
+
     this.queueItemsList.clear();
-    var length = jsonResponse['length'];
+    if(jsonResponse['error'] != null) return false;
+
+    int length = jsonResponse['length'];
+    print(length);
     for (int i=0; i < length; i++){
+      print(this.queueItemsList.length.toString());
       addQueueItem( jsonResponse['message'][i]['customerID'] );
     }
+
     return true;
   }
 
