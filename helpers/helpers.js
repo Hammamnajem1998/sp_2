@@ -1,5 +1,5 @@
 const util = require('util')
-const gc = require('../config/storage_file')
+const gc = require('../config/storage/storage-config/storage_file')
 const bucket = gc.bucket('don-t-wait-project.appspot.com') // should be your bucket name
 
 /**
@@ -11,21 +11,23 @@ const bucket = gc.bucket('don-t-wait-project.appspot.com') // should be your buc
  *   "originalname" and "buffer" as keys
  */
 
-  const uploadImage = (file) => new Promise((resolve, reject) => {
-    const { originalname, buffer } = file
+const uploadImage = (file) => new Promise((resolve, reject) => {
+  const { originalname, buffer } = file
   
-    const blob = bucket.file(originalname.replace(/ /g, "_"))
-    const blobStream = blob.createWriteStream({
-      resumable: false
-    })
-    blobStream.on('finish', () => {
-        console.log();
-      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
-      resolve(publicUrl)
-    })
-    .on('error', () => {
-      reject(`Unable to upload image, something went wrong`)
-    })
-    .end(buffer)
+  const blob = bucket.file(originalname.replace(/ /g, "_"))
+  const blobStream = blob.createWriteStream({ resumable: false });
+
+  blobStream.on('finish', () => {
+    console.log();
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+    resolve(publicUrl)
   })
+
+  .on('error', () => {
+    reject(`Unable to upload image, something went wrong`)
+  })
+
+  .end(buffer)
+})
+
   module.exports = uploadImage;
