@@ -96,6 +96,12 @@ app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
     sendNotification(req.params.shop_id);
 });
   
+// delete queue
+app.delete('/queue/:shop_id', (req, res) =>{
+    queues_array[req.body.shop_id] = new Array();
+    return res.json({message: 'Queue Deleted'});
+});
+
 // get shop's queue information
 app.get('/queue/:id', (req, res) =>{
 
