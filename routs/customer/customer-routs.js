@@ -5,6 +5,26 @@ const { signinSchema, signupSchema } = require('../../config/validation/validati
 
 const LocalStrategy = require('passport-local').Strategy;
 
+// handle database disconnecting error
+function handleError() {
+    console.log('database lostconnect');
+    con.on('error', err =>{
+        if(err.code === 'PROTOCOL_CONNECTION_LOST'){
+            con = mysql.createConnection({
+                host: "us-cdbr-east-03.cleardb.com",
+                user: "bca894223fa92f",
+                password: "bd33beab",
+                database: "heroku_5dbb5278d6f4a3f"
+            });
+            
+            handleError();
+        }
+        else {
+            throw err;
+        }
+    });
+};
+handleError();
 
 // authentication
 passport.use(new LocalStrategy(
