@@ -79,21 +79,15 @@ app.post('/addToQueue', (req, res) =>{
 // delete customer from queue
 app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
 
+    if (queues_array[req.params.shop_id] == null || queues_array[req.params.shop_id].length == 0) return res.json({error: 'Empty Queue'})
+    
     if(queues_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
         var customerIndex = queues_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         queues_array[req.params.shop_id].splice(customerIndex,1);
-        res.json({message: 'deleted'});
+        return res.json({message: 'deleted'});
     }
-    else if (queues_array[req.params.shop_id].length == 0){
-        res.json({error: 'Empty Queue'});
-    }
-    else if (queues_array[req.params.shop_id].find(customer => customer.customerID === 'none')) {
-        var customerIndex = queues_array[req.params.shop_id].findIndex(customer => customer.customerID === 'none');
-        queues_array[req.params.shop_id].splice(customerIndex,1);
-        res.json({message: 'shifted'});
-    }
-
     sendNotification(req.params.shop_id);
+    return res.json({error: 'somthing wrong happened'});
 });
   
 // delete queue
@@ -111,6 +105,7 @@ app.get('/queue/:id', (req, res) =>{
 });
 
 function sendNotification(shopID){
+    if (shopID == null || shopID === 'none' || shopID === '' ) return;
     var message = {
         data : { shop_id :shopID , queue: JSON.stringify(queues_array[shopID])},
         notification : { title: 'title', body : 'body'},
