@@ -49,8 +49,8 @@ app.post('/addToQueue', (req, res) =>{
         if (queues_array[req.body.shop_id] == null) queues_array[req.body.shop_id] = new Array();  
         queues_array[req.body.shop_id].push({
             customerID: 'none',
-            first_name: 'New ', 
-            last_name : 'Customer', 
+            first_name: req.body.user_first_name, 
+            last_name : req.body.user_last_name, 
             email : 'Waiting', 
             photo : ''
         });
