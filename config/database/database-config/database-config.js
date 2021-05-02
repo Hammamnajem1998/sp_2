@@ -16,6 +16,7 @@ var con = mysql.createConnection({
 });
 
 function handleError() {
+    console.log('database lostconnect');
     con.on('error', err =>{
         if(err.code === 'PROTOCOL_CONNECTION_LOST'){
             con = mysql.createConnection({
