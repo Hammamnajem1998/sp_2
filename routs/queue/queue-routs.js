@@ -47,7 +47,13 @@ app.post('/addToQueue', (req, res) =>{
 
     if (req.body.isFromOwner === 'true'){
         if (queues_array[req.body.shop_id] == null) queues_array[req.body.shop_id] = new Array();  
-        queues_array[req.body.shop_id].push({customerID: 'none'});
+        queues_array[req.body.shop_id].push({
+            customerID: 'none',
+            first_name: 'New ', 
+            last_name : 'Customer', 
+            email : 'Waiting', 
+            photo : ''
+        });
         res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
         sendNotification(req.body.shop_id);
     } else{
