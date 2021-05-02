@@ -44,9 +44,8 @@ app.post('/login', (req, res, next)=> {
     if (error) return res.status(400).json({error: error.message});
     console.log(value);
 
-    console.log(passport);
     passport.authenticate('local', (err, user, info) => {
-      if (err) return  res.json({error: err})//next(err); 
+      if (err) return  next(err); //res.json({error: err})
       if (!user) return res.json({error: 'not authorized'})
       return res.json({message: user});
     })(req, res, next);
