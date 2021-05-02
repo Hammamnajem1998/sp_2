@@ -24,6 +24,15 @@ app.get('/shops', (req, res) =>{
     });
   
 });
+//delete all shops
+app.delete('/shops', (req, res) =>{
+
+    const sql1 = `delete from shops ;`;
+    con.query(sql1, (err, shops) =>{
+        if (err) return res.status(400).json({error: err.sqlMessage});
+        return res.send(shops);
+    });
+});
 
 // update shop image
 app.post('/shopImage', (req, res) =>{

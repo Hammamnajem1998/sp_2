@@ -69,10 +69,20 @@ app.get('/users', (req, res) =>{
     const sql1 = `select * from users;`;
     con.query(sql1, (err, users) =>{
         if (err) return res.status(404).json({error : err});
-        if(!users[0]) return res.status(404).send("error");
+        if(!users[0]) return res.status(404).json({error: 'No users'});
         return res.send(users);
     });   
 
+});
+
+//delete all shops
+app.delete('/users', (req, res) =>{
+
+    const sql1 = `delete from users ;`;
+    con.query(sql1, (err, shops) =>{
+        if (err) return res.status(400).json({error: err.sqlMessage});
+        return res.send(shops);
+    });
 });
 
 // update user information
