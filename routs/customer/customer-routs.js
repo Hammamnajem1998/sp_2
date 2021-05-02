@@ -2,7 +2,7 @@ const { app } = require('../../config/app/app-config/app-config');
 const { con } = require('../../config/database/database-config/database-config');
 const { passport} = require('../../config/authentication/authentication-config/authentication-config');
 const { signinSchema, signupSchema } = require('../../config/validation/validation-config/validation-config');
-
+const mysql = require('mysql');
 const LocalStrategy = require('passport-local').Strategy;
 
 // handle database disconnecting error

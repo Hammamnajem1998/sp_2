@@ -1,6 +1,6 @@
 const { app } = require('../../config/app/app-config/app-config');
 const { con } = require('../../config/database/database-config/database-config');
-
+const mysql = require('mysql');
 
 // handle database disconnecting error
 function handleError() {
