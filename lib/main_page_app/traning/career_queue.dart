@@ -7,7 +7,7 @@ import 'package:http/http.dart';
 import 'package:temp1/main_page_app/ui_view/queue_item_view.dart';
 import 'package:temp1/shops_app/shops_app_theme.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:temp1/queue.dart';
+import 'package:temp1/queue_item.dart';
 import 'package:temp1/shop.dart';
 
 class CareerQueue extends StatefulWidget {
@@ -21,21 +21,22 @@ class CareerQueue extends StatefulWidget {
 class _CareerQueueState extends State<CareerQueue> {
 
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  // Queue realTimeQueue = Queue();
   List<QueueItemView> queueItemsListUI = <QueueItemView>[];
   List<QueueItem> queueItemsList = <QueueItem>[];
-  int queueLength;
+  Future<bool> updateListView;
+
   @override
   void initState() {
     super.initState();
+    updateListView = getData();
     // realTimeQueue.shop = widget.shop;
-    getData();
+    // getData();
     _firebaseMessaging.subscribeToTopic('temp');
 
     _firebaseMessaging.configure(
       onMessage: (message) async{
         setState(() {
-          print(message);
+          //print(message);
           getData();
         });
       },
@@ -51,7 +52,8 @@ class _CareerQueueState extends State<CareerQueue> {
 
 
   Future<bool> getData() async {
-    getQueueInformation();
+    print('get data');
+    await getQueueInformation();
     fillQueueItemsListUI();
     return true;
   }
@@ -77,7 +79,9 @@ class _CareerQueueState extends State<CareerQueue> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              addToQueueDataBase();
+              _asyncInputDialog(context).then((customerName) => {
+                addToQueueDataBase(customerName),
+              });
             },
             child: const Icon(Icons.add, size: 30),
             backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
@@ -90,7 +94,7 @@ class _CareerQueueState extends State<CareerQueue> {
 
   Widget getQueueItemViews(){
     return FutureBuilder<bool>(
-      future: getData(),
+      future: updateListView,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         if (!snapshot.hasData) {
           return const SizedBox();
@@ -99,7 +103,7 @@ class _CareerQueueState extends State<CareerQueue> {
               child: ListView.builder(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                itemCount: queueLength,
+                itemCount: this.queueItemsListUI.length,
                 itemBuilder: (BuildContext context, int index) {
                   return queueItemsListUI[index];
                 },
@@ -136,7 +140,7 @@ class _CareerQueueState extends State<CareerQueue> {
       queueItemsList.add(
           QueueItem(
               photoURL: queue[i]['photo'],
-              customerName: queue[i]['first_name'] + queue['message'][i]['last_name'],
+              customerName: '${queue[i]['first_name']} ',//${queue['message'][i]['last_name']}',
               customerEmail: queue[i]['email'],
               shopID: widget.shop.id
           )
@@ -144,15 +148,16 @@ class _CareerQueueState extends State<CareerQueue> {
     }
   }
 
-  void addToQueueDataBase() async{
+  void addToQueueDataBase(String customer) async{
     Response response = await post("https://dont-wait.herokuapp.com/addToQueue",
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'isFromOwner': 'true' ,'shop_id': widget.shop.id, }));
-
-    var jsonResponse = jsonDecode(response.body);
-    print('jsonResponse: '+ jsonResponse);
+        body: jsonEncode({
+          'isFromOwner': 'true' ,
+          'shop_id': widget.shop.id,
+          'user_name' : customer,
+        }));
   }
 
   void fillQueueItemsListUI(){
@@ -168,7 +173,6 @@ class _CareerQueueState extends State<CareerQueue> {
           ),
         );
       }
-      queueLength = this.queueItemsListUI.length;
     });
   }
 
@@ -229,6 +233,40 @@ class _CareerQueueState extends State<CareerQueue> {
           ),
         ),
       ),
+    );
+  }
+
+  Future _asyncInputDialog(BuildContext context) {
+    String customerName = '';
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter new customer name'),
+          content: new Row(
+            children: [
+              new Expanded(
+                  child: new TextField(
+                    autofocus: true,
+                    decoration: new InputDecoration(
+                        labelText: 'Customer Name', hintText: 'Jone Smith'),
+                    onChanged: (value) {
+                      customerName = value;
+                    },
+                  ))
+            ],
+          ),
+          actions: [
+            FlatButton(
+              child: Text('Add'),
+              onPressed: () {
+                Navigator.of(context).pop(customerName);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

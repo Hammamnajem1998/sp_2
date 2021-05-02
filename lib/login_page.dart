@@ -10,6 +10,7 @@ import 'package:http/http.dart';
 import 'package:temp1/map.dart';
 import 'package:temp1/shop.dart';
 
+import 'app_theme.dart';
 import 'customer.dart';
 import 'navigation_Shops_profile.dart';
 
@@ -838,9 +839,11 @@ class Theme {
 
   const Theme();
 
-  static const Color loginGradientStart = const Color(0xFFFEFEFE);
-  static const Color loginGradientEnd = const Color(0xFF213333);
+  // static const Color loginGradientStart = const Color(0xFFFEFEFE);
+  // static const Color loginGradientEnd = const Color(0xFF213333);
 
+  static const Color loginGradientStart = AppTheme.nearlyWhite;
+  static const Color loginGradientEnd = AppTheme.nearlyBlack;
   static const primaryGradient = const LinearGradient(
     colors: const [loginGradientStart, loginGradientEnd],
     stops: const [0.0, 1.0],
@@ -892,6 +895,8 @@ class TabIndicationPainter extends CustomPainter {
     canvas.drawShadow(path, Color(0xFFfbab66), 3.0, true);
     canvas.drawPath(path, painter);
   }
+
+
 
   @override
   bool shouldRepaint(TabIndicationPainter oldDelegate) => true;
