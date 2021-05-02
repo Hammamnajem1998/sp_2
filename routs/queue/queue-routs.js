@@ -35,7 +35,7 @@ function handleError() {
     });
 };
 handleError();
-
+ 
 // for firebase
 const { admin } = require('../../config/firebase/firebase-config/admin');
 
