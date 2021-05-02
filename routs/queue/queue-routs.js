@@ -92,7 +92,10 @@ app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
   
 // delete queue
 app.delete('/queue/:shop_id', (req, res) =>{
-    queues_array[req.body.shop_id] = new Array();
+    if (queues_array[req.body.shop_id] == null) return res.json({error:'no such a queue'});
+    if (queues_array[req.body.shop_id].length ==  0 ) return res.json({error:'already empty'});
+
+    queues_array[req.body.shop_id] = [];
     return res.json({message: 'Queue Deleted'});
 });
 
