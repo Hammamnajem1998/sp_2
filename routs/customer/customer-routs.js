@@ -42,8 +42,6 @@ app.post('/signup', (req, res) =>{
 app.post('/login', (req, res, next)=> {
     const {error, value} = signinSchema.validate({email: req.body.email, password: req.body.password});
     if (error) return res.status(400).json({error: error.message});
-    console.log(value);
-
     passport.authenticate('local', (err, user, info) => {
       if (err) return  next(err); //res.json({error: err})
       if (!user) return res.json({error: 'not authorized'})
