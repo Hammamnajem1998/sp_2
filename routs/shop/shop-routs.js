@@ -1,7 +1,22 @@
 const { app } = require('../../config/app/app-config/app-config');
-const { con } = require('../../config/database/database-config/database-config');
-const mysql = require('mysql');
 
+
+const mysql = require('mysql');
+// for mysql local
+// var con = mysql.createConnection({
+//     host: "localhost",
+//     user: "root",
+//     password: "root",
+//     database: "temp_schema"
+// });
+
+// for mysql heroku database (cloud)
+var con = mysql.createConnection({
+    host: "us-cdbr-east-03.cleardb.com",
+    user: "bca894223fa92f",
+    password: "bd33beab",
+    database: "heroku_5dbb5278d6f4a3f"
+});
 // handle database disconnecting error
 function handleError() {
     console.log('database lostconnect');
@@ -21,9 +36,8 @@ function handleError() {
         }
     });
 };
-
-
 handleError();
+
 // get shop information
 app.get('/shop/:id', (req, res) =>{
 
