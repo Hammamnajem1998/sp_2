@@ -2,6 +2,7 @@ class QueueItem {
   String customerName;
   String customerEmail;
   String photoURL;
+  String customerID;
   String shopID;
 
   QueueItem({
@@ -9,5 +10,6 @@ class QueueItem {
     this.customerEmail: '',
     this.photoURL: '',
     this.shopID :'',
+    this.customerID: '',
   });
 }

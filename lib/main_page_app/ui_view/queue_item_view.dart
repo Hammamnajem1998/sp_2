@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import '../../customer.dart';
+import 'package:http/http.dart';
 import '../main_page_app_theme.dart';
+import 'dart:convert';
 
 class QueueItemView extends StatelessWidget {
 
   final String photoURL ;
   final String title;
   final String subTitle;
+  final String shopID;
+  final String customerID;
+
+
   QueueItemView(
       {Key key,
         this.photoURL : '',
         this.title : '',
         this.subTitle : '',
+        this.customerID : '',
+        this.shopID : '',
       })
       : super(key: key);
 
@@ -120,7 +128,7 @@ class QueueItemView extends StatelessWidget {
                     color: Colors.brown[900],
                   ),
                   onPressed: () {
-                    print('deleted');
+                    deleteFromQueueDataBase();
                   },
                 ),
               ),
@@ -129,6 +137,14 @@ class QueueItemView extends StatelessWidget {
         ),
       ],
     );
+  }
+  void deleteFromQueueDataBase() async{
+    Response response = await delete("https://dont-wait.herokuapp.com/queue/$shopID/$customerID",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+    );
+
   }
 }
 

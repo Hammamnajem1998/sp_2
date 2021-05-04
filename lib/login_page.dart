@@ -12,6 +12,7 @@ import 'package:temp1/shop.dart';
 
 import 'app_theme.dart';
 import 'customer.dart';
+import 'design_course/home_design_course.dart';
 import 'navigation_Shops_profile.dart';
 
 
@@ -376,6 +377,7 @@ class _LoginPageState extends State<LoginPage>
                         this.shop.userID = this.signInCustomer.id,
                       Navigator.push(
                         context,
+                        // MaterialPageRoute(builder: (context) => DesignCourseHomeScreen()),
                         MaterialPageRoute(builder: (context) => NavigationShopsProfile(customer: this.signInCustomer, shop: this.shop)),
                         )
                       }

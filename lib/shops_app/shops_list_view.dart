@@ -1,3 +1,4 @@
+import 'package:temp1/design_course/course_info_screen.dart';
 import 'package:temp1/shops_app/shops_app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -36,6 +37,13 @@ class ShopListView extends StatelessWidget {
                 splashColor: Colors.transparent,
                 onTap: () {
                   callback();
+                  Navigator.push<dynamic>(
+                    context,
+                    MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) => CourseInfoScreen(),
+                    ),
+                  );
+
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -196,7 +204,7 @@ class ShopListView extends StatelessWidget {
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(32.0),
                               ),
-                              onTap: () {},
+                              onTap: () {print('love bitton pressed');},
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Icon(

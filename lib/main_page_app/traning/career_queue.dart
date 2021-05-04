@@ -29,10 +29,8 @@ class _CareerQueueState extends State<CareerQueue> {
   void initState() {
     super.initState();
     updateListView = getData();
-    // realTimeQueue.shop = widget.shop;
-    // getData();
-    _firebaseMessaging.subscribeToTopic('temp');
 
+    _firebaseMessaging.subscribeToTopic('temp');
     _firebaseMessaging.configure(
       onMessage: (message) async{
         setState(() {
@@ -52,7 +50,6 @@ class _CareerQueueState extends State<CareerQueue> {
 
 
   Future<bool> getData() async {
-    print('get data');
     await getQueueInformation();
     fillQueueItemsListUI();
     return true;
@@ -122,16 +119,16 @@ class _CareerQueueState extends State<CareerQueue> {
       },
     );
     var jsonResponse = await jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     this.queueItemsList.clear();
     if(jsonResponse['error'] != null) return false;
 
-    addQueueItem( jsonResponse );
+    addQueueItems( jsonResponse );
     return true;
   }
 
-  void addQueueItem (queueResponse) {
+  void addQueueItems (queueResponse) {
 
     int length = queueResponse['length'];
     var queue = queueResponse['message'];
@@ -139,10 +136,11 @@ class _CareerQueueState extends State<CareerQueue> {
 
       queueItemsList.add(
           QueueItem(
-              photoURL: queue[i]['photo'],
-              customerName: '${queue[i]['first_name']} ',//${queue['message'][i]['last_name']}',
-              customerEmail: queue[i]['email'],
-              shopID: widget.shop.id
+            photoURL: queue[i]['photo'],
+            customerName: '${queue[i]['first_name']} ',//${queue['message'][i]['last_name']}',
+            customerEmail: queue[i]['email'],
+            customerID: queue[i]['customerID'],
+            shopID: widget.shop.id,
           )
       );
     }
@@ -157,6 +155,7 @@ class _CareerQueueState extends State<CareerQueue> {
           'isFromOwner': 'true' ,
           'shop_id': widget.shop.id,
           'user_name' : customer,
+          'customer_id' : 'none'
         }));
   }
 
@@ -170,6 +169,8 @@ class _CareerQueueState extends State<CareerQueue> {
             photoURL: this.queueItemsList[i].photoURL,
             title: this.queueItemsList[i].customerName,
             subTitle: this.queueItemsList[i].customerEmail,
+            customerID: this.queueItemsList[i].customerID,
+            shopID: widget.shop.id,
           ),
         );
       }
