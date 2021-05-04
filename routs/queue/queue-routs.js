@@ -83,9 +83,10 @@ app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
     if(queues_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
         var customerIndex = queues_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         queues_array[req.params.shop_id].splice(customerIndex,1);
+        sendNotification(req.params.shop_id);
         return res.json({message: 'deleted'});
     }
-    sendNotification(req.params.shop_id);
+    
     return res.json({error: 'somthing wrong happened'});
 });
   
@@ -108,6 +109,7 @@ app.get('/queue/:id', (req, res) =>{
 
 function sendNotification(shopID){
     
+    console.log('sendNotification');
     var message = {
         data : { shop_id :shopID , queue: JSON.stringify(queues_array[shopID])},
         notification : { title: 'title', body : 'body'},
