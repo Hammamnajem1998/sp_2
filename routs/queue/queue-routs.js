@@ -107,7 +107,7 @@ app.get('/queue/:id', (req, res) =>{
 });
 
 function sendNotification(shopID){
-    if (shopID == null || shopID === 'none' || shopID === '' ) return;
+    
     var message = {
         data : { shop_id :shopID , queue: JSON.stringify(queues_array[shopID])},
         notification : { title: 'title', body : 'body'},
