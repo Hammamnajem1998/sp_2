@@ -56,7 +56,7 @@ app.get('/shops', (req, res) =>{
     con.query(sql1, (err, shops) =>{
         if (err) return res.status(400).json({error: err.sqlMessage});
         if (!shops[0]) return res.status(200).json({error: 'No shops'});
-        return res.send(shops);
+        return res.json( { message:shops , length:shops.length } );
     });
   
 });
