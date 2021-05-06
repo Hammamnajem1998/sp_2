@@ -15,4 +15,4 @@ require('./routs/cloudStorage/cloudStorage-routs');
 
 app.get('/', (req, res) =>{
     res.json({message: "Hellow world !!"});
-});
+}); 
