@@ -110,7 +110,7 @@ app.get('/queue/:id', (req, res) =>{
 function sendNotification(shopID){
     
     var message = {
-        data : { shop_id :shopID , message: JSON.stringify(queues_array[shopID]), length: queues_array[shopID].length},
+        data : { shop_id :shopID , message: JSON.stringify(queues_array[shopID]), length: queues_array[shopID].length.toString()},
         notification : { title: 'title', body : 'body'},
         topic : 'temp',
     };
