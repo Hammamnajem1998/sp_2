@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import '../shop.dart';
 import 'design_course_app_theme.dart';
 
 class CourseInfoScreen extends StatefulWidget {
+  final Shop shop;
+  CourseInfoScreen({Key key, @required this.shop}) : super(key: key);
+
   @override
   _CourseInfoScreenState createState() => _CourseInfoScreenState();
 }
@@ -56,7 +60,7 @@ class _CourseInfoScreenState extends State<CourseInfoScreen>
               children: <Widget>[
                 AspectRatio(
                   aspectRatio: 1.2,
-                  child: Image.asset('assets/design_course/webInterFace.png'),
+                  child: Image.network(widget.shop.photoURL),
                 ),
               ],
             ),
@@ -95,7 +99,7 @@ class _CourseInfoScreenState extends State<CourseInfoScreen>
                             padding: const EdgeInsets.only(
                                 top: 32.0, left: 18, right: 16),
                             child: Text(
-                              'Web Design\nCourse',
+                              widget.shop.name,
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
@@ -113,7 +117,7 @@ class _CourseInfoScreenState extends State<CourseInfoScreen>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  '\$28.99',
+                                  '',
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w200,
@@ -153,9 +157,9 @@ class _CourseInfoScreenState extends State<CourseInfoScreen>
                               padding: const EdgeInsets.all(8),
                               child: Row(
                                 children: <Widget>[
-                                  getTimeBoxUI('24', 'Classe'),
-                                  getTimeBoxUI('2hours', 'Time'),
-                                  getTimeBoxUI('24', 'Seat'),
+                                  getTimeBoxUI('Open At', (int.parse(widget.shop.openAt) < 12) ? (widget.shop.openAt + ' AM') : ((int.parse(widget.shop.openAt)-12).toString() + ' PM')),
+                                  getTimeBoxUI('Close At', (int.parse(widget.shop.closeAt) < 12) ? (widget.shop.closeAt + ' AM') : ((int.parse(widget.shop.closeAt)-12).toString() + ' PM')),
+                                  getTimeBoxUI('T/customer', widget.shop.timeUnit + ' min'),
                                 ],
                               ),
                             ),

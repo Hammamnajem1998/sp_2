@@ -143,30 +143,10 @@ class _LoginPageState extends State<LoginPage>
     super.dispose();
   }
 
-  String messageTitle = "Empty";
-  String notificationAlert = "alert";
-
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   void initState() {
     super.initState();
-    _firebaseMessaging.configure(
-      onMessage: (message) async{
-        setState(() {
-          messageTitle = message["notification"]["title"];
-          notificationAlert = "1 ";
-        });
-
-      },
-      onResume: (message) async{
-        setState(() {
-          messageTitle = message["data"]["title"];
-          notificationAlert = "2 ";
-        });
-
-      },
-    );
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -444,7 +424,7 @@ class _LoginPageState extends State<LoginPage>
                 Padding(
                   padding: EdgeInsets.only(left: 15.0, right: 15.0),
                   child: Text(
-                    "Or"+  '${this.notificationAlert} ${this.messageTitle}' ,
+                    "Or" ,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,

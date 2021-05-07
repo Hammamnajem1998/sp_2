@@ -1,9 +1,11 @@
-import 'package:temp1/design_course/course_info_screen.dart';
+import 'package:temp1/shops_app/shop_info_screen.dart';
 import 'package:temp1/shops_app/shops_app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
+import '../customer.dart';
+import '../shop.dart';
 import 'model/shops_list_data.dart';
 
 class ShopListView extends StatelessWidget {
@@ -12,14 +14,17 @@ class ShopListView extends StatelessWidget {
       this.shopData,
       this.animationController,
       this.animation,
-      this.callback})
+      this.callback,
+      this.shop,
+      this.customer})
       : super(key: key);
 
   final VoidCallback callback;
   final ShopListData shopData;
   final AnimationController animationController;
   final Animation<dynamic> animation;
-
+  final Shop shop;
+  final Customer customer;
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -40,7 +45,7 @@ class ShopListView extends StatelessWidget {
                   Navigator.push<dynamic>(
                     context,
                     MaterialPageRoute<dynamic>(
-                      builder: (BuildContext context) => CourseInfoScreen(),
+                      builder: (BuildContext context) => ShopInfoScreen(shop : shop, customer: customer,),
                     ),
                   );
 
@@ -64,10 +69,7 @@ class ShopListView extends StatelessWidget {
                           children: <Widget>[
                             AspectRatio(
                               aspectRatio: 2,
-                              child: Image.asset(
-                                shopData.imagePath,
-                                fit: BoxFit.cover,
-                              ),
+                              child: Image.network(shopData.imagePath,fit: BoxFit.cover,),
                             ),
                             Container(
                               color: ShopAppTheme.buildLightTheme()

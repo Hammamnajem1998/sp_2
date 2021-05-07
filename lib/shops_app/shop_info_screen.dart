@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import '../customer.dart';
+import '../main.dart';
+import '../shop.dart';
 import 'shop_info_theme.dart';
+import 'package:temp1/main_page_app/ui_view/water_view.dart';
 
 class ShopInfoScreen extends StatefulWidget {
+  final Shop shop;
+  final Customer customer;
+  ShopInfoScreen({Key key, @required this.shop, this.customer}) : super(key: key);
+
   @override
-  ShopInfoScreenState createState() => ShopInfoScreenState();
+  _ShopInfoScreenState createState() => _ShopInfoScreenState();
 }
 
-class ShopInfoScreenState extends State<ShopInfoScreen>
+class _ShopInfoScreenState extends State<ShopInfoScreen>
     with TickerProviderStateMixin {
   final double infoHeight = 364.0;
   AnimationController animationController;
@@ -56,7 +64,7 @@ class ShopInfoScreenState extends State<ShopInfoScreen>
               children: <Widget>[
                 AspectRatio(
                   aspectRatio: 1.2,
-                  child: Image.asset('assets/design_course/webInterFace.png'),
+                  child: Image.network(widget.shop.photoURL),
                 ),
               ],
             ),
@@ -95,7 +103,7 @@ class ShopInfoScreenState extends State<ShopInfoScreen>
                             padding: const EdgeInsets.only(
                                 top: 32.0, left: 18, right: 16),
                             child: Text(
-                              'Web Design\nCourse',
+                              widget.shop.name,
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
@@ -107,13 +115,13 @@ class ShopInfoScreenState extends State<ShopInfoScreen>
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
-                                left: 16, right: 16, bottom: 8, top: 16),
+                                left: 16, right: 16, bottom: 8, top: 0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  '\$48.99',
+                                  '',
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w200,
@@ -153,33 +161,23 @@ class ShopInfoScreenState extends State<ShopInfoScreen>
                               padding: const EdgeInsets.all(8),
                               child: Row(
                                 children: <Widget>[
-                                  getTimeBoxUI('24', 'Classe'),
-                                  getTimeBoxUI('2hours', 'Time'),
-                                  getTimeBoxUI('24', 'Seat'),
+                                  getTimeBoxUI('Open At', (int.parse(widget.shop.openAt) < 12) ? (widget.shop.openAt + ' AM') : ((int.parse(widget.shop.openAt)-12).toString() + ' PM')),
+                                  getTimeBoxUI('Close At', (int.parse(widget.shop.closeAt) < 12) ? (widget.shop.closeAt + ' AM') : ((int.parse(widget.shop.closeAt)-12).toString() + ' PM')),
+                                  getTimeBoxUI('T/customer', widget.shop.timeUnit + ' min'),
                                 ],
                               ),
                             ),
                           ),
                           Expanded(
-                            child: AnimatedOpacity(
-                              duration: const Duration(milliseconds: 500),
-                              opacity: opacity2,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16, right: 16, top: 8, bottom: 8),
-                                child: Text(
-                                  'Lorem ipsum is simply dummy text of printing & typesetting industry, Lorem ipsum is simply dummy text of printing & typesetting industry.',
-                                  textAlign: TextAlign.justify,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w200,
-                                    fontSize: 14,
-                                    letterSpacing: 0.27,
-                                    color: DesignCourseAppTheme.grey,
-                                  ),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
+                            child: WaterView(
+                              mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
+                                  CurvedAnimation(
+                                      parent: animationController,
+                                      curve: Interval((1 / 10) * 7, 1.0,
+                                          curve: Curves.fastOutSlowIn))),
+                              mainScreenAnimationController: animationController,
+                              shop: widget.shop,
+                              customer: widget.customer,
                             ),
                           ),
                           AnimatedOpacity(
@@ -296,7 +294,7 @@ class ShopInfoScreenState extends State<ShopInfoScreen>
                   color: Colors.transparent,
                   child: InkWell(
                     borderRadius:
-                        BorderRadius.circular(AppBar().preferredSize.height),
+                    BorderRadius.circular(AppBar().preferredSize.height),
                     child: Icon(
                       Icons.arrow_back_ios,
                       color: DesignCourseAppTheme.nearlyBlack,

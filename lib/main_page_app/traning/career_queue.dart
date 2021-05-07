@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,12 +35,12 @@ class _CareerQueueState extends State<CareerQueue> {
     _firebaseMessaging.configure(
       onMessage: (message) async{
         setState(() {
-          //print(message);
-          getData();
+          if(message['data']['shop_id'] == widget.shop.id){
+            getData();
+          }
         });
       },
     );
-
   }
 
   @override
@@ -50,6 +51,7 @@ class _CareerQueueState extends State<CareerQueue> {
 
 
   Future<bool> getData() async {
+
     await getQueueInformation();
     fillQueueItemsListUI();
     return true;
@@ -120,20 +122,16 @@ class _CareerQueueState extends State<CareerQueue> {
     );
     var jsonResponse = await jsonDecode(response.body);
     // print(jsonResponse);
-
-    this.queueItemsList.clear();
     if(jsonResponse['error'] != null) return false;
-
     addQueueItems( jsonResponse );
     return true;
   }
 
   void addQueueItems (queueResponse) {
-
-    int length = queueResponse['length'];
+    this.queueItemsList.clear();
+    var length = queueResponse['length'];
     var queue = queueResponse['message'];
     for (int i=0 ; i< length ; i++){
-
       queueItemsList.add(
           QueueItem(
             photoURL: queue[i]['photo'],
