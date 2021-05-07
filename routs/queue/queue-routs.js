@@ -109,9 +109,8 @@ app.get('/queue/:id', (req, res) =>{
 
 function sendNotification(shopID){
     
-    console.log('sendNotification');
     var message = {
-        data : { shop_id :shopID , queue: JSON.stringify(queues_array[shopID])},
+        data : { shop_id :shopID , message: JSON.stringify(queues_array[shopID]), length: queues_array[shopID].length},
         notification : { title: 'title', body : 'body'},
         topic : 'temp',
     };
