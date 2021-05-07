@@ -53,8 +53,8 @@ app.post('/addToQueue', (req, res) =>{
             email : 'Waiting', 
             photo : ''
         });
-        res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
         sendNotification(req.body.shop_id);
+        res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
     } else{
         if (queues_array[req.body.shop_id] == null) queues_array[req.body.shop_id] = new Array();
 
@@ -69,8 +69,8 @@ app.post('/addToQueue', (req, res) =>{
                 email : user[0].email, 
                 photo : user[0].photo 
             });
-            res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
             sendNotification(req.body.shop_id);
+            res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
         });
     }    
 }); 
