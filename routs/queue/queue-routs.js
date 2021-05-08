@@ -84,10 +84,6 @@ app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
         var customerIndex = queues_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         queues_array[req.params.shop_id].splice(customerIndex,1);
         console.log('delete fucntion');
-        if(customerIndex == 0  && queues_array[req.params.shop_id][1] != null){
-            notifyForCloseDate(queues_array[req.params.shop_id][1].customerID);
-        } 
-        
         notifyToUpdateQueue(req.params.shop_id);
         return res.json({message: 'deleted'});
     }
@@ -116,24 +112,6 @@ function notifyToUpdateQueue(shopID){
     
     var message = {
         data : { shop_id :shopID },
-        notification : { title: 'title', body : 'body'},
-        topic : 'temp',
-    };
-
-    admin.messaging().send(message)
-    .then( response => {
-        console.log({message :'Notification sent successfully'});
-    })
-    .catch( error => {
-        console.log(error);
-        console.log({error: "Notification wasn't sended"});
-    });
-}
-
-function notifyForCloseDate(userID){
-    
-    var message = {
-        data : { user_id :userID },
         notification : { title: 'Prepare your self', body : 'your turn are very close'},
         topic : 'temp',
     };
