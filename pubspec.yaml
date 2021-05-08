@@ -23,30 +23,42 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  google_maps_flutter: ^0.5.30
-  location: ^3.0.2
+  google_maps_flutter:
+  location:
   http:
-  image_picker: ^0.6.0+9
-  gcloud: ^0.7.3
-  googleapis_auth: ^0.2.12
-  mime: ^0.9.7
-  flutter_fluid_slider: ^1.0.2
+  image_picker:
+  gcloud:
+  googleapis_auth:
+  mime:
+  flutter_fluid_slider:
   mailer:
-  firebase_messaging: ^7.0.3
+  firebase_messaging:
+  flutter_launcher_icons:
+  day_night_time_picker:
+
+
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
-  font_awesome_flutter: ^8.8.1
-  smooth_star_rating: ^1.1.1
-  intl: ^0.16.0
-  uuid: 3.0.3
+  cupertino_icons:
+  font_awesome_flutter:
+  smooth_star_rating:
+  intl:
+  uuid:
+
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/brokenGlass.png"
+
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -58,6 +70,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

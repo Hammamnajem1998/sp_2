@@ -3,7 +3,8 @@ import '../customer.dart';
 import '../main.dart';
 import '../shop.dart';
 import 'shop_info_theme.dart';
-import 'package:temp1/main_page_app/ui_view/water_view.dart';
+import 'package:temp1/shops_app/water_view.dart';
+import 'package:day_night_time_picker/day_night_time_picker.dart';
 
 class ShopInfoScreen extends StatefulWidget {
   final Shop shop;
@@ -163,7 +164,7 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
                                 children: <Widget>[
                                   getTimeBoxUI('Open At', (int.parse(widget.shop.openAt) < 12) ? (widget.shop.openAt + ' AM') : ((int.parse(widget.shop.openAt)-12).toString() + ' PM')),
                                   getTimeBoxUI('Close At', (int.parse(widget.shop.closeAt) < 12) ? (widget.shop.closeAt + ' AM') : ((int.parse(widget.shop.closeAt)-12).toString() + ' PM')),
-                                  getTimeBoxUI('T/customer', widget.shop.timeUnit + ' min'),
+                                  getTimeBoxUI('T/custom', widget.shop.timeUnit + ' min'),
                                 ],
                               ),
                             ),
@@ -204,7 +205,7 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
                                                 .withOpacity(0.2)),
                                       ),
                                       child: Icon(
-                                        Icons.add,
+                                        Icons.live_tv_rounded,
                                         color: DesignCourseAppTheme.nearlyBlue,
                                         size: 28,
                                       ),
@@ -214,32 +215,46 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
                                     width: 16,
                                   ),
                                   Expanded(
-                                    child: Container(
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        color: DesignCourseAppTheme.nearlyBlue,
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(16.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        TimeOfDay now = TimeOfDay.now();
+                                        Navigator.of(context).push(
+                                          showPicker(
+                                            context: context,
+                                            value: now,
+                                            onChange: (pickedTime){
+                                              print('time: ' + pickedTime.toString());
+                                            },
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        height: 48,
+                                        decoration: BoxDecoration(
+                                          color: DesignCourseAppTheme.nearlyBlue,
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.circular(16.0),
+                                          ),
+                                          boxShadow: <BoxShadow>[
+                                            BoxShadow(
+                                                color: DesignCourseAppTheme
+                                                    .nearlyBlue
+                                                    .withOpacity(0.5),
+                                                offset: const Offset(1.1, 1.1),
+                                                blurRadius: 10.0),
+                                          ],
                                         ),
-                                        boxShadow: <BoxShadow>[
-                                          BoxShadow(
+                                        child: Center(
+                                          child: Text(
+                                            'Ask for a date',
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 18,
+                                              letterSpacing: 0.0,
                                               color: DesignCourseAppTheme
-                                                  .nearlyBlue
-                                                  .withOpacity(0.5),
-                                              offset: const Offset(1.1, 1.1),
-                                              blurRadius: 10.0),
-                                        ],
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          'Join Course',
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 18,
-                                            letterSpacing: 0.0,
-                                            color: DesignCourseAppTheme
-                                                .nearlyWhite,
+                                                  .nearlyWhite,
+                                            ),
                                           ),
                                         ),
                                       ),

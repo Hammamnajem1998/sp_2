@@ -2,27 +2,28 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:temp1/main_page_app/ui_view/queue_item_view.dart';
+import 'package:temp1/main_page_app/ui_view/request_item_view.dart';
 import 'package:temp1/shops_app/shops_app_theme.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:temp1/queue_item.dart';
 import 'package:temp1/shop.dart';
 
-class CareerQueue extends StatefulWidget {
-  CareerQueue({Key key, this.title, this.shop}) : super(key: key);
+class DateRequests extends StatefulWidget {
+  DateRequests({Key key, this.title, this.shop}) : super(key: key);
   final String title;
   final Shop shop;
   @override
-  _CareerQueueState createState() => _CareerQueueState();
+  _DateRequestsState createState() => _DateRequestsState();
 }
 
-class _CareerQueueState extends State<CareerQueue> {
+class _DateRequestsState extends State<DateRequests> {
 
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  List<QueueItemView> queueItemsListUI = <QueueItemView>[];
+  List<RequestItemView> requestItemsListUI = <RequestItemView>[];
   List<QueueItem> queueItemsList = <QueueItem>[];
   Future<bool> updateListView;
 
@@ -71,27 +72,35 @@ class _CareerQueueState extends State<CareerQueue> {
             children: [
               Column(
                children: [
-                 getQueueItemViews(),
+                 getRequestItemViews(),
                ],
               )
             ]
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              _asyncInputDialog(context).then((customerName) => {
-                addToQueueDataBase(customerName),
-              });
+              TimeOfDay now = TimeOfDay.now();
+              Navigator.of(context).push(
+                showPicker(
+                  context: context,
+                  value: now,
+                  onChange: (pickedTime){
+                    print('time: ' + pickedTime.toString());
+                  },
+                ),
+              );
             },
             child: const Icon(Icons.add, size: 30),
             backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
           ),
         ),
+
       )
 
     );
   }
 
-  Widget getQueueItemViews(){
+  Widget getRequestItemViews(){
     return FutureBuilder<bool>(
       future: updateListView,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -102,9 +111,9 @@ class _CareerQueueState extends State<CareerQueue> {
               child: ListView.builder(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                itemCount: this.queueItemsListUI.length,
+                itemCount: this.requestItemsListUI.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return queueItemsListUI[index];
+                  return requestItemsListUI[index];
                 },
               ),
           );
@@ -160,10 +169,10 @@ class _CareerQueueState extends State<CareerQueue> {
   void fillQueueItemsListUI(){
 
     setState(() {
-      this.queueItemsListUI.clear();
+      this.requestItemsListUI.clear();
       for(int i =0 ; i< this.queueItemsList.length ; i++){
-        this.queueItemsListUI.add(
-          QueueItemView(
+        this.requestItemsListUI.add(
+          RequestItemView(
             photoURL: this.queueItemsList[i].photoURL,
             title: this.queueItemsList[i].customerName,
             subTitle: this.queueItemsList[i].customerEmail,
@@ -235,37 +244,4 @@ class _CareerQueueState extends State<CareerQueue> {
     );
   }
 
-  Future _asyncInputDialog(BuildContext context) {
-    String customerName = '';
-    return showDialog(
-      context: context,
-      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Enter new customer name'),
-          content: new Row(
-            children: [
-              new Expanded(
-                  child: new TextField(
-                    autofocus: true,
-                    decoration: new InputDecoration(
-                        labelText: 'Customer Name', hintText: 'Jone Smith'),
-                    onChanged: (value) {
-                      customerName = value;
-                    },
-                  ))
-            ],
-          ),
-          actions: [
-            FlatButton(
-              child: Text('Add'),
-              onPressed: () {
-                Navigator.of(context).pop(customerName);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 }

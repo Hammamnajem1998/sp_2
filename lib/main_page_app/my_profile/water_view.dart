@@ -1,4 +1,4 @@
-import 'package:temp1/main_page_app/ui_view/wave_view.dart';
+import 'package:temp1/shops_app/wave_view.dart';
 import 'package:temp1/main_page_app/main_page_app_theme.dart';
 import 'package:temp1/main.dart';
 import 'package:flutter/material.dart';

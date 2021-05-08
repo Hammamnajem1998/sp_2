@@ -33,13 +33,20 @@ class NavigationShopsProfile extends StatefulWidget {
 }
 
 class _NavigationShopsProfileState extends State<NavigationShopsProfile> {
+
   Widget screenView;
   DrawerIndexShopsProfile drawerIndex;
   @override
   void initState() {
+
     drawerIndex = DrawerIndexShopsProfile.userProfile;
     screenView =  MainPageAppHomeScreen(customer: widget.customer, shop: widget.shop);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override

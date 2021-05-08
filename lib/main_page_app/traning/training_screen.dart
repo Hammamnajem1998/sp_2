@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 import 'package:temp1/feedback_screen.dart';
+import 'package:temp1/main_page_app/traning/date_requests.dart';
 import 'package:temp1/main_page_app/ui_view/area_list_view.dart';
 import 'package:temp1/main_page_app/ui_view/running_view.dart';
 import 'package:temp1/main_page_app/ui_view/title_view.dart';
@@ -66,7 +67,6 @@ class _TrainingScreenState extends State<TrainingScreen>
 
   void addAllListData() {
     const int count = 5;
-
 
     listViews.clear();
     listViews.add(
@@ -162,13 +162,16 @@ class _TrainingScreenState extends State<TrainingScreen>
     listViews.add(
         getQueueButtonBarUI(),
     );
+    listViews.add(
+      getRequestsButtonBarUI(),
+    );
 
   }
 
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 50));
+    await widget.shop.getShopInformation();
 
-    widget.shop.getShopInformation();
     addAllListData();
     return true;
   }
@@ -327,6 +330,62 @@ class _TrainingScreenState extends State<TrainingScreen>
                       child: Center(
                         child: Text(
                           'Shop Queue',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 27,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getRequestsButtonBarUI() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10, top: 10, bottom: 8),
+              child: Container(
+                decoration:  BoxDecoration(
+                  //color: HotelAppTheme.buildLightTheme().backgroundColor,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(38.0),
+                  ),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.8),
+                        offset: const Offset(0, 2),
+                        blurRadius: 8.0),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 16, right: 10, top: 15, bottom: 15),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: ()  {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => DateRequests(title: "Date Requests", shop: widget.shop)),
+                        );
+
+                      },
+                      borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                      highlightColor: Colors.transparent,
+                      child: Center(
+                        child: Text(
+                          'Date Requests',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 27,
