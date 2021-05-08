@@ -39,52 +39,51 @@ handleError();
 // for firebase
 const { admin } = require('../../config/firebase/firebase-config/admin');
 
-// implement array of queues
-var queues_array =[];
+// implement array of engagements
+var engagement_array =[];
 
 // add customer to the shop's queue
-app.post('/addToQueue', (req, res) =>{
+app.post('/addToEngagement', (req, res) =>{
 
     if (req.body.isFromOwner === 'true'){
-        if (queues_array[req.body.shop_id] == null) queues_array[req.body.shop_id] = new Array();  
-        queues_array[req.body.shop_id].push({
+        if (engagement_array[req.body.shop_id] == null) engagement_array[req.body.shop_id] = new Array();  
+        engagement_array[req.body.shop_id].push({
             customerID: 'none',
             first_name: req.body.user_name, 
             last_name : ' ',
-            email : 'Waiting', 
+            email : `Requested a date at ${req.body.hour}:${req.body.minute}`, 
             photo : ''
         });
         notifyToUpdateQueue(req.body.shop_id);
-        res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
+        res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
     } else{
-        if (queues_array[req.body.shop_id] == null) queues_array[req.body.shop_id] = new Array();
+        if (engagement_array[req.body.shop_id] == null) engagement_array[req.body.shop_id] = new Array();
 
         const sql1 = `select * from users WHERE id = '${req.body.customer_id}'; `;
         con.query(sql1, (err, user) =>{
             if(err) return res.status(404).json({error : err});
             
-            queues_array[req.body.shop_id].push({   
+            engagement_array[req.body.shop_id].push({   
                 customerID: req.body.customer_id, 
                 first_name: user[0].first_name, 
                 last_name : user[0].last_name, 
-                email : user[0].email, 
+                email : `Requested a date at ${req.body.hour}:${req.body.minute}`, 
                 photo : user[0].photo 
             });
             notifyToUpdateQueue(req.body.shop_id);
-            res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
+            res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
         });
     }    
 }); 
 
 // delete customer from queue
-app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
+app.delete('/engagement/:shop_id/:customer_id', (req, res) =>{
 
-    if (queues_array[req.params.shop_id] == null || queues_array[req.params.shop_id].length == 0) return res.json({error: 'Empty Queue'});
+    if (engagement_array[req.params.shop_id] == null || engagement_array[req.params.shop_id].length == 0) return res.json({error: 'Empty Queue'});
     
-    if(queues_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
-        var customerIndex = queues_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
-        queues_array[req.params.shop_id].splice(customerIndex,1);
-        console.log('delete fucntion');
+    if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
+        var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
+        engagement_array[req.params.shop_id].splice(customerIndex,1);
         notifyToUpdateQueue(req.params.shop_id);
         return res.json({message: 'deleted'});
     }
@@ -93,21 +92,22 @@ app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
 });
   
 // delete queue
-app.delete('/queue/:shop_id', (req, res) =>{
-    if (queues_array[req.params.shop_id] == null) return res.json({error:'no such a queue'});
-    if (queues_array[req.params.shop_id].length ==  0 ) return res.json({error:'already empty'});
+app.delete('/engagement/:shop_id', (req, res) =>{
+    if (engagement_array[req.params.shop_id] == null) return res.json({error:'no such a queue'});
+    if (engagement_array[req.params.shop_id].length ==  0 ) return res.json({error:'already empty'});
 
-    queues_array[req.params.shop_id] = null;
-    return res.json({message: 'Queue Deleted'});
+    engagement_array[req.params.shop_id] = null;
+    return res.json({message: 'Engagement Queue Deleted'});
 });
 
 // get shop's queue information
-app.get('/queue/:id', (req, res) =>{
+app.get('/engagement/:id', (req, res) =>{
 
-    if(queues_array[req.params.id] == null) return res.status(404).json({error : 'Empty queue', length : '0'});
+    if(engagement_array[req.params.id] == null) return res.status(404).json({error : 'Empty queue', length : '0'});
 
-    return res.json({message : queues_array[req.params.id], length : queues_array[req.params.id].length });
+    return res.json({message : engagement_array[req.params.id], length : engagement_array[req.params.id].length });
 });
+
 
 function notifyToUpdateQueue(shopID){
     

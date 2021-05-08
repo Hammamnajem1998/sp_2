@@ -10,6 +10,9 @@ require('./routs/shop/shop-routs');
 // for queue routs
 require('./routs/queue/queue-routs');
 
+// for engagement routs
+require('./routs/engagement/engagement');
+
 // for cloud storage routs
 require('./routs/cloudStorage/cloudStorage-routs');
 
