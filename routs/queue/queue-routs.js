@@ -53,7 +53,7 @@ app.post('/addToQueue', (req, res) =>{
             email : 'Waiting', 
             photo : ''
         });
-        sendNotification(req.body.shop_id);
+        notifyToUpdateQueue(req.body.shop_id);
         res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
     } else{
         if (queues_array[req.body.shop_id] == null) queues_array[req.body.shop_id] = new Array();
@@ -69,7 +69,7 @@ app.post('/addToQueue', (req, res) =>{
                 email : user[0].email, 
                 photo : user[0].photo 
             });
-            sendNotification(req.body.shop_id);
+            notifyToUpdateQueue(req.body.shop_id);
             res.json( {message : queues_array[req.body.shop_id], length : queues_array[req.body.shop_id].length } );
         });
     }    
@@ -78,12 +78,17 @@ app.post('/addToQueue', (req, res) =>{
 // delete customer from queue
 app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
 
-    if (queues_array[req.params.shop_id] == null || queues_array[req.params.shop_id].length == 0) return res.json({error: 'Empty Queue'})
+    if (queues_array[req.params.shop_id] == null || queues_array[req.params.shop_id].length == 0) return res.json({error: 'Empty Queue'});
     
     if(queues_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
         var customerIndex = queues_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         queues_array[req.params.shop_id].splice(customerIndex,1);
-        sendNotification(req.params.shop_id);
+        console.log('delete fucntion');
+        if(customerIndex == 0  && queues_array[req.params.shop_id][1] != null){
+            notifyForCloseDate(queues_array[req.params.shop_id][1].customerID);
+        } 
+        
+        notifyToUpdateQueue(req.params.shop_id);
         return res.json({message: 'deleted'});
     }
     
@@ -107,11 +112,29 @@ app.get('/queue/:id', (req, res) =>{
     return res.json({message : queues_array[req.params.id], length : queues_array[req.params.id].length });
 });
 
-function sendNotification(shopID){
+function notifyToUpdateQueue(shopID){
     
     var message = {
         data : { shop_id :shopID },
         notification : { title: 'title', body : 'body'},
+        topic : 'temp',
+    };
+
+    admin.messaging().send(message)
+    .then( response => {
+        console.log({message :'Notification sent successfully'});
+    })
+    .catch( error => {
+        console.log(error);
+        console.log({error: "Notification wasn't sended"});
+    });
+}
+
+function notifyForCloseDate(userID){
+    
+    var message = {
+        data : { user_id :userID },
+        notification : { title: 'Prepare your self', body : 'your turn are very close'},
         topic : 'temp',
     };
 
