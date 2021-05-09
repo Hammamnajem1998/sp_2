@@ -52,9 +52,10 @@ app.post('/addToEngagement', (req, res) =>{
             first_name: req.body.user_name, 
             last_name : ' ',
             email : `Requested a date at ${req.body.hour}:${req.body.minute}`, 
-            photo : ''
+            photo : '',
+            status : 'accepted'
         });
-        notifyToUpdateQueue(req.body.shop_id);
+        notifyToUpdateEngagementArray(req.body.shop_id);
         res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
     } else{
         if (engagement_array[req.body.shop_id] == null) engagement_array[req.body.shop_id] = new Array();
@@ -68,9 +69,10 @@ app.post('/addToEngagement', (req, res) =>{
                 first_name: user[0].first_name, 
                 last_name : user[0].last_name, 
                 email : `Requested a date at ${req.body.hour}:${req.body.minute}`, 
-                photo : user[0].photo 
+                photo : user[0].photo,
+                status : 'processing' 
             });
-            notifyToUpdateQueue(req.body.shop_id);
+            notifyToUpdateEngagementArray(req.body.shop_id);
             res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
         });
     }    
@@ -84,36 +86,118 @@ app.delete('/engagement/:shop_id/:customer_id', (req, res) =>{
     if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
         var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         engagement_array[req.params.shop_id].splice(customerIndex,1);
-        notifyToUpdateQueue(req.params.shop_id);
+        notifyToUpdateEngagementArray(req.params.shop_id);
         return res.json({message: 'deleted'});
     }
     
     return res.json({error: 'somthing wrong happened'});
 });
-  
-// delete queue
+
+// accept request
+app.get('/engagement/accept/:shop_id/:customer_id', (req, res) =>{
+
+    if (engagement_array[req.params.shop_id] == null || engagement_array[req.params.shop_id].length == 0) return res.json({error: 'Empty Queue'});
+    
+    if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
+        var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
+        engagement_array[req.params.shop_id][customerIndex].status = 'accepted' ;
+        notifyAccept(req.params.shop_id);
+        return res.json({message: engagement_array[req.params.shop_id][customerIndex]});
+    }
+    
+    return res.json({error: 'somthing wrong happened'});
+});
+
+// reject request
+app.get('/engagement/reject/:shop_id/:customer_id', (req, res) =>{
+
+    if (engagement_array[req.params.shop_id] == null || engagement_array[req.params.shop_id].length == 0) return res.json({error: 'Empty Queue'});
+    
+    if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
+        var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
+        engagement_array[req.params.shop_id][customerIndex].status = 'rejected' ;
+        notifyreject(req.params.shop_id);
+        return res.json({message: engagement_array[req.params.shop_id][customerIndex]});
+    }
+    
+    return res.json({error: 'somthing wrong happened'});
+});
+
+
+// delete request from engagement array
+app.delete('/engagement/:shop_id/:customer_id', (req, res) =>{
+
+    if (engagement_array[req.params.shop_id] == null || engagement_array[req.params.shop_id].length == 0) return res.json({error: 'Empty Queue'});
+    
+    if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
+        var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
+        engagement_array[req.params.shop_id].splice(customerIndex,1);
+        notifyToUpdateEngagementArray(req.params.shop_id);
+        return res.json({message: 'deleted'});
+    }
+    
+    return res.json({error: 'somthing wrong happened'});
+});
+
+// delete engagement array
 app.delete('/engagement/:shop_id', (req, res) =>{
-    if (engagement_array[req.params.shop_id] == null) return res.json({error:'no such a queue'});
+    if (engagement_array[req.params.shop_id] == null) return res.json({error:'no such an array'});
     if (engagement_array[req.params.shop_id].length ==  0 ) return res.json({error:'already empty'});
 
     engagement_array[req.params.shop_id] = null;
     return res.json({message: 'Engagement Queue Deleted'});
 });
 
-// get shop's queue information
+// get date request's array 
 app.get('/engagement/:id', (req, res) =>{
 
-    if(engagement_array[req.params.id] == null) return res.status(404).json({error : 'Empty queue', length : '0'});
+    if(engagement_array[req.params.id] == null) return res.status(404).json({error : 'Empty array', length : '0'});
 
     return res.json({message : engagement_array[req.params.id], length : engagement_array[req.params.id].length });
 });
 
 
-function notifyToUpdateQueue(shopID){
+function notifyAccept(shopID){
     
     var message = {
         data : { shop_id :shopID },
-        notification : { title: 'Prepare your self', body : 'your turn are very close'},
+        notification : { title: 'Accepted', body : 'your engaged date was accepted'},
+        topic : 'temp',
+    };
+
+    admin.messaging().send(message)
+    .then( response => {
+        console.log({message :'Notification sent successfully'});
+    })
+    .catch( error => {
+        console.log(error);
+        console.log({error: "Notification wasn't sended"});
+    });
+}
+
+function notifyreject(shopID){
+    
+    var message = {
+        data : { shop_id :shopID },
+        notification : { title: 'rejected', body : 'your engaged date was rejected'},
+        topic : 'temp',
+    };
+
+    admin.messaging().send(message)
+    .then( response => {
+        console.log({message :'Notification sent successfully'});
+    })
+    .catch( error => {
+        console.log(error);
+        console.log({error: "Notification wasn't sended"});
+    });
+}
+
+function notifyToUpdateEngagementArray(shopID){
+    
+    var message = {
+        data : { shop_id :shopID },
+        notification : { title: 'New date request', body : 'Take a look !!'},
         topic : 'temp',
     };
 
