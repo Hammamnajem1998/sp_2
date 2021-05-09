@@ -86,6 +86,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
+
                               FocusScope.of(context).requestFocus(FocusNode());
                               // this.username = widget.customer.email;
                               // this.password = widget.customer.password;
@@ -99,15 +100,39 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                 ..recipients.add('hhammamnajem98@gmail.com')
                                 ..subject = 'Feed Back ${DateTime.now()}'
                                 ..text = widget.customer.email+'\n\n'+ this.feedBackController.text;
-
-                              try {
-                                final sendReport = send(message, smtpServer);
-                                print('Message sent: ' + sendReport.toString());
-                              } on MailerException catch (e) {
-                                print('Message not sent.');
-                                for (var p in e.problems) {
-                                  print('Problem: ${p.code}: ${p.msg}');
+                              if(this.feedBackController.text.trim() != '') {
+                                try {
+                                  final sendReport = send(message, smtpServer);
+                                  print('Message sent: ' + sendReport.toString());
+                                  this.feedBackController.text = '';
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        // Retrieve the text the user has entered by using the
+                                        // TextEditingController.
+                                        content: Text("Thank for your feedback !!"),
+                                        actions: <Widget>[
+                                          // usually buttons at the bottom of the dialog
+                                          new TextButton(
+                                            child: new Text("Close"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                } on MailerException catch (e) {
+                                  print('Message not sent.');
+                                  for (var p in e.problems) {
+                                    print('Problem: ${p.code}: ${p.msg}');
+                                  }
                                 }
+                              }
+                              else {
+                                this.feedBackController.text = '';
                               }
                             },
                             child: Center(
