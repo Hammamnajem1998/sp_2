@@ -138,7 +138,7 @@ app.delete('/engagement/:shop_id/:customer_id', (req, res) =>{
     
     return res.json({error: 'somthing wrong happened'});
 });
-
+  
 // delete engagement array
 app.delete('/engagement/:shop_id', (req, res) =>{
     if (engagement_array[req.params.shop_id] == null) return res.json({error:'no such an array'});
