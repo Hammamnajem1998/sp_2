@@ -78,21 +78,6 @@ app.post('/addToEngagement', (req, res) =>{
     }    
 }); 
 
-// delete customer from queue
-app.delete('/engagement/:shop_id/:customer_id', (req, res) =>{
-
-    if (engagement_array[req.params.shop_id] == null || engagement_array[req.params.shop_id].length == 0) return res.json({error: 'Empty Queue'});
-    
-    if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
-        var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
-        engagement_array[req.params.shop_id].splice(customerIndex,1);
-        notifyToUpdateEngagementArray(req.params.shop_id);
-        return res.json({message: 'deleted'});
-    }
-    
-    return res.json({error: 'somthing wrong happened'});
-});
-
 // accept request
 app.get('/engagement/accept/:shop_id/:customer_id', (req, res) =>{
 
@@ -127,7 +112,8 @@ app.get('/engagement/reject/:shop_id/:customer_id', (req, res) =>{
 // delete request from engagement array
 app.delete('/engagement/:shop_id/:customer_id', (req, res) =>{
 
-    if (engagement_array[req.params.shop_id] == null || engagement_array[req.params.shop_id].length == 0) return res.json({error: 'Empty Queue'});
+    if (engagement_array[req.params.shop_id] == null || engagement_array[req.params.shop_id].length == 0) 
+        return res.json({error: 'Empty Queue'});
     
     if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
         var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
