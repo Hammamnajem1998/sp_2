@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import '../customer.dart';
 import '../main.dart';
 import '../shop.dart';
@@ -223,7 +226,7 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
                                             context: context,
                                             value: now,
                                             onChange: (pickedTime){
-                                              print('time: ' + pickedTime.toString());
+                                              addToQueueDataBase(pickedTime);
                                             },
                                           ),
                                         );
@@ -373,5 +376,19 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
         ),
       ),
     );
+  }
+
+  void addToQueueDataBase(TimeOfDay time) async{
+    Response response = await post("https://dont-wait.herokuapp.com/addToEngagement",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'isFromOwner': 'false' ,
+          'shop_id': widget.shop.id,
+          'customer_id' : widget.customer.id,
+          'hour' : time.hour,
+          'minute' : time.minute ,
+        }));
   }
 }

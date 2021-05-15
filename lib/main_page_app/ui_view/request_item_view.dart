@@ -120,19 +120,6 @@ class RequestItemView extends StatelessWidget {
               ),
               Positioned(
                 top: 25,
-                left: 280,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.approval,
-                    size: 30.0,
-                    color: Colors.green,
-                  ),
-                  onPressed: () {
-                  },
-                ),
-              ),
-              Positioned(
-                top: 25,
                 left: 225,
                 child: IconButton(
                   icon: Icon(
@@ -141,6 +128,35 @@ class RequestItemView extends StatelessWidget {
                     color: Colors.red,
                   ),
                   onPressed: () {
+                    rejectEngagementDataBase();
+                  },
+                ),
+              ),
+              Positioned(
+                top: 25,
+                left: 265,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.approval,
+                    size: 30.0,
+                    color: Colors.green,
+                  ),
+                  onPressed: () {
+                    acceptEngagementDataBase();
+                  },
+                ),
+              ),
+              Positioned(
+                top: 25,
+                left: 300,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.delete,
+                    size: 30.0,
+                    color: Colors.yellow,
+                  ),
+                  onPressed: () {
+                    deleteEngagementDataBase();
                   },
                 ),
               ),
@@ -150,13 +166,26 @@ class RequestItemView extends StatelessWidget {
       ],
     );
   }
-  void deleteFromQueueDataBase() async{
-    Response response = await delete("https://dont-wait.herokuapp.com/queue/$shopID/$customerID",
+  void deleteEngagementDataBase() async{
+    Response response = await delete("https://dont-wait.herokuapp.com/engagement/$shopID/$customerID",
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
     );
-
+  }
+  void acceptEngagementDataBase() async{
+    Response response = await get("https://dont-wait.herokuapp.com/engagement/accept/$shopID/$customerID",
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+  }
+  void rejectEngagementDataBase() async{
+    Response response = await get("https://dont-wait.herokuapp.com/engagement/reject/$shopID/$customerID",
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
   }
 }
 

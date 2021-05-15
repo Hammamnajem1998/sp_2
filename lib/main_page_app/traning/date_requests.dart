@@ -80,15 +80,18 @@ class _DateRequestsState extends State<DateRequests> {
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               TimeOfDay now = TimeOfDay.now();
-              Navigator.of(context).push(
-                showPicker(
-                  context: context,
-                  value: now,
-                  onChange: (pickedTime){
-                    print('time: ' + pickedTime.toString());
-                  },
+              _asyncInputDialog(context).then((customerName) => {
+                Navigator.of(context).push(
+                  showPicker(
+                    context: context,
+                    value: now,
+                    onChange: (pickedTime){
+                      addToQueueDataBase(customerName , pickedTime);
+                    },
+                  ),
                 ),
-              );
+              });
+
             },
             child: const Icon(Icons.add, size: 30),
             backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
@@ -124,7 +127,7 @@ class _DateRequestsState extends State<DateRequests> {
 
   Future<bool> getQueueInformation() async{
     var shopID = widget.shop.id;
-    Response response = await get("https://dont-wait.herokuapp.com/queue/$shopID",
+    Response response = await get("https://dont-wait.herokuapp.com/engagement/$shopID",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -145,7 +148,7 @@ class _DateRequestsState extends State<DateRequests> {
           QueueItem(
             photoURL: queue[i]['photo'],
             customerName: '${queue[i]['first_name']} ${queue[i]['last_name']}',
-            customerEmail: queue[i]['email'],
+            customerEmail: '${queue[i]['email']} \n${queue[i]['status']}',
             customerID: queue[i]['customerID'],
             shopID: widget.shop.id,
           )
@@ -153,8 +156,8 @@ class _DateRequestsState extends State<DateRequests> {
     }
   }
 
-  void addToQueueDataBase(String customer) async{
-    Response response = await post("https://dont-wait.herokuapp.com/addToQueue",
+  void addToQueueDataBase(String customer, TimeOfDay time) async{
+    Response response = await post("https://dont-wait.herokuapp.com/addToEngagement",
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -162,7 +165,9 @@ class _DateRequestsState extends State<DateRequests> {
           'isFromOwner': 'true' ,
           'shop_id': widget.shop.id,
           'user_name' : customer,
-          'customer_id' : 'none'
+          'customer_id' : 'none',
+          'hour' : time.hour,
+          'minute' : time.minute ,
         }));
   }
 
@@ -241,6 +246,40 @@ class _DateRequestsState extends State<DateRequests> {
           ),
         ),
       ),
+    );
+  }
+
+  Future _asyncInputDialog(BuildContext context) {
+    String customerName = '';
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter new customer name'),
+          content: new Row(
+            children: [
+              new Expanded(
+                  child: new TextField(
+                    autofocus: true,
+                    decoration: new InputDecoration(
+                        labelText: 'Customer Name', hintText: 'Jone Smith'),
+                    onChanged: (value) {
+                      customerName = value;
+                    },
+                  )),
+            ],
+          ),
+          actions: [
+            FlatButton(
+              child: Text('Set Time'),
+              onPressed: () {
+                Navigator.of(context).pop(customerName);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
