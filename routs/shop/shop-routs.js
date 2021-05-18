@@ -84,17 +84,9 @@ app.post('/shopImage', (req, res) =>{
 // add Shop 
 app.post('/addShop', (req, res) =>{
 
-    const sql1 = `INSERT INTO shops (name, type, time_unit, open_at, close_at, rating, user_id, location) 
-    VALUES (
-        '${req.body.name}', 
-        '${req.body.type}', 
-        '${req.body.time_unit}', 
-        '${req.body.open_at}', 
-        '${req.body.close_at}', 
-        '0.0', 
-        ${req.body.user_id}', 
-        ST_GeomFromText('POINT(${req.body.location.latitude} ${req.body.location.longitude})') 
-    );`;
+    const sql1 = `INSERT INTO shops (name, type, time_unit, open_at, close_at, user_id, location) 
+    VALUES ('${req.body.name}', '${req.body.type}', '${req.body.time_unit}', '${req.body.open_at}', '${req.body.close_at}', '${req.body.user_id}', 
+    ST_GeomFromText('POINT(${req.body.location.latitude} ${req.body.location.longitude})') );`;
     
     con.query(sql1, (err, shop) =>{
         if (err) return res.status(400).json({error: err.sqlMessage});
@@ -110,7 +102,6 @@ app.post('/shopRate', (req, res) =>{
     con.query(sql1, (err, like) =>{
         if (err) return res.status(400).json({error: err.sqlMessage});
     });
-
     // summation and average rating of all rates to this shop
     var sum = 0;
     var avr_rate;
