@@ -52,7 +52,7 @@ app.get('/shop/:id', (req, res) =>{
 // get all shops
 app.get('/shops', (req, res) =>{
 
-    const sql1 = `select * from shops ;`;
+    const sql1 = `select * from shops;`;
     con.query(sql1, (err, shops) =>{
         if (err) return res.status(400).json({error: err.sqlMessage});
         if (!shops[0]) return res.status(200).json({error: 'No shops'});
@@ -94,3 +94,35 @@ app.post('/addShop', (req, res) =>{
     });
 });
 
+// rating a shop 
+app.post('/shopRate', (req, res) =>{
+
+    // add the rate to likes table.
+    const sql1 = `INSERT INTO rates (user, shop, rate) VALUES (${req.body.customer}, ${req.body.shop}, ${req.body.rating}) ;`;
+    con.query(sql1, (err, like) =>{
+        if (err) return res.status(400).json({error: err.sqlMessage});
+        //return res.status(200).json({message: like});
+    });
+    // summation and average rating of all rates to this shop
+    var sum = 0;
+    var avr_rate;
+    const sql2 = `select * from rates where shop = ${req.body.shop};`;
+    con.query(sql2, (err, rates) =>{
+        if (err) return res.status(400).json({error: err.sqlMessage});
+        if (!rates[0]) return res.status(200).json({error: 'No rates'});
+        rates.forEach(rate => {
+            sum += rate.rate;
+        });
+        // calculate average rate
+        avr_rate = sum/rates.length ; 
+        
+        //update shop rating on shops table
+        const sql3 = `UPDATE shops SET rating = '${avr_rate}' WHERE id = '${req.body.shop}';`;
+        con.query(sql3, (err, result) =>{
+            if (err) return res.status(400).json({error: err.sqlMessage});
+            return res.status(200).json({message: "rated", rating: avr_rate, rated_users: rates.length});
+        });
+    
+    });
+
+});
