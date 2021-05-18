@@ -145,3 +145,15 @@ app.post('/image', (req, res) =>{
         return res.status(200).json({message: "updated", result: result});
     });
 });
+
+// get user's liked shops
+app.get('/user/like/:id', (req, res) =>{
+    
+    const sql1 = `select * from rates where user = ${req.params.id} and rate > 2.5;`;
+    con.query(sql1, (err, shops) =>{
+        if (err) return res.status(404).json({error : err});
+        if(!shops[0]) return res.status(404).json({error: 'No liked shops'});
+        return res.send(shops);
+    });   
+
+});
