@@ -330,7 +330,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'email': email, 'password': password}));
+        body: jsonEncode({'email': email, 'password': password})
+    );
 
     var jsonResponse = jsonDecode(response.body);
     if(jsonResponse['error'] != null){

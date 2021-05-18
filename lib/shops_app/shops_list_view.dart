@@ -69,7 +69,9 @@ class ShopListView extends StatelessWidget {
                           children: <Widget>[
                             AspectRatio(
                               aspectRatio: 2,
-                              child: Image.network(shopData.imagePath,fit: BoxFit.cover,),
+                              child: shopData.imagePath != null
+                                  ? Image.network(shopData.imagePath,fit: BoxFit.cover,)
+                                  : Image.asset('assets/hotel/hotel_2.png'),
                             ),
                             Container(
                               color: ShopAppTheme.buildLightTheme()
@@ -113,24 +115,7 @@ class ShopListView extends StatelessWidget {
                                                 const SizedBox(
                                                   width: 4,
                                                 ),
-                                                Icon(
-                                                  FontAwesomeIcons.mapMarkerAlt,
-                                                  size: 12,
-                                                  color: ShopAppTheme
-                                                          .buildLightTheme()
-                                                      .primaryColor,
-                                                ),
-                                                Expanded(
-                                                  child: Text(
-                                                    '${shopData.dist.toStringAsFixed(1)} km to city',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.grey
-                                                            .withOpacity(0.8)),
-                                                  ),
-                                                ),
+
                                               ],
                                             ),
                                             Padding(
@@ -141,21 +126,18 @@ class ShopListView extends StatelessWidget {
                                                   SmoothStarRating(
                                                     allowHalfRating: true,
                                                     starCount: 5,
-                                                    rating: shopData.rating,
+                                                    isReadOnly: true,
+                                                    rating: shopData.rating != null ? shopData.rating : 0.0,
                                                     size: 20,
+                                                    onRated: (rating) => {
+                                                      print(rating),
+                                                    },
                                                     color: ShopAppTheme
                                                             .buildLightTheme()
                                                         .primaryColor,
                                                     borderColor: ShopAppTheme
                                                             .buildLightTheme()
                                                         .primaryColor,
-                                                  ),
-                                                  Text(
-                                                    ' ${shopData.reviews} Reviews',
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.grey
-                                                            .withOpacity(0.8)),
                                                   ),
                                                 ],
                                               ),
@@ -175,19 +157,12 @@ class ShopListView extends StatelessWidget {
                                           CrossAxisAlignment.end,
                                       children: <Widget>[
                                         Text(
-                                          '\$${shopData.perNight}',
+                                          '${shopData.perNight}',
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 22,
                                           ),
-                                        ),
-                                        Text(
-                                          '/per night',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color:
-                                                  Colors.grey.withOpacity(0.8)),
                                         ),
                                       ],
                                     ),
@@ -206,7 +181,10 @@ class ShopListView extends StatelessWidget {
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(32.0),
                               ),
-                              onTap: () {print('love bitton pressed');},
+                              onTap: () async {
+                                var rating = await showRatingDialog(context);
+                                shop.rate(customer.id, rating);
+                              },
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Icon(
@@ -229,4 +207,43 @@ class ShopListView extends StatelessWidget {
       },
     );
   }
+
+  Future<double> showRatingDialog(var context) async{
+    double rate = 0.0;
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          // Retrieve the text the user has entered by using the
+          // TextEditingController.
+          content: SmoothStarRating(
+            allowHalfRating: true,
+            starCount: 5,
+            rating: shopData.rating != null ? shopData.rating : 0.0,
+            size: 50,
+            onRated: (rating) => {
+              rate =  rating.toDouble()
+            },
+            color: ShopAppTheme
+                .buildLightTheme()
+                .primaryColor,
+            borderColor: ShopAppTheme
+                .buildLightTheme()
+                .primaryColor,
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new TextButton(
+              child: new Text("Ok"),
+              onPressed: () {
+                Navigator.of(context).pop(rate);
+              },
+            ),
+          ],
+        );
+      },
+    );
+    return rate;
+  }
+
 }

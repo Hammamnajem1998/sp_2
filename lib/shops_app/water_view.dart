@@ -336,11 +336,11 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
       },
     );
     var jsonResponse = await jsonDecode(response.body);
-    var length = jsonResponse['length'];
+    var length = jsonResponse['length'].toString();
     if(length != null){
       setState(() {
-        queueLength = length;
-        estimatedWaitingTime = length * int.parse(widget.shop.timeUnit);
+        queueLength = int.parse(length);
+        estimatedWaitingTime = int.parse(length) * int.parse(widget.shop.timeUnit);
       });
     }
     return true;

@@ -12,7 +12,7 @@ class ShopListData {
     this.dist = 1.8,
     this.reviews = 80,
     this.rating = 4.5,
-    this.perNight = 180,
+    this.perNight = '',
     this.shop
   });
 
@@ -23,6 +23,6 @@ class ShopListData {
   double dist;
   double rating;
   int reviews;
-  int perNight;
+  String perNight;
 
 }

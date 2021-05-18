@@ -171,10 +171,11 @@ class _ShopsScreenState extends State<ShopsScreen>
         timeUnit: list[i]['time_unit'].toString(),
         openAt: list[i]['open_at'].toString(),
         closeAt: list[i]['close_at'].toString(),
+        rating: list[i]['rating'].toString(),
         location: shopLocation,
         userID: list[i]['user_id'].toString()
       );
-
+      TimeOfDay now = TimeOfDay.now();
       shopList.add(
         ShopListData(
           shop : shop,
@@ -182,9 +183,9 @@ class _ShopsScreenState extends State<ShopsScreen>
           titleTxt: list[i]['name'],
           subTxt: list[i]['type'],
           dist: 2.0,
-          reviews: 80,
-          rating: 4.4,
-          perNight: 180,
+          reviews: shop.ratedUsers,
+          rating: list[i]['rating'] != null ? list[i]['rating'].toDouble(): 0.0,
+          perNight: (now.hour > int.parse(shop.openAt) && now.hour < int.parse(shop.closeAt)) ? 'Open' : 'Close'
         ),
       );
     }
@@ -414,7 +415,7 @@ class _ShopsScreenState extends State<ShopsScreen>
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      '530 shops found',
+                      '${this.shopList.length} shops found',
                       style: TextStyle(
                         fontWeight: FontWeight.w100,
                         fontSize: 16,
@@ -517,54 +518,21 @@ class _ShopsScreenState extends State<ShopsScreen>
             top: MediaQuery.of(context).padding.top, left: 8, right: 8),
         child: Row(
           children: <Widget>[
-            ///////////////
             Expanded(
-              child: Center(
-                child: Text(
-                  'Explore',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 22,
+              child: Container(
+                width: AppBar().preferredSize.height + 40,
+                height: AppBar().preferredSize.height,
+                child: Center(
+                  child: Text(
+                    'Explore',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 22,
+                    ),
                   ),
                 ),
               ),
             ),
-            Container(
-              width: AppBar().preferredSize.height + 40,
-              height: AppBar().preferredSize.height,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(32.0),
-                      ),
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(Icons.favorite_border),
-                      ),
-                    ),
-                  ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(32.0),
-                      ),
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(FontAwesomeIcons.mapMarkerAlt),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
           ],
         ),
       ),

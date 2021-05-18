@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:temp1/shops_app/shops_app_theme.dart';
 import '../customer.dart';
 import '../main.dart';
 import '../shop.dart';
@@ -125,7 +127,7 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  '',
+                                  widget.shop.type,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w200,
@@ -138,7 +140,9 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
                                   child: Row(
                                     children: <Widget>[
                                       Text(
-                                        '4.3',
+                                        widget.shop.rating != 'null' && widget.shop.rating != ''
+                                            ? double.parse(widget.shop.rating).toStringAsFixed(2)
+                                            : '0.0',
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w200,
@@ -280,23 +284,29 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
             Positioned(
               top: (MediaQuery.of(context).size.width / 1.2) - 24.0 - 35,
               right: 35,
-              child: ScaleTransition(
-                alignment: Alignment.center,
-                scale: CurvedAnimation(
-                    parent: animationController, curve: Curves.fastOutSlowIn),
-                child: Card(
-                  color: DesignCourseAppTheme.nearlyBlue,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50.0)),
-                  elevation: 10.0,
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    child: Center(
-                      child: Icon(
-                        Icons.favorite,
-                        color: DesignCourseAppTheme.nearlyWhite,
-                        size: 30,
+              child: InkWell(
+                onTap: () async {
+                  var rating = await showRatingDialog(context);
+                  widget.shop.rate(widget.customer.id, rating);
+                },
+                child: ScaleTransition(
+                  alignment: Alignment.center,
+                  scale: CurvedAnimation(
+                      parent: animationController, curve: Curves.fastOutSlowIn),
+                  child: Card(
+                    color: DesignCourseAppTheme.nearlyBlue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50.0)),
+                    elevation: 10.0,
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      child: Center(
+                        child: Icon(
+                          Icons.favorite,
+                          color: DesignCourseAppTheme.nearlyWhite,
+                          size: 30,
+                        ),
                       ),
                     ),
                   ),
@@ -390,5 +400,39 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
           'hour' : time.hour,
           'minute' : time.minute ,
         }));
+  }
+
+  Future<double> showRatingDialog(var context) async{
+    double rate = 0.0;
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          // Retrieve the text the user has entered by using the
+          // TextEditingController.
+          content: SmoothStarRating(
+            allowHalfRating: true,
+            starCount: 5,
+            rating: 2.5,
+            size: 50,
+            onRated: (rating) => {
+              rate = rating.toDouble()
+            },
+            color: DesignCourseAppTheme.nearlyBlue,
+            borderColor: DesignCourseAppTheme.nearlyBlack,
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new TextButton(
+              child: new Text("Ok"),
+              onPressed: () {
+                Navigator.of(context).pop(rate);
+              },
+            ),
+          ],
+        );
+      },
+    );
+    return rate;
   }
 }

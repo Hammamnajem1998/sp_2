@@ -12,19 +12,23 @@ class Shop  {
   String timeUnit;
   String openAt;
   String closeAt;
+  String rating;
+  int ratedUsers;
   String userID;
 
 
   Shop({
-    this.id: "",
-    this.name:"",
-    this.type: "",
+    this.id: '',
+    this.name: '',
+    this.type: '',
     this.location,
-    this.photoURL: "",
-    this.timeUnit: "",
-    this.openAt: "",
-    this.closeAt:'',
-    this.userID :'',
+    this.photoURL: '',
+    this.timeUnit: '',
+    this.openAt: '',
+    this.closeAt: '',
+    this.rating: '',
+    this.ratedUsers: 0,
+    this.userID: '',
   });
 
   Future <bool> getShopInformation() async {
@@ -36,7 +40,6 @@ class Shop  {
     );
     var jsonResponse = jsonDecode(response.body);
 
-    print(jsonResponse);
     if (jsonResponse['error'] != null) return false;
     this.id = jsonResponse['id'].toString();
     this.name = jsonResponse['name'];
@@ -45,9 +48,24 @@ class Shop  {
     this.photoURL = jsonResponse['photo'];
     this.timeUnit = jsonResponse['time_unit'].toString();
     this.openAt = jsonResponse['open_at'].toString();
+    this.rating = jsonResponse['rating'].toString();
     this.closeAt = jsonResponse['close_at'].toString();
+    return true;
+  }
 
-    print(photoURL);
+  Future <bool> rate(String customerId, double rating) async {
+
+    Response response = await post("https://dont-wait.herokuapp.com/shopRate",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'customer': customerId, 'shop': this.id, 'rating': rating})
+    );
+
+    var jsonResponse = jsonDecode(response.body);
+    this.rating = jsonResponse['rating'].toString();
+    this.ratedUsers = int.parse(jsonResponse['rated_users'].toString());
+    print(jsonResponse);
     return true;
   }
 
