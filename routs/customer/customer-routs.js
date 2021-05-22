@@ -148,12 +148,32 @@ app.post('/image', (req, res) =>{
 
 // get user's liked shops
 app.get('/user/like/:id', (req, res) =>{
-    
-    const sql1 = `select * from rates where user = ${req.params.id} and rate > 2.5;`;
-    con.query(sql1, (err, shops) =>{
-        if (err) return res.status(404).json({error : err});
-        if(!shops[0]) return res.status(404).json({error: 'No liked shops'});
-        return res.send(shops);
-    });   
 
+    const sql1 = `select * from rates where user = ${req.params.id} and rate > 3.0;`;
+    con.query(sql1, (err, rates) => {
+        if (err) return res.status(404).json({error : err});
+
+        // delete duplicates rates from "rates" array.
+        const uniqueArray = rates.filter((rate1, index) => {
+            const _rate = JSON.stringify({user:rate1.user, shop:rate1.shop});
+            return index === rates.findIndex(rate2 => {
+              return JSON.stringify({user:rate2.user, shop:rate2.shop}) === _rate;
+            });
+        });
+
+        // mapping each rates with shops
+        var liked_shops_array = [];
+        const sql2 = `select * from shops;`;
+        con.query(sql2, (err, shops) =>{
+            if (err) return res.status(400).json({error: err.sqlMessage});
+            if (!shops[0]) return res.status(200).json({error: 'No shops'});
+
+            shops.forEach(shop => {
+                if(uniqueArray.find(rate => rate.shop == shop.id) != null) liked_shops_array.push(shop);
+            });
+
+            return res.json({message:liked_shops_array, length:liked_shops_array.length});
+        });
+
+    });
 });
