@@ -86,7 +86,9 @@ class _HomeDrawerShopsProfileState extends State<HomeDrawerShopsProfile> {
                             ),
                             child: ClipRRect(
                               borderRadius: const BorderRadius.all(Radius.circular(60.0)),
-                              child: this.userImageURL == null ? Image.asset('assets/images/userImage.png'): Image.network(this.userImageURL) ,
+                              child: this.userImageURL == null
+                                  ? Image.asset('assets/images/userImage.png')
+                                  : Image.network(this.userImageURL, fit: BoxFit.cover,) ,
                             ),
                           ),
                         ),

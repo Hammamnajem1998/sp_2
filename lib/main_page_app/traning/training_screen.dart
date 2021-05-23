@@ -163,16 +163,19 @@ class _TrainingScreenState extends State<TrainingScreen>
         getQueueButtonBarUI(),
     );
     listViews.add(
-      getRequestsButtonBarUI(),
+        getRequestsButtonBarUI(),
+    );
+    listViews.add(
+        getLiveStreamButtonBarUI(),
     );
 
   }
 
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 50));
-    await widget.shop.getShopInformation();
-
-    addAllListData();
+    if (await widget.shop.getShopInformation())
+       addAllListData();
+    else return false;
     return true;
   }
 
@@ -201,7 +204,29 @@ class _TrainingScreenState extends State<TrainingScreen>
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         if (!snapshot.hasData) {
           return const SizedBox();
-        } else {
+        } else if (snapshot.data == false){
+          return Container(
+            padding: EdgeInsets.only(
+              top: AppBar().preferredSize.height +
+                  MediaQuery.of(context).padding.top +
+                  24,
+              bottom: 62 + MediaQuery.of(context).padding.bottom,
+              left: 100
+            ),
+            child: Text(
+              'To start your Service\n Just press + below',
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                fontFamily: MainPageAppTheme.fontName,
+                fontWeight: FontWeight.w500,
+                fontSize: 20,
+                letterSpacing: 0.5,
+                color: MainPageAppTheme.lightText,
+              ),
+            ),
+          );
+        }
+        else {
           return ListView.builder(
             controller: scrollController,
             padding: EdgeInsets.only(
@@ -386,6 +411,62 @@ class _TrainingScreenState extends State<TrainingScreen>
                       child: Center(
                         child: Text(
                           'Date Requests',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 27,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getLiveStreamButtonBarUI() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10, top: 10, bottom: 8),
+              child: Container(
+                decoration:  BoxDecoration(
+                  //color: HotelAppTheme.buildLightTheme().backgroundColor,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(38.0),
+                  ),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.8),
+                        offset: const Offset(0, 2),
+                        blurRadius: 8.0),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 16, right: 10, top: 15, bottom: 15),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: ()  {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => DateRequests(title: "Date Requests", shop: widget.shop)),
+                        );
+
+                      },
+                      borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                      highlightColor: Colors.transparent,
+                      child: Center(
+                        child: Text(
+                          'Go Live',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 27,

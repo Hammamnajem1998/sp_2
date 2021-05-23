@@ -48,7 +48,6 @@ class ShopListView extends StatelessWidget {
                       builder: (BuildContext context) => ShopInfoScreen(shop : shop, customer: customer,),
                     ),
                   );
-
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -69,7 +68,7 @@ class ShopListView extends StatelessWidget {
                           children: <Widget>[
                             AspectRatio(
                               aspectRatio: 2,
-                              child: shopData.imagePath != null
+                              child: shopData.imagePath != null || shopData.imagePath != ''
                                   ? Image.network(shopData.imagePath,fit: BoxFit.cover,)
                                   : Image.asset('assets/hotel/hotel_2.png'),
                             ),

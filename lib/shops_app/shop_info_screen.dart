@@ -70,7 +70,7 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
               children: <Widget>[
                 AspectRatio(
                   aspectRatio: 1.2,
-                  child: Image.network(widget.shop.photoURL),
+                  child: Image.network(widget.shop.photoURL, fit: BoxFit.cover,),
                 ),
               ],
             ),
@@ -403,7 +403,7 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
   }
 
   Future<double> showRatingDialog(var context) async{
-    double rate = 0.0;
+    double rate = 2.5;
     await showDialog(
       context: context,
       builder: (context) {
