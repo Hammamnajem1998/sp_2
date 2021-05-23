@@ -160,7 +160,7 @@ app.get('/user/like/:id', (req, res) =>{
               return JSON.stringify({user:rate2.user, shop:rate2.shop}) === _rate;
             });
         });
-
+ 
         // mapping each rates with shops
         var liked_shops_array = [];
         const sql2 = `select * from shops;`;
