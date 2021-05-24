@@ -75,7 +75,7 @@ app.post('/addToQueue', (req, res) =>{
         });
     }    
 }); 
-
+ 
 // delete customer from queue
 app.delete('/queue/:shop_id/:customer_id', (req, res) =>{
 
