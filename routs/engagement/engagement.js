@@ -145,7 +145,7 @@ app.get('/engagement/:id', (req, res) =>{
 function notifyAccept(engagement){
     
     var message = {
-        data : { shop_id : engagement.shopID, customer_id: engagement.customerID, state: '2' }, // accepted state
+        data : { shop_id : engagement.shopID.toString(), customer_id: engagement.customerID.toString(), state: '2' }, // accepted state
         notification : { title: 'Accepted', body : 'your engaged date was accepted'},
         topic : 'temp',
     };
@@ -163,7 +163,7 @@ function notifyAccept(engagement){
 function notifyreject(engagement){
     
     var message = {
-        data : { shop_id :engagement.shopID, customer_id: engagement.customerID, state: '3' }, // rejected state
+        data : { shop_id :engagement.shopID.toString(), customer_id: engagement.customerID.toString(), state: '3' }, // rejected state
         notification : { title: 'rejected', body : 'your engaged date was rejected'},
         topic : 'temp',
     };
@@ -181,7 +181,7 @@ function notifyreject(engagement){
 function notifyToUpdateEngagementArray(engagement, state){
     
     var message = {
-        data : { shop_id :engagement.shopID, customer_id: engagement.customerID, state: state  },
+        data : { shop_id :engagement.shopID.toString(), customer_id: engagement.customerID.toString(), state: state.toString()  },
         notification : { title: 'New date request', body : 'Take a look !!'},
         topic : 'temp',
     };
