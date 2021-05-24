@@ -38,7 +38,6 @@ class Customer  {
       return false;
     }
     else if (jsonResponse['message'] != null){
-      print (jsonResponse['message']);
       this.id = jsonResponse['message']['id'].toString();
       this.firstName = jsonResponse['message']['first_name'];
       this.lastName = jsonResponse['message']['last_name'];
@@ -95,7 +94,6 @@ class Customer  {
       return false;
     }
     else if (jsonResponse['message'] != null){
-      print (jsonResponse['message']);
       return true;
     }
     return false;

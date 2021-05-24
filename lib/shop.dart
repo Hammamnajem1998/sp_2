@@ -65,7 +65,7 @@ class Shop  {
     var jsonResponse = jsonDecode(response.body);
     this.rating = jsonResponse['rating'].toString();
     this.ratedUsers = int.parse(jsonResponse['rated_users'].toString());
-    print(jsonResponse);
+
     return true;
   }
 

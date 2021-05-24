@@ -35,6 +35,7 @@ class _DateRequestsState extends State<DateRequests> {
     _firebaseMessaging.subscribeToTopic('temp');
     _firebaseMessaging.configure(
       onMessage: (message) async{
+        print(message);
         setState(() {
           if(message['data']['shop_id'] == widget.shop.id){
             getData();

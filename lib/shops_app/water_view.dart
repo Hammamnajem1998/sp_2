@@ -5,7 +5,6 @@ import 'package:temp1/shops_app/wave_view.dart';
 import 'package:temp1/main_page_app/main_page_app_theme.dart';
 import 'package:temp1/main.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../customer.dart';
 import '../shop.dart';
@@ -19,13 +18,14 @@ class WaterView extends StatefulWidget {
   final Animation<dynamic> mainScreenAnimation;
   final Shop shop;
   final Customer customer;
+
   @override
   _WaterViewState createState() => _WaterViewState();
 }
 
 class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
 
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  // FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   var queueLength  = 0 ;
   var estimatedWaitingTime = 0;
   bool isWaiting = false;
@@ -39,22 +39,23 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
     super.initState();
     getQueueInformation();
 
-    _firebaseMessaging.subscribeToTopic('temp');
-    _firebaseMessaging.configure(
-      onMessage: (message) async{
-        setState(() {
-          if(message['data']['shop_id'] == widget.shop.id){
-            getQueueInformation();
-          }
-        });
-      },
-    );
+    // _firebaseMessaging.subscribeToTopic('temp');
+    // _firebaseMessaging.configure(
+    //   onMessage: (message) async{
+    //     setState(() {
+    //       if(message['data']['shop_id'] == widget.shop.id){
+    //         print(message);
+    //         getQueueInformation();
+    //       }
+    //     });
+    //   },
+    // );
   }
 
   @override
   void dispose() {
     super.dispose();
-    _firebaseMessaging.unsubscribeFromTopic('temp');
+    // _firebaseMessaging.unsubscribeFromTopic('temp');
   }
 
   @override
@@ -366,3 +367,4 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
     );
   }
 }
+
