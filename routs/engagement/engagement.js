@@ -42,20 +42,21 @@ const { admin } = require('../../config/firebase/firebase-config/admin');
 // implement array of engagements
 var engagement_array =[];
 
-// add customer to the shop's queue
+// add customer to the engagements array
 app.post('/addToEngagement', (req, res) =>{
 
     if (req.body.isFromOwner === 'true'){
         if (engagement_array[req.body.shop_id] == null) engagement_array[req.body.shop_id] = new Array();  
         engagement_array[req.body.shop_id].push({
             customerID: 'none',
+            shopID: req.body.shop_id,
             first_name: req.body.user_name, 
             last_name : ' ',
             email : `Requested a date at ${req.body.hour}:${req.body.minute}`, 
             photo : '',
             status : 'accepted'
         });
-        notifyToUpdateEngagementArray(req.body.shop_id);
+        notifyToUpdateEngagementArray(engagement_array[req.body.shop_id], 2 );// accepted state
         res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
     } else{
         if (engagement_array[req.body.shop_id] == null) engagement_array[req.body.shop_id] = new Array();
@@ -65,14 +66,15 @@ app.post('/addToEngagement', (req, res) =>{
             if(err) return res.status(404).json({error : err});
             
             engagement_array[req.body.shop_id].push({   
-                customerID: req.body.customer_id, 
+                customerID: req.body.customer_id,
+                shopID: req.body.shop_id, 
                 first_name: user[0].first_name, 
                 last_name : user[0].last_name, 
                 email : `Requested a date at ${req.body.hour}:${req.body.minute}`, 
                 photo : user[0].photo,
                 status : 'processing' 
             });
-            notifyToUpdateEngagementArray(req.body.shop_id);
+            notifyToUpdateEngagementArray(engagement_array[req.body.shop_id], 1 );// processing state   
             res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
         });
     }    
@@ -86,7 +88,7 @@ app.get('/engagement/accept/:shop_id/:customer_id', (req, res) =>{
     if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
         var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         engagement_array[req.params.shop_id][customerIndex].status = 'accepted' ;
-        notifyAccept(req.params.shop_id);
+        notifyAccept(engagement_array[req.params.shop_id]);// accepted state
         return res.json({message: engagement_array[req.params.shop_id][customerIndex]});
     }
     
@@ -101,7 +103,7 @@ app.get('/engagement/reject/:shop_id/:customer_id', (req, res) =>{
     if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
         var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         engagement_array[req.params.shop_id][customerIndex].status = 'rejected' ;
-        notifyreject(req.params.shop_id);
+        notifyreject(engagement_array[req.params.shop_id]); // rejected state
         return res.json({message: engagement_array[req.params.shop_id][customerIndex]});
     }
     
@@ -116,9 +118,9 @@ app.delete('/engagement/:shop_id/:customer_id', (req, res) =>{
         return res.json({error: 'Empty Queue'});
     
     if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
+        notifyToUpdateEngagementArray(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id, 0));// 0 idel state
         var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         engagement_array[req.params.shop_id].splice(customerIndex,1);
-        notifyToUpdateEngagementArray(req.params.shop_id);
         return res.json({message: 'deleted'});
     }
     
@@ -129,24 +131,21 @@ app.delete('/engagement/:shop_id/:customer_id', (req, res) =>{
 app.delete('/engagement/:shop_id', (req, res) =>{
     if (engagement_array[req.params.shop_id] == null) return res.json({error:'no such an array'});
     if (engagement_array[req.params.shop_id].length ==  0 ) return res.json({error:'already empty'});
-
     engagement_array[req.params.shop_id] = null;
     return res.json({message: 'Engagement Queue Deleted'});
 });
 
 // get date request's array 
 app.get('/engagement/:id', (req, res) =>{
-
     if(engagement_array[req.params.id] == null) return res.status(404).json({error : 'Empty array', length : '0'});
-
     return res.json({message : engagement_array[req.params.id], length : engagement_array[req.params.id].length });
 });
 
 
-function notifyAccept(shopID){
+function notifyAccept(engagement){
     
     var message = {
-        data : { shop_id :shopID },
+        data : { shop_id : engagement.shopID, customer_id: engagement.customerID, state: 2 }, // accepted state
         notification : { title: 'Accepted', body : 'your engaged date was accepted'},
         topic : 'temp',
     };
@@ -161,10 +160,10 @@ function notifyAccept(shopID){
     });
 }
 
-function notifyreject(shopID){
+function notifyreject(engagement){
     
     var message = {
-        data : { shop_id :shopID },
+        data : { shop_id :engagement.shopID, customer_id: engagement.customerID, state: 3 }, // rejected state
         notification : { title: 'rejected', body : 'your engaged date was rejected'},
         topic : 'temp',
     };
@@ -179,10 +178,10 @@ function notifyreject(shopID){
     });
 }
 
-function notifyToUpdateEngagementArray(shopID){
+function notifyToUpdateEngagementArray(engagement, state){
     
     var message = {
-        data : { shop_id :shopID },
+        data : { shop_id :engagement.shopID, customer_id: engagement.customerID, state: state  },
         notification : { title: 'New date request', body : 'Take a look !!'},
         topic : 'temp',
     };
