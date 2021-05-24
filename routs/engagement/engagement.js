@@ -56,7 +56,7 @@ app.post('/addToEngagement', (req, res) =>{
             photo : '',
             status : 'accepted'
         });
-        notifyToUpdateEngagementArray(engagement_array[req.body.shop_id], 2 );// accepted state
+        notifyToUpdateEngagementArray(engagement_array[req.body.shop_id], '2' );// accepted state
         res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
     } else{
         if (engagement_array[req.body.shop_id] == null) engagement_array[req.body.shop_id] = new Array();
@@ -74,7 +74,7 @@ app.post('/addToEngagement', (req, res) =>{
                 photo : user[0].photo,
                 status : 'processing' 
             });
-            notifyToUpdateEngagementArray(engagement_array[req.body.shop_id], 1 );// processing state   
+            notifyToUpdateEngagementArray(engagement_array[req.body.shop_id], '1' );// processing state   
             res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
         });
     }    
@@ -118,7 +118,7 @@ app.delete('/engagement/:shop_id/:customer_id', (req, res) =>{
         return res.json({error: 'Empty Queue'});
     
     if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
-        notifyToUpdateEngagementArray(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id, 0));// 0 idel state
+        notifyToUpdateEngagementArray(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id, '0'));// 0 idel state
         var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         engagement_array[req.params.shop_id].splice(customerIndex,1);
         return res.json({message: 'deleted'});
@@ -145,7 +145,7 @@ app.get('/engagement/:id', (req, res) =>{
 function notifyAccept(engagement){
     
     var message = {
-        data : { shop_id : engagement.shopID, customer_id: engagement.customerID, state: 2 }, // accepted state
+        data : { shop_id : engagement.shopID, customer_id: engagement.customerID, state: '2' }, // accepted state
         notification : { title: 'Accepted', body : 'your engaged date was accepted'},
         topic : 'temp',
     };
@@ -163,7 +163,7 @@ function notifyAccept(engagement){
 function notifyreject(engagement){
     
     var message = {
-        data : { shop_id :engagement.shopID, customer_id: engagement.customerID, state: 3 }, // rejected state
+        data : { shop_id :engagement.shopID, customer_id: engagement.customerID, state: '3' }, // rejected state
         notification : { title: 'rejected', body : 'your engaged date was rejected'},
         topic : 'temp',
     };
