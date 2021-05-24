@@ -118,7 +118,8 @@ app.delete('/engagement/:shop_id/:customer_id', (req, res) =>{
         return res.json({error: 'Empty Queue'});
     
     if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
-        notifyToUpdateEngagementArray(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id, '0'));// 0 idel state
+        foundedEngagement = engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)
+        notifyToUpdateEngagementArray(foundedEngagement, '0');// 0 idel state
         var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         engagement_array[req.params.shop_id].splice(customerIndex,1);
         return res.json({message: 'deleted'});
