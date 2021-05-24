@@ -56,7 +56,7 @@ app.post('/addToEngagement', (req, res) =>{
             photo : '',
             status : 'accepted'
         });
-        notifyToUpdateEngagementArray(engagement_array[req.body.shop_id], '2' );// accepted state
+        notifyToUpdateEngagementArray(engagement_array[req.body.shop_id][engagement_array[req.body.shop_id].length-1], '2' );// accepted state
         return res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
     } else{
         if (engagement_array[req.body.shop_id] == null) engagement_array[req.body.shop_id] = new Array();
@@ -73,8 +73,8 @@ app.post('/addToEngagement', (req, res) =>{
                 email : `Requested a date at ${req.body.hour}:${req.body.minute}`, 
                 photo : user[0].photo,
                 status : 'processing' 
-            });
-            notifyToUpdateEngagementArray(engagement_array[req.body.shop_id], '1' );// processing state   
+            });            
+            notifyToUpdateEngagementArray(engagement_array[req.body.shop_id][engagement_array[req.body.shop_id].length-1], '1' );// processing state   
             return res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
         });
     }    
@@ -88,7 +88,7 @@ app.get('/engagement/accept/:shop_id/:customer_id', (req, res) =>{
     if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
         var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         engagement_array[req.params.shop_id][customerIndex].status = 'accepted' ;
-        notifyAccept(engagement_array[req.params.shop_id]);// accepted state
+        notifyAccept(engagement_array[req.params.shop_id][customerIndex]);// accepted state
         return res.json({message: engagement_array[req.params.shop_id][customerIndex]});
     }
     
@@ -103,7 +103,7 @@ app.get('/engagement/reject/:shop_id/:customer_id', (req, res) =>{
     if(engagement_array[req.params.shop_id].find(customer => customer.customerID === req.params.customer_id)){
         var customerIndex = engagement_array[req.params.shop_id].findIndex(customer => customer.customerID === req.params.customer_id);
         engagement_array[req.params.shop_id][customerIndex].status = 'rejected' ;
-        notifyreject(engagement_array[req.params.shop_id]); // rejected state
+        notifyreject(engagement_array[req.params.shop_id][customerIndex]); // rejected state
         return res.json({message: engagement_array[req.params.shop_id][customerIndex]});
     }
     
@@ -145,7 +145,7 @@ app.get('/engagement/:id', (req, res) =>{
 function notifyAccept(engagement){
     
     var message = {
-        data : { shop_id : engagement.shopID.toString(), customer_id: engagement.customerID.toString(), state: '2' }, // accepted state
+        data : { shop_id :engagement.shopID, customer_id: engagement.customerID, state: '2' }, // accepted state
         notification : { title: 'Accepted', body : 'your engaged date was accepted'},
         topic : 'temp',
     };
@@ -161,9 +161,8 @@ function notifyAccept(engagement){
 }
 
 function notifyreject(engagement){
-    
     var message = {
-        data : { shop_id :engagement.shopID.toString(), customer_id: engagement.customerID.toString(), state: '3' }, // rejected state
+        data : { shop_id :engagement.shopID, customer_id: engagement.customerID, state: '3' }, // rejected state
         notification : { title: 'rejected', body : 'your engaged date was rejected'},
         topic : 'temp',
     };
@@ -181,7 +180,7 @@ function notifyreject(engagement){
 function notifyToUpdateEngagementArray(engagement, state){
     
     var message = {
-        data : { shop_id :engagement.shopID.toString(), customer_id: engagement.customerID.toString(), state: state},
+        data : { shop_id :engagement.shopID.toString(), customer_id: engagement.customerID.toString(), state: state }, // rejected state
         notification : { title: 'New date request', body : 'Take a look !!'},
         topic : 'temp',
     };
