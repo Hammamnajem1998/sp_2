@@ -57,7 +57,7 @@ app.post('/addToEngagement', (req, res) =>{
             status : 'accepted'
         });
         notifyToUpdateEngagementArray(engagement_array[req.body.shop_id], '2' );// accepted state
-        res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
+        return res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
     } else{
         if (engagement_array[req.body.shop_id] == null) engagement_array[req.body.shop_id] = new Array();
 
@@ -75,7 +75,7 @@ app.post('/addToEngagement', (req, res) =>{
                 status : 'processing' 
             });
             notifyToUpdateEngagementArray(engagement_array[req.body.shop_id], '1' );// processing state   
-            res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
+            return res.json( {message : engagement_array[req.body.shop_id], length : engagement_array[req.body.shop_id].length } );
         });
     }    
 }); 
