@@ -181,7 +181,7 @@ function notifyreject(engagement){
 function notifyToUpdateEngagementArray(engagement, state){
     
     var message = {
-        data : { shop_id :engagement.shopID.toString(), customer_id: engagement.customerID.toString(), state: state.toString()  },
+        data : { shop_id :engagement.shopID.toString(), customer_id: engagement.customerID.toString(), state: state},
         notification : { title: 'New date request', body : 'Take a look !!'},
         topic : 'temp',
     };
