@@ -115,7 +115,9 @@ class QueueItemView extends StatelessWidget {
                 child:SizedBox(
                   width: 100,
                   height: 100,
-                    child: (this.photoURL == null || this.photoURL == '') ? Image.asset("assets/images/userAvatar.png"): Image.network(this.photoURL) ,
+                    child: (this.photoURL == null || this.photoURL == '')
+                        ? Image.asset("assets/images/userAvatar.png")
+                        : Image.network(this.photoURL) ,
                 ),
               ),
               Positioned(

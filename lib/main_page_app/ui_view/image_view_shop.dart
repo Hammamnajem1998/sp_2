@@ -6,14 +6,14 @@ import 'dart:math' as math;
 
 import '../../customer.dart';
 
-class ImageViewUser extends StatelessWidget {
+class ImageViewShop extends StatelessWidget {
   final AnimationController animationController;
   final Animation animation;
   final String imageURL;
   final Customer customer ;
   final bool isForShop ;
 
-  ImageViewUser(
+  ImageViewShop(
       {
         Key key,
         this.animationController,
@@ -54,7 +54,7 @@ class ImageViewUser extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(60.0)),
                     child: (this.imageURL == null || this.imageURL == '')
-                        ? Image.asset("assets/images/userAvatar.png")
+                        ? Image.asset('assets/hotel/hotel_2.png', fit: BoxFit.cover,)
                         : Image.network(this.imageURL, fit: BoxFit.cover,),
                   ),
                 ),

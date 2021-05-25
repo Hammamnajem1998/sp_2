@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
+import 'main_page_app/main_page_app_theme.dart';
+
 class MyMap extends StatefulWidget {
   @override
   _MyMapState createState() => _MyMapState();
@@ -15,6 +17,8 @@ class _MyMapState extends State<MyMap> {
   var _currentMapType;
   final Set<Marker> _markers = {};
   LatLng _lastMapPosition = LatLng(32.4038, 35.2367);
+
+  bool  isPressed = false;
 
   void _onMapCreated(GoogleMapController _cntlr)
   {
@@ -44,7 +48,7 @@ class _MyMapState extends State<MyMap> {
                 myLocationEnabled: true,
                 myLocationButtonEnabled: true,
                 onLongPress:(positionPresses) => {
-                  _onAddMarkerButtonPressed(positionPresses)
+                  _onAddMarkerButtonPressed(positionPresses),
                 },
                 markers: _markers,
               ),
@@ -60,6 +64,44 @@ class _MyMapState extends State<MyMap> {
                   ),
                 ),
               ),
+              !isPressed ? Padding(
+                padding: const EdgeInsets.fromLTRB(0,15,60,0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    'Long press to drop a mark\nThen click wanted mark!!',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontFamily: MainPageAppTheme.fontName,
+                      fontWeight: FontWeight.w500,
+                      decoration: TextDecoration.none,
+                      decorationColor: Colors.white,
+                      fontSize: 20,
+                      letterSpacing: 0.5,
+                      color: Colors.red,
+                      shadows: [
+                        Shadow( // bottomLeft
+                            offset: Offset(-1.5, -1.5),
+                            color: Colors.white
+                        ),
+                        Shadow( // bottomRight
+                            offset: Offset(1.5, -1.5),
+                            color: Colors.white
+                        ),
+                        Shadow( // topRight
+                            offset: Offset(1.5, 1.5),
+                            color: Colors.white
+                        ),
+                        Shadow( // topLeft
+                            offset: Offset(-1.5, 1.5),
+                            color: Colors.white
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ):SizedBox()
+
             ],
           ),
         ),
@@ -75,6 +117,12 @@ class _MyMapState extends State<MyMap> {
     setState(() {
       _markers.add(Marker(
         // This marker id can be anything that uniquely identifies each marker.
+        onTap: () =>{
+          print('hi'),
+          setState(() {
+            this.isPressed= true;
+          })
+        },
         markerId: MarkerId(position.toString()),
         position: position,
         infoWindow: InfoWindow(

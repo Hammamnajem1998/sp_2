@@ -5,11 +5,11 @@ import 'package:http/http.dart';
 import 'package:temp1/feedback_screen.dart';
 import 'package:temp1/main_page_app/traning/date_requests.dart';
 import 'package:temp1/main_page_app/ui_view/area_list_view.dart';
+import 'package:temp1/main_page_app/ui_view/image_view_shop.dart';
 import 'package:temp1/main_page_app/ui_view/running_view.dart';
 import 'package:temp1/main_page_app/ui_view/title_view.dart';
 import 'package:temp1/main_page_app/ui_view/workout_view.dart';
 import 'package:flutter/material.dart';
-import 'package:temp1/main_page_app/ui_view/mediterranesn_diet_view.dart';
 
 import '../../customer.dart';
 import '../../shop.dart';
@@ -96,7 +96,7 @@ class _TrainingScreenState extends State<TrainingScreen>
     );
 
     listViews.add(
-      MediterranesnDietView(
+      ImageViewShop(
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController,
             curve: Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),

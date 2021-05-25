@@ -188,6 +188,7 @@ class _ShopsScreenState extends State<ShopsScreen>
           perNight: (now.hour > int.parse(shop.openAt) && now.hour < int.parse(shop.closeAt)) ? 'Open' : 'Close'
         ),
       );
+
     }
   }
 

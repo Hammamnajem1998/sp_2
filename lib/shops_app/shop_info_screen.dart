@@ -101,7 +101,9 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
               children: <Widget>[
                 AspectRatio(
                   aspectRatio: 1.2,
-                  child: Image.network(widget.shop.photoURL, fit: BoxFit.cover,),
+                  child: widget.shop.photoURL == null || widget.shop.photoURL == 'null' || widget.shop.photoURL == ''
+                      ? Image.asset('assets/hotel/hotel_2.png')
+                      : Image.network(widget.shop.photoURL, fit: BoxFit.cover,),
                 ),
               ],
             ),

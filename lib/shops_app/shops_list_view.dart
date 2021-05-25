@@ -68,9 +68,9 @@ class ShopListView extends StatelessWidget {
                           children: <Widget>[
                             AspectRatio(
                               aspectRatio: 2,
-                              child: shopData.imagePath != null || shopData.imagePath != ''
-                                  ? Image.network(shopData.imagePath,fit: BoxFit.cover,)
-                                  : Image.asset('assets/hotel/hotel_2.png'),
+                              child: (shopData.imagePath == null || shopData.imagePath == '' || shopData.imagePath == 'null')
+                                  ? Image.asset('assets/hotel/hotel_2.png')
+                                  : Image.network(shopData.imagePath,fit: BoxFit.cover,),
                             ),
                             Container(
                               color: ShopAppTheme.buildLightTheme()

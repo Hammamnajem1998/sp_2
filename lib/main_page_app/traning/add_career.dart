@@ -334,12 +334,12 @@ class _AddCareerState extends State<AddCareer> with TickerProviderStateMixin {
                     keyboardType: TextInputType.number,
                     controller: timeUnitController,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                     ),
                     //cursorColor: HotelAppTheme.buildLightTheme().primaryColor,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Time unit for one person...',
+                      hintText: 'Time unit on minutes for one person...',
                       prefixIcon:Icon(Icons.access_time,size: 30,),
                     ),
                   ),

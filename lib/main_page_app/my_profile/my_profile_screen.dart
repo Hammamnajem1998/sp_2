@@ -99,7 +99,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       );
 
       listViews.add(
-        MediterranesnDietView(
+        ImageViewUser(
           animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
               parent: widget.animationController,
               curve: Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
@@ -170,7 +170,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-    var jsonResponse = jsonDecode(response.body);
+    var jsonResponse = await jsonDecode(response.body);
 
     this.firstName = jsonResponse['first_name'];
     this.lastName = jsonResponse['last_name'];
