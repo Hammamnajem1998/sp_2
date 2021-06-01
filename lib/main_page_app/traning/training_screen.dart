@@ -1,8 +1,12 @@
 import 'dart:convert';
 
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:temp1/feedback_screen.dart';
+import 'package:temp1/main_page_app/live_streaming/src/pages/call.dart';
+import 'package:temp1/main_page_app/live_streaming/src/pages/index.dart';
 import 'package:temp1/main_page_app/traning/date_requests.dart';
 import 'package:temp1/main_page_app/ui_view/area_list_view.dart';
 import 'package:temp1/main_page_app/ui_view/image_view_shop.dart';
@@ -455,12 +459,18 @@ class _TrainingScreenState extends State<TrainingScreen>
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: ()  {
+                      onTap: () async {
+                        await _handleCameraAndMic(Permission.camera);
+                        await _handleCameraAndMic(Permission.microphone);
+                        ClientRole _role = ClientRole.Broadcaster;
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => DateRequests(title: "Date Requests", shop: widget.shop)),
+                          MaterialPageRoute(builder: (context) => CallPage(
+                              channelName: widget.shop.id,
+                              role: _role,
+                            ),
+                          ),
                         );
-
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                       highlightColor: Colors.transparent,
@@ -482,5 +492,10 @@ class _TrainingScreenState extends State<TrainingScreen>
         ],
       ),
     );
+  }
+
+  Future<void> _handleCameraAndMic(Permission permission) async {
+    final status = await permission.request();
+    print(status);
   }
 }

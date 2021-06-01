@@ -1,7 +1,10 @@
 import 'dart:convert';
 
 
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:http/http.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:temp1/main_page_app/live_streaming/src/pages/call.dart';
 import 'package:temp1/shops_app/wave_view.dart';
 import 'package:temp1/main_page_app/main_page_app_theme.dart';
 import 'package:temp1/main.dart';
@@ -371,11 +374,48 @@ class _ShopInfoScreenState extends State<ShopInfoScreen>
                   ),
                 ),
               ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top - 10, left: MediaQuery.of(context).size.width - 60),
+              child: SizedBox(
+                width: AppBar().preferredSize.height,
+                height: AppBar().preferredSize.height,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius:
+                    BorderRadius.circular(AppBar().preferredSize.height),
+                    child: Icon(
+                      Icons.live_tv_outlined,
+                      color: DesignCourseAppTheme.nearlyBlack,
+                      size: 50,
+                    ),
+                    onTap: () async {
+                      await _handleCameraAndMic(Permission.camera);
+                      await _handleCameraAndMic(Permission.microphone);
+                      ClientRole _role = ClientRole.Audience;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CallPage(
+                          channelName: widget.shop.id,
+                          role: _role,
+                        ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
             )
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _handleCameraAndMic(Permission permission) async {
+    final status = await permission.request();
+    print(status);
   }
 
   Widget getTimeBoxUI(String text1, String txt2) {
@@ -675,8 +715,7 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
                                   ),
                                 ],
                               ),
-                            ) :
-                            SizedBox(),
+                            ) : SizedBox(),
                           ],
                         ),
                       ),
@@ -686,6 +725,9 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
+                            const SizedBox(
+                              height: 28,
+                            ),
                             Container(
                               decoration: BoxDecoration(
                                 color: MainPageAppTheme.nearlyWhite,
@@ -756,7 +798,7 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
                           width: 60,
                           height: 160,
                           decoration: BoxDecoration(
-                            color: HexColor('#E8EDFE'),
+                            color: HexColor('#E8ED0FE'),
                             borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(80.0),
                                 bottomLeft: Radius.circular(80.0),
